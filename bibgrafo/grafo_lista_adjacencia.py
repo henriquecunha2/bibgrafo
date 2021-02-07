@@ -23,7 +23,6 @@ class GrafoListaAdjacencia(GrafoIF):
             for v in N:
                 if not(self.verticeValido(v)):
                     raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
-
         self.N = N
 
         if A == None:
@@ -62,15 +61,15 @@ class GrafoListaAdjacencia(GrafoIF):
         '''
 
         # Verifica se os vértices existem no Grafo
-        if not(self.existeVertice(aresta.getV1())) or not(self.existeVertice(aresta.getV2())):
+        if type(aresta) != Aresta or not(self.existeVertice(aresta.getV1())) or not(self.existeVertice(aresta.getV2())):
             return False
         return True
 
-    def existeAresta(self, r=''):
+    def existeRotuloAresta(self, r=''):
         '''
-        Verifica se uma aresta passada como parâmetro pertence ao grafo.
+        Verifica se um rótulo de aresta passada como parâmetro pertence ao grafo.
         :param aresta: A aresta a ser verificada
-        :return: Um valor booleano que indica se a aresta existe no grafo.
+        :return: Um valor booleano que indica se o rótulo da aresta existe no grafo.
         '''
         if GrafoListaAdjacencia.arestaValida(self, r):
             return r in self.A
@@ -92,7 +91,7 @@ class GrafoListaAdjacencia(GrafoIF):
         :param r: O rótulo da aresta solicitada
         :return: Um objeto do tipo Aresta que é a aresta requisitada ou False se a aresta não existe
         '''
-        if self.existeAresta(r):
+        if self.existeRotuloAresta(r):
             return deepcopy(self.A[r])
         return False
 
@@ -112,8 +111,6 @@ class GrafoListaAdjacencia(GrafoIF):
         else:
             raise ArestaInvalidaException('A aresta ' + str(a) + ' é inválida')
         return True
-
-
 
     def __str__(self):
         '''

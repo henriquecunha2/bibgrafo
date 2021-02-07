@@ -32,7 +32,7 @@ class GrafoIF():
         '''
         pass
 
-    def existeAresta(self, aresta='') -> bool:
+    def existeRotuloAresta(self, aresta='') -> bool:
         '''
         Verifica se uma aresta passada como parâmetro pertence ao grafo.
         :param aresta: A aresta a ser verificada
