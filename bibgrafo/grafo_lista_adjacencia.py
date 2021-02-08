@@ -1,6 +1,6 @@
-from grafo import GrafoIF
-from aresta import Aresta
-from grafo_exceptions import *
+from bibgrafo.grafo import GrafoIF
+from bibgrafo.aresta import Aresta
+from bibgrafo.grafo_exceptions import *
 from copy import deepcopy
 
 class GrafoListaAdjacencia(GrafoIF):

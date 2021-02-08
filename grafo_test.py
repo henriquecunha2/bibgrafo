@@ -85,18 +85,18 @@ class TestGrafo(unittest.TestCase):
             self.g_p.adicionaAresta('a1', 'J', 'C')
 
     def test_vertices_nao_adjacentes(self):
-        self.assertEqual(self.g_p.vertices_nao_adjacentes(), ['J-J', 'J-E', 'J-P', 'J-M', 'J-T', 'J-Z', 'C-C', 'C-Z', 'E-J', 'E-E', 'E-P', 'E-M', 'E-T', 'E-Z', 'P-J', 'P-E', 'P-P', 'P-M', 'P-T', 'P-Z', 'M-J', 'M-E', 'M-P', 'M-M', 'M-Z', 'T-J', 'T-E', 'T-P', 'T-T', 'Z-J', 'Z-C', 'Z-E', 'Z-P', 'Z-M', 'Z-Z'])
+        self.assertEqual(self.g_p.vertices_nao_adjacentes(), ['J-E', 'J-P', 'J-M', 'J-T', 'J-Z', 'C-Z', 'E-J', 'E-P', 'E-M', 'E-T', 'E-Z', 'P-J', 'P-E', 'P-M', 'P-T', 'P-Z', 'M-J', 'M-E', 'M-P', 'M-Z', 'T-J', 'T-E', 'T-P', 'Z-J', 'Z-C', 'Z-E', 'Z-P', 'Z-M'])
 
         self.assertEqual(self.g_p.vertices_nao_adjacentes(),
-                         ['J-J', 'J-E', 'J-P', 'J-M', 'J-T', 'J-Z', 'C-C', 'C-Z', 'E-J', 'E-E', 'E-P', 'E-M', 'E-T',
+                         ['J-E', 'J-P', 'J-M', 'J-T', 'J-Z', 'C-Z', 'E-J', 'E-P', 'E-M', 'E-T',
                           'E-Z', 'P-J', 'P-E',
-                          'P-P', 'P-M', 'P-T', 'P-Z', 'M-J', 'M-E', 'M-P', 'M-M', 'M-Z', 'T-J', 'T-E', 'T-P', 'T-T',
+                          'P-M', 'P-T', 'P-Z', 'M-J', 'M-E', 'M-P', 'M-Z', 'T-J', 'T-E', 'T-P',
                           'Z-J', 'Z-C', 'Z-E',
-                          'Z-P', 'Z-M', 'Z-Z'])
+                          'Z-P', 'Z-M'])
 
-        self.assertEqual(self.g_c.vertices_nao_adjacentes(), ['J-J', 'C-C', 'E-E', 'P-P'])
+        self.assertEqual(self.g_c.vertices_nao_adjacentes(), [])
 
-        self.assertEqual(self.g_c3.vertices_nao_adjacentes(), ['J-J'])
+        self.assertEqual(self.g_c3.vertices_nao_adjacentes(), [])
 
     def test_ha_laco(self):
         self.assertFalse(self.g_p.ha_laco())
