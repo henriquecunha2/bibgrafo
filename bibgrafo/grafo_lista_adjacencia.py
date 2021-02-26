@@ -18,7 +18,7 @@ class GrafoListaAdjacencia(GrafoIF):
         '''
 
         if N == None:
-            V = list()
+            N = list()
         else:
             for v in N:
                 if not(self.verticeValido(v)):
