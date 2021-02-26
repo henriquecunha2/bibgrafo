@@ -17,6 +17,7 @@ class TestGrafo(unittest.TestCase):
         self.g_p.adicionaAresta('a8', 'M', 'T')
         self.g_p.adicionaAresta('a9', 'T', 'Z')
 
+
         # Grafo da Paraíba sem arestas paralelas
         self.g_p_sem_paralelas = MeuGrafo(['J', 'C', 'E', 'P', 'M', 'T', 'Z'])
         self.g_p_sem_paralelas.adicionaAresta('a1', 'J', 'C')
@@ -95,7 +96,6 @@ class TestGrafo(unittest.TestCase):
                           'Z-P', 'Z-M'])
 
         self.assertEqual(self.g_c.vertices_nao_adjacentes(), [])
-
         self.assertEqual(self.g_c3.vertices_nao_adjacentes(), [])
 
     def test_ha_laco(self):
@@ -130,10 +130,10 @@ class TestGrafo(unittest.TestCase):
         self.assertEqual(self.g_c.grau('E'), 3)
         self.assertEqual(self.g_c.grau('P'), 3)
 
-        # Com laço. Lembrando que cada laço conta uma única vez por vértice para cálculo do grau
-        self.assertEqual(self.g_l1.grau('A'), 3)
-        self.assertEqual(self.g_l2.grau('B'), 3)
-        self.assertEqual(self.g_l4.grau('D'), 1)
+        # Com laço. Lembrando que cada laço conta 2 vezes por vértice para cálculo do grau
+        self.assertEqual(self.g_l1.grau('A'), 5)
+        self.assertEqual(self.g_l2.grau('B'), 4)
+        self.assertEqual(self.g_l4.grau('D'), 2)
 
     def test_ha_paralelas(self):
         self.assertTrue(self.g_p.ha_paralelas())
@@ -144,15 +144,14 @@ class TestGrafo(unittest.TestCase):
         self.assertTrue(self.g_l1.ha_paralelas())
 
     def test_arestas_sobre_vertice(self):
-        self.assertEqual(set(self.g_p.arestas_sobre_vertice('J')), set(['a1']))
-        self.assertEqual(set(self.g_p.arestas_sobre_vertice('C')), set(['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7']))
-        self.assertEqual(set(self.g_p.arestas_sobre_vertice('M')), set(['a7', 'a8']))
-        self.assertEqual(set(self.g_l2.arestas_sobre_vertice('B')), set(['a1', 'a2', 'a3']))
-        self.assertEqual(set(self.g_d.arestas_sobre_vertice('C')), set())
-        self.assertEqual(set(self.g_d.arestas_sobre_vertice('A')), set(['asd']))
+        self.assertEqual(set(set(self.g_p.arestas_sobre_vertice('J'))), set(['a1']))
+        self.assertEqual(set(set(self.g_p.arestas_sobre_vertice('C'))), set(['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7']))
+        self.assertEqual(set(set(self.g_p.arestas_sobre_vertice('M'))), set(['a7', 'a8']))
+        self.assertEqual(set(set(self.g_l2.arestas_sobre_vertice('B'))), set(['a1', 'a2', 'a3']))
+        self.assertEqual(set(set(self.g_d.arestas_sobre_vertice('C'))), set())
+        self.assertEqual(set(set(self.g_d.arestas_sobre_vertice('A'))), set(['asd']))
         with self.assertRaises(VerticeInvalidoException):
             self.g_p.arestas_sobre_vertice('A')
-
 
     def test_eh_completo(self):
         self.assertFalse(self.g_p.eh_completo())
