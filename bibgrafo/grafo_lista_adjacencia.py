@@ -71,8 +71,7 @@ class GrafoListaAdjacencia(GrafoIF):
         :param aresta: A aresta a ser verificada
         :return: Um valor booleano que indica se o rótulo da aresta existe no grafo.
         '''
-        if GrafoListaAdjacencia.arestaValida(self, r):
-            return r in self.A
+        return r in self.A
 
     def adicionaVertice(self, v):
         '''
@@ -112,11 +111,24 @@ class GrafoListaAdjacencia(GrafoIF):
             raise ArestaInvalidaException('A aresta ' + str(a) + ' é inválida')
         return True
 
+    def __eq__(self, other):
+        '''
+        Define a igualdade entre a instância do GrafoListaAdjacencia para o qual essa função foi chamada e a instância de um GrafoListaAdjacencia passado como parâmetro.
+        :param other: O grafo que deve ser comparado com este grafo.
+        :return: Um valor booleano caso os grafos sejam iguais.
+        '''
+        if not self.N == other.N:
+            return False
+        for a in self.A:
+            if not self.A[a] == other.getAresta(a):
+                return False
+        return True
+
     def __str__(self):
         '''
         Fornece uma representação do tipo String do grafo.
         O String contém um sequência dos vértices separados por vírgula, seguido de uma sequência das arestas no formato padrão.
-        :return: Uma string que representa o grafo
+        :return: Uma string que representa o grafo.
         '''
         grafo_str = ''
 
