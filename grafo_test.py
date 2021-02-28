@@ -86,7 +86,6 @@ class TestGrafo(unittest.TestCase):
             self.g_p.adicionaAresta('a1', 'J', 'C')
 
     def test_eq(self):
-        g_p_eq = GrafoListaAdjacencia()
         g_p_eq = GrafoListaAdjacencia(['J', 'C', 'E', 'P', 'M', 'T', 'Z'])
         g_p_eq.adicionaAresta('a1', 'J', 'C')
         g_p_eq.adicionaAresta('a2', 'C', 'E')
