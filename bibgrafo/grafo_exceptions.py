@@ -3,3 +3,6 @@ class VerticeInvalidoException(Exception):
 
 class ArestaInvalidaException(Exception):
     pass
+
+class MatrizInvalidaException(Exception):
+    pass
