@@ -61,9 +61,9 @@ class GrafoListaAdjacencia(GrafoIF):
         '''
 
         # Verifica se os vértices existem no Grafo
-        if type(aresta) != Aresta or not(self.existeVertice(aresta.getV1())) or not(self.existeVertice(aresta.getV2())):
-            return False
-        return True
+        if type(aresta) == Aresta and self.existeVertice(aresta.getV1()) and self.existeVertice(aresta.getV2()):
+            return True
+        return False
 
     def existeRotuloAresta(self, r=''):
         '''
@@ -121,6 +121,8 @@ class GrafoListaAdjacencia(GrafoIF):
             if not other.existeVertice(n):
                 return False
         for a in self.A:
+            if not self.existeRotuloAresta(a) or not other.existeRotuloAresta(a):
+                return False
             if not self.A[a] == other.getAresta(a):
                 return False
         return True
