@@ -117,6 +117,8 @@ class GrafoListaAdjacencia(GrafoIF):
         :param other: O grafo que deve ser comparado com este grafo.
         :return: Um valor booleano caso os grafos sejam iguais.
         '''
+        if len(self.A) != len(other.A) or len(self.N) != len(other.N):
+            return False
         for n in self.N:
             if not other.existeVertice(n):
                 return False
