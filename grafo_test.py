@@ -1,5 +1,5 @@
 import unittest
-from meu_grafo_matriz_adj_nao_dir import *
+from meu_grafo import *
 from bibgrafo.grafo_exceptions import *
 
 class TestGrafo(unittest.TestCase):
@@ -86,7 +86,7 @@ class TestGrafo(unittest.TestCase):
             self.g_p.adicionaAresta('a1', 'J', 'C')
 
     def test_eq(self):
-        g_p_eq = GrafoMatrizAdjacenciaNaoDirecionado(['J', 'C', 'E', 'P', 'M', 'T', 'Z'])
+        g_p_eq = MeuGrafo(['J', 'C', 'E', 'P', 'M', 'T', 'Z'])
         g_p_eq.adicionaAresta('a1', 'J', 'C')
         g_p_eq.adicionaAresta('a2', 'C', 'E')
         g_p_eq.adicionaAresta('a3', 'C', 'E')
@@ -96,6 +96,7 @@ class TestGrafo(unittest.TestCase):
         g_p_eq.adicionaAresta('a7', 'M', 'C')
         g_p_eq.adicionaAresta('a8', 'M', 'T')
         g_p_eq.adicionaAresta('a9', 'T', 'Z')
+        g_p_eq.adicionaAresta('a10', 'J', 'Z')
 
         self.assertEqual(self.g_p, g_p_eq)
 
