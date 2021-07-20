@@ -1,4 +1,6 @@
-/dist/bibgrafo-0.1-py3-none-any.whl
+/dist/
 /venv/
 /bibgrafo.egg-info/
 /build/
+__pycache__
+.idea
