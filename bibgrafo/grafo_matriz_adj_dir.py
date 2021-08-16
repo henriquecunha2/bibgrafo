@@ -145,6 +145,26 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
 
         return True
 
+    def __eq__(self, other):
+        '''
+        Define a igualdade entre a instância do GrafoListaAdjacencia para o qual essa função foi chamada e a instância de um GrafoListaAdjacencia passado como parâmetro.
+        :param other: O grafo que deve ser comparado com este grafo.
+        :return: Um valor booleano caso os grafos sejam iguais.
+        '''
+        if len(self.M) != len(other.M) or len(self.N) != len(other.N):
+            return False
+        for n in self.N:
+            if not other.existeVertice(n):
+                return False
+        for i in range(len(self.M)):
+            for j in range(len(self.M)):
+                if len(self.M[i][j]) != len(other.M[i][j]):
+                    return False
+                for k in self.M[i][j]:
+                    if k not in other.M[i][j]:
+                        return False
+        return True
+
     def __str__(self):
         '''
         Fornece uma representação do tipo String do grafo.
