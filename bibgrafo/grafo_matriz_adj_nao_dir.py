@@ -1,13 +1,8 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import Aresta
 from bibgrafo.grafo_exceptions import *
-from copy import deepcopy
 
 class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
-
-    QTDE_MAX_SEPARADOR = 1
-    SEPARADOR_ARESTA = '-'
-    __maior_vertice = 0
 
     def __init__(self, V=None, M=None):
         '''
