@@ -1,6 +1,7 @@
 from bibgrafo.grafo_lista_adjacencia import GrafoListaAdjacencia
 from bibgrafo.grafo_exceptions import *
 
+
 class MeuGrafo(GrafoListaAdjacencia):
 
     def getListaAdjacencias(self):

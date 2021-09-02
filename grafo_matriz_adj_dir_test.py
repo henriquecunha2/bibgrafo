@@ -17,7 +17,6 @@ class TestGrafo(unittest.TestCase):
         self.g_p.adicionaAresta('a8', 'M', 'T')
         self.g_p.adicionaAresta('a9', 'T', 'Z')
 
-
         # Grafo da Paraíba sem arestas paralelas
         self.g_p_sem_paralelas = MeuGrafo(['J', 'C', 'E', 'P', 'M', 'T', 'Z'])
         self.g_p_sem_paralelas.adicionaAresta('a1', 'J', 'C')
@@ -84,6 +83,45 @@ class TestGrafo(unittest.TestCase):
         self.g_e.adicionaAresta('9', 'E', 'A')
         self.g_e.adicionaAresta('11', 'E', 'B')
 
+        # Matrizes para teste do algoritmo de Warshall
+
+        self.g_p_m = self.constroi_matriz(self.g_p)
+        self.g_p_m[0][1] = 1
+        self.g_p_m[0][2] = 1
+        self.g_p_m[1][2] = 1
+        self.g_p_m[3][1] = 1
+        self.g_p_m[3][2] = 1
+        self.g_p_m[4][1] = 1
+        self.g_p_m[4][2] = 1
+        self.g_p_m[4][5] = 1
+        self.g_p_m[4][6] = 1
+        self.g_p_m[5][1] = 1
+        self.g_p_m[5][2] = 1
+        self.g_p_m[5][6] = 1
+
+        self.g_e_m = self.constroi_matriz(self.g_e)
+        for i in range(0, len(self.g_e_m)):
+            self.g_e_m[0][i] = 1
+            self.g_e_m[2][i] = 1
+            self.g_e_m[3][i] = 1
+            self.g_e_m[4][i] = 1
+
+        # Grafos desconexos
+        self.g_dijkstra = MeuGrafo(['A', 'B', 'C', 'D'])
+        self.g_dijkstra.adicionaAresta('1', 'A', 'B', 1)
+        self.g_dijkstra.adicionaAresta('2', 'A', 'C', 1)
+        self.g_dijkstra.adicionaAresta('3', 'B', 'D', 1)
+        self.g_dijkstra.adicionaAresta('2', 'C', 'D', 2)
+
+
+    def constroi_matriz(self, g: MeuGrafo):
+        ordem = len(g.N)
+        m = list()
+        for i in range(ordem):
+            m.append(list())
+            for j in range(ordem):
+                m[i].append(0)
+        return m
 
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adicionaAresta('a10', 'J', 'C'))
@@ -198,3 +236,10 @@ class TestGrafo(unittest.TestCase):
         with self.assertRaises(VerticeInvalidoException):
             self.g_p.arestas_sobre_vertice('A')
         self.assertEqual(set(self.g_e.arestas_sobre_vertice('D')), {'5', '6', '7', '8'})
+
+    def test_warshall(self):
+        self.assertEqual(self.g_p.warshall(), self.g_p_m)
+        self.assertEqual(self.g_e.warshall(), self.g_e_m)
+
+    def test_dijkstra(self):
+        pass

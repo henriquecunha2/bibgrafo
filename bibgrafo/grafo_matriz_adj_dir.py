@@ -5,10 +5,6 @@ from copy import deepcopy
 
 class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
 
-    QTDE_MAX_SEPARADOR = 1
-    SEPARADOR_ARESTA = '-'
-    __maior_vertice = 0
-
     def __init__(self, V=None, M=None):
         '''
         Constrói um objeto do tipo Grafo. Se nenhum parâmetro for passado, cria um Grafo vazio.
@@ -124,14 +120,14 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
 
-    def adicionaAresta(self, rotulo='', v1='', v2=''):
+    def adicionaAresta(self, rotulo='', v1='', v2='', peso=1):
         '''
         Adiciona uma aresta ao grafo no formato X-Y, onde X é o vértice de origem e Y é o vértice de destino
         :param a: a aresta no formato correto
         :raise: lança uma exceção caso a aresta não estiver em um formato válido
         '''
 
-        a = ArestaDirecionada(rotulo, v1, v2)
+        a = ArestaDirecionada(rotulo, v1, v2, peso)
 
         if self.existeAresta(a):
             raise ArestaInvalidaException('A aresta {} já existe no Grafo'.format(a))

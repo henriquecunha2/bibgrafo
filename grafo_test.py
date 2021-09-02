@@ -70,6 +70,8 @@ class TestGrafo(unittest.TestCase):
         self.g_d = MeuGrafo(['A', 'B', 'C', 'D'])
         self.g_d.adicionaAresta('asd', 'A', 'B')
 
+
+
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adicionaAresta('a10', 'J', 'C'))
         with self.assertRaises(ArestaInvalidaException):
