@@ -131,14 +131,14 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
 
-    def adicionaAresta(self, rotulo='', v1='', v2=''):
+    def adicionaAresta(self, rotulo='', v1='', v2='', peso=1):
         '''
         Adiciona uma aresta ao grafo no formato X-Y, onde X é o primeiro vértice e Y é o segundo vértice
         :param a: a aresta no formato correto
         :raise: lança uma exceção caso a aresta não estiver em um formato válido
         '''
 
-        a = Aresta(rotulo, v1, v2)
+        a = Aresta(rotulo, v1, v2, peso)
 
         if self.existeAresta(a):
             raise ArestaInvalidaException('A aresta {} já existe no Grafo'.format(a))
