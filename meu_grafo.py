@@ -19,13 +19,13 @@ class MeuGrafo(GrafoListaAdjacencia):
 
     def vertices_nao_adjacentes(self):
         adjacencias = self.getListaAdjacencias()
-        nao_adjacentes = list()
+        nao_adjacentes = set()
         for i in self.N:
             for j in self.N:
                 aresta_indo = '{}-{}'.format(i, j)
                 aresta_vindo = '{}-{}'.format(j, i)
-                if i != j and aresta_indo not in adjacencias and aresta_vindo not in adjacencias:
-                    nao_adjacentes.append(aresta_indo)
+                if i != j and aresta_indo not in adjacencias and aresta_vindo not in adjacencias and aresta_vindo not in nao_adjacentes:
+                    nao_adjacentes.add(aresta_indo)
         return nao_adjacentes
 
     def ha_laco(self):
@@ -61,10 +61,10 @@ class MeuGrafo(GrafoListaAdjacencia):
         # Se o vértice não existir
         if V not in self.N:
             raise VerticeInvalidoException('O vértice {} não existe no grafo'.format(V))
-        arestas = list()
+        arestas = set()
         for a in self.A.values():
             if a.getV1() == V or a.getV2() == V:
-                arestas.append(a.getRotulo())
+                arestas.add(a.getRotulo())
         return arestas
 
     def eh_laco(self, adj=''):
@@ -100,3 +100,6 @@ class MeuGrafo(GrafoListaAdjacencia):
                 arvore_dfs.adicionaAresta(a.getRotulo(), a.getV1(), a.getV2())
                 self.dfs_rec(proximo_vertice, arvore_dfs)
         return arvore_dfs
+
+    def dijkstra_drone(self, vi, vf, carga:int, carga_max:int, pontos_recarga:list()):
+        pass
