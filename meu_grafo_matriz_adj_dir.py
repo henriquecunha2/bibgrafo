@@ -27,9 +27,9 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
         for i in range(len(self.M)):
             for j in range(len(self.M)):
                 for k in self.M[i][j].values():
-                    if k.getV1() == V:
+                    if k.get_v1() == V:
                         grau += 1
-                    if k.getV2() == V:
+                    if k.get_v2() == V:
                         grau += 1
         return grau
 
@@ -47,9 +47,12 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
         arestas = list()
         v = self.N.index(V)
         for i in range(len(self.M)):
-            if i != v and bool(self.M[v][i]):
+            if bool(self.M[v][i]):
                 for k in self.M[v][i]:
-                    arestas.append(self.M[v][i][k])
+                    arestas.append(k)
+            if bool(self.M[i][v]):
+                for l in self.M[i][v]:
+                    arestas.append(l)
         return arestas
 
     def eh_completo(self):
@@ -59,13 +62,15 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
 
         # Se for simples
         vert_nao_adj = self.vertices_nao_adjacentes()
-        if vert_nao_adj == []:
-            return True
-        return False
+        for i in vert_nao_adj:
+            if not self.eh_laco(i):
+                return False
+
+        return True
 
     def dfs(self, raiz=''):
         arvore_dfs = MeuGrafo()
-        arvore_dfs.adicionaVertice(raiz)
+        arvore_dfs.adiciona_vertice(raiz)
         return self.dfs_rec(raiz, arvore_dfs)
 
     def dfs_rec(self, V, arvore_dfs):
@@ -73,10 +78,10 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
         adj.sort()
         for i in adj:
             a = self.A[i]
-            proximo_vertice = a.getV2() if a.getV1() == V else a.getV1()
-            if not arvore_dfs.existeVertice(proximo_vertice):
-                arvore_dfs.adicionaVertice(proximo_vertice)
-                arvore_dfs.adicionaAresta(a.getRotulo(), a.getV1(), a.getV2())
+            proximo_vertice = a.get_v2() if a.get_v1() == V else a.get_v1()
+            if not arvore_dfs.existe_vertice(proximo_vertice):
+                arvore_dfs.adiciona_vertice(proximo_vertice)
+                arvore_dfs.adiciona_aresta(a.get_rotulo(), a.get_v1(), a.get_v2())
                 self.dfs_rec(proximo_vertice, arvore_dfs)
         return arvore_dfs
 
@@ -98,9 +103,9 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
         return m
 
     def vertice_oposto(self, a, v):
-        if a.getV1() == v:
-            return a.getV2()
-        return a.getV1()
+        if a.get_v1() == v:
+            return a.get_v2()
+        return a.get_v1()
 
     def menor_nao_visitado(self, beta, visitado):
         aux = deepcopy(beta)
@@ -138,8 +143,8 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
                 r = self.vertice_oposto(a, w)
                 i_r = self.N.index(r)
                 i_w = self.N.index(w)
-                if beta[i_r] > beta[i_w]+a.getPeso():
-                    beta[i_r] = beta[i_w]+a.getPeso()
+                if beta[i_r] > beta[i_w]+a.get_peso():
+                    beta[i_r] = beta[i_w]+a.get_peso()
                     predecessor[r] = w
 
             # Achando r*
@@ -157,12 +162,3 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
             w = predecessor[w]
             predecessor.pop(ant)
         return caminho_mais_curto
-
-
-g_dijkstra = MeuGrafo(['A', 'B', 'C', 'D'])
-g_dijkstra.adicionaAresta('1', 'A', 'B', 1)
-g_dijkstra.adicionaAresta('2', 'A', 'C', 3)
-g_dijkstra.adicionaAresta('3', 'B', 'D', 2)
-g_dijkstra.adicionaAresta('2', 'C', 'D', 1)
-
-print(g_dijkstra.dijkstra('A', 'D', 3, 3, []))

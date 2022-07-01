@@ -5,50 +5,49 @@ from copy import deepcopy
 
 class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
 
-    def __init__(self, V=None, M=None):
+    def __init__(self, N=None, M=None):
         '''
         Constrói um objeto do tipo Grafo. Se nenhum parâmetro for passado, cria um Grafo vazio.
         Se houver alguma aresta ou algum vértice inválido, uma exceção é lançada.
-        :param V: Uma lista dos vértices (ou nodos) do grafo.
+        :param N: Uma lista dos vértices (ou nodos) do grafo.
         :param V: Uma matriz de adjacência que guarda as arestas do grafo. Cada entrada da matriz tem um inteiro que indica a quantidade de arestas que ligam aqueles vértices
         '''
 
-        if V == None:
-            V = list()
+        if N == None:
+            N = list()
         if M == None:
             M = list()
 
-        for v in V:
-            if not(GrafoMatrizAdjacenciaDirecionado.verticeValido(v)):
+        for v in N:
+            if not(GrafoMatrizAdjacenciaDirecionado.vertice_valido(v)):
                 raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
 
-
-        self.N = deepcopy(V)
+        self.N = deepcopy(N)
 
         if M == []:
             self.M = list()
-            for k in range(len(V)):
+            for k in range(len(N)):
                 self.M.append(list())
-                for l in range(len(V)):
+                for l in range(len(N)):
                     self.M[k].append(dict())
 
-        if len(self.M) != len(V):
+        if len(self.M) != len(N):
             raise MatrizInvalidaException('A matriz passada como parâmetro não tem o tamanho correto')
 
         for c in self.M:
-            if len(c) != len(V):
+            if len(c) != len(N):
                 raise MatrizInvalidaException('A matriz passada como parâmetro não tem o tamanho correto')
 
         # Verifica se as arestas passadas na matriz são válidas
-        for i in range(len(V)):
-            for j in range(len(V)):
+        for i in range(len(N)):
+            for j in range(len(N)):
                 dicio_aresta = self.M[i][j]
                 for k in dicio_aresta.values():
-                    aresta = ArestaDirecionada(k, dicio_aresta[k].getV1(), dicio_aresta[k].getV2())
-                    if not(self.arestaValida(aresta)):
+                    aresta = ArestaDirecionada(k, dicio_aresta[k].get_v1(), dicio_aresta[k].get_v2())
+                    if not(self.aresta_valida(aresta)):
                         raise ArestaInvalidaException('A aresta ' + aresta + ' é inválida')
 
-    def arestaValida(self, aresta=ArestaDirecionada()):
+    def aresta_valida(self, aresta=ArestaDirecionada()):
         '''
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
         Uma aresta só é válida se conectar dois vértices existentes no grafo.
@@ -57,12 +56,12 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         '''
 
         # Verifica se os vértices existem no Grafo
-        if type(aresta) == ArestaDirecionada and self.existeVertice(aresta.getV1()) and self.existeVertice(aresta.getV2()):
+        if type(aresta) == ArestaDirecionada and self.existe_vertice(aresta.get_v1()) and self.existe_vertice(aresta.get_v2()):
             return True
         return False
 
     @classmethod
-    def verticeValido(self, vertice=''):
+    def vertice_valido(self, vertice=''):
         '''
         Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
         Um vértice é um string qualquer que não pode ser vazio.
@@ -71,13 +70,13 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         '''
         return vertice != ''
 
-    def existeVertice(self, vertice=''):
+    def existe_vertice(self, vertice=''):
         '''
         Verifica se um vértice passado como parâmetro pertence ao grafo.
         :param vertice: O vértice que deve ser verificado.
         :return: Um valor booleano que indica se o vértice existe no grafo.
         '''
-        return GrafoMatrizAdjacenciaDirecionado.verticeValido(vertice) and vertice in self.N
+        return GrafoMatrizAdjacenciaDirecionado.vertice_valido(vertice) and vertice in self.N
 
     def __indice_do_vertice(self, v: str):
         '''
@@ -93,21 +92,21 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         :param aresta: A aresta a ser verificada
         :return: Um valor booleano que indica se a aresta existe no grafo.
         '''
-        if GrafoMatrizAdjacenciaDirecionado.arestaValida(self, a):
-            if a.getRotulo() in self.M[self.__indice_do_vertice(a.getV1())][self.__indice_do_vertice(a.getV2())]:
+        if GrafoMatrizAdjacenciaDirecionado.aresta_valida(self, a):
+            if a.get_rotulo() in self.M[self.__indice_do_vertice(a.get_v1())][self.__indice_do_vertice(a.get_v2())]:
                 return True
         return False
 
-    def adicionaVertice(self, v):
+    def adiciona_vertice(self, v):
         '''
         Inclui um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser incluído no grafo.
         :raises VerticeInvalidoException se o vértice já existe ou se ele não estiver no formato válido.
         '''
-        if self.existeVertice(v):
+        if self.existe_vertice(v):
             raise VerticeInvalidoException('O vértice {} já existe'.format(v))
 
-        if self.verticeValido(v):
+        if self.vertice_valido(v):
 
             self.N.append(v) # Adiciona vértice na lista de vértices
             self.M.append([]) # Adiciona a linha
@@ -120,7 +119,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
 
-    def adicionaAresta(self, rotulo='', v1='', v2='', peso=1):
+    def adiciona_aresta(self, rotulo='', v1='', v2='', peso=1):
         '''
         Adiciona uma aresta ao grafo no formato X-Y, onde X é o vértice de origem e Y é o vértice de destino
         :param a: a aresta no formato correto
@@ -132,7 +131,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         if self.existeAresta(a):
             raise ArestaInvalidaException('A aresta {} já existe no Grafo'.format(a))
 
-        if self.arestaValida(a):
+        if self.aresta_valida(a):
             i_a1 = self.__indice_do_vertice(v1)
             i_a2 = self.__indice_do_vertice(v2)
             self.M[i_a1][i_a2][rotulo] = a
@@ -150,7 +149,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         if len(self.M) != len(other.M) or len(self.N) != len(other.N):
             return False
         for n in self.N:
-            if not other.existeVertice(n):
+            if not other.existe_vertice(n):
                 return False
         for i in range(len(self.M)):
             for j in range(len(self.M)):

@@ -13,7 +13,7 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
         arestas = self.A.values()
         adjacencias = list()
         for a in arestas:
-            adjacencias.append('{}-{}'.format(a.getV1(), a.getV2()))
+            adjacencias.append('{}-{}'.format(a.get_v1(), a.get_v2()))
         return adjacencias
 
     def vertices_nao_adjacentes(self):
@@ -39,9 +39,9 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
 
         grau = 0
         for aresta in self.A.values():
-            if V == aresta.getV1():
+            if V == aresta.get_v1():
                 grau += 1
-            if V == aresta.getV2():
+            if V == aresta.get_v2():
                 grau += 1
         return grau
 
@@ -58,9 +58,14 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
         if V not in self.N:
             raise VerticeInvalidoException('O vértice {} não existe no grafo'.format(V))
         arestas = list()
-        for a in self.A.values():
-            if a.getV1() == V or a.getV2() == V:
-                arestas.append(a.getRotulo())
+        v = self.N.index(V)
+        for i in range(len(self.M)):
+            if bool(self.M[v][i]) and self.M[v][i] != "-":
+                for k in self.M[v][i]:
+                    arestas.append(k)
+            if bool(self.M[i][v]) and self.M[i][v] != "-":
+                for l in self.M[i][v]:
+                    arestas.append(l)
         return arestas
 
     def eh_laco(self, adj=''):
@@ -82,7 +87,7 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
 
     def dfs(self, raiz=''):
         arvore_dfs = MeuGrafo()
-        arvore_dfs.adicionaVertice(raiz)
+        arvore_dfs.adiciona_vertice(raiz)
         return self.dfs_rec(raiz, arvore_dfs)
 
     def dfs_rec(self, V, arvore_dfs):
@@ -90,9 +95,9 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
         adj.sort()
         for i in adj:
             a = self.A[i]
-            proximo_vertice = a.getV2() if a.getV1() == V else a.getV1()
-            if not arvore_dfs.existeVertice(proximo_vertice):
-                arvore_dfs.adicionaVertice(proximo_vertice)
-                arvore_dfs.adicionaAresta(a.getRotulo(), a.getV1(), a.getV2())
+            proximo_vertice = a.get_v2() if a.get_v1() == V else a.get_v1()
+            if not arvore_dfs.existe_vertice(proximo_vertice):
+                arvore_dfs.adiciona_vertice(proximo_vertice)
+                arvore_dfs.adiciona_aresta(a.get_rotulo(), a.get_v1(), a.get_v2())
                 self.dfs_rec(proximo_vertice, arvore_dfs)
         return arvore_dfs

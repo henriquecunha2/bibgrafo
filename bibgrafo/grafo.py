@@ -2,7 +2,7 @@ class GrafoIF():
 
     SEPARADOR_ARESTA = '-'
 
-    def verticeValido(self, vertice='') -> bool:
+    def vertice_valido(self, vertice='') -> bool:
         '''
         Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
         Um vértice é um string qualquer que não pode ser vazio e nem conter o caractere separador.
@@ -12,7 +12,7 @@ class GrafoIF():
         '''
         pass
 
-    def arestaValida(self, aresta=tuple()) -> bool:
+    def aresta_valida(self, aresta=tuple()) -> bool:
         '''
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
         Uma aresta é representada por um tupla com o formato (a, b), onde:
@@ -24,7 +24,7 @@ class GrafoIF():
         '''
         pass
 
-    def existeVertice(self, vertice='') -> bool:
+    def existe_vertice(self, vertice='') -> bool:
         '''
         Verifica se um vértice passado como parâmetro pertence ao grafo.
         :param vertice: O vértice que deve ser verificado.
@@ -32,7 +32,7 @@ class GrafoIF():
         '''
         pass
 
-    def existeRotuloAresta(self, aresta='') -> bool:
+    def existe_rotulo_aresta(self, aresta='') -> bool:
         '''
         Verifica se uma aresta passada como parâmetro pertence ao grafo.
         :param aresta: A aresta a ser verificada
@@ -40,21 +40,7 @@ class GrafoIF():
         '''
         pass
 
-    def getCaractereSeparador(self) -> str:
-        '''
-        Retorna o caractere separador.
-        :return: o caractere separador.
-        '''
-        pass
-
-    def setCaractereSeparador(self, caractere=''):
-        '''
-        Altera o caractere separador.
-        :param: o caractere separador.
-        '''
-        pass
-
-    def adicionaVertice(self, v):
+    def adiciona_vertice(self, v):
         '''
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
         :param v: O vértice a ser adicionado
@@ -62,11 +48,35 @@ class GrafoIF():
         '''
         pass
 
-    def adicionaAresta(self, nome='', a=tuple()):
+    def adiciona_aresta(self, nome='', a=tuple()):
         '''
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome
         :param a: A aresta a ser adicionada
         :raises: ArestaInvalidaException se a aresta passada como parâmetro não puder ser adicionada
+        '''
+        pass
+
+    def remove_vertice(self, v):
+        '''
+        Remove um vértice passado como parâmetro e remove em cascata as arestas que estão conectadas a esse vértice.
+        :param v: O vértice a ser removido.
+        :raises: VerticeInvalidoException se o vértice passado como parâmetro não puder ser removido.
+        '''
+        pass
+
+    def remove_aresta(self, r):
+        '''
+        Remove uma aresta a partir de seu rótulo
+        :param r: O rótulo da aresta a ser removida
+        :raises: ArestaInvalidaException se a aresta passada como parâmetro não puder ser removida
+        '''
+        pass
+
+    def __eq__(self, other):
+        '''
+        Define a igualdade entre a instância do Grafo para o qual essa função foi chamada e a instância de um Grafo passado como parâmetro.
+        :param other: O grafo que deve ser comparado com este grafo.
+        :return: Um valor booleano caso os grafos sejam iguais.
         '''
         pass
 
