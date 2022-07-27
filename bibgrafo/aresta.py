@@ -6,48 +6,51 @@ class Aresta():
     peso = 1
     SEPARADOR_ARESTA = '-'
 
-    def __init__(self, rotulo='',v1='', v2='', peso=1):
-        self.setV1(v1)
-        self.setV2(v2)
-        self.setRotulo(rotulo)
-        self.setPeso(peso)
+    def __init__(self, rotulo='',v1='', v2='', peso:int=1):
+        self.set_v1(v1)
+        self.set_v2(v2)
+        self.set_rotulo(rotulo)
+        self.set_peso(peso)
 
-    def getV1(self):
+    def get_v1(self):
         return self.v1
 
-    def getV2(self):
+    def get_v2(self):
         return self.v2
 
-    def setV1(self, v=''):
+    def set_v1(self, v=''):
         self.v1 = v
 
-    def setV2(self, v=''):
+    def set_v2(self, v=''):
         self.v2 = v
 
-    def getPeso(self):
+    def get_peso(self):
         return self.peso
 
-    def setPeso(self, p=''):
-        self.peso = p
+    def set_peso(self, p):
+        if type(p) == int or type(p) == float:
+            self.peso = p
+        else:
+            raise TypeError("O peso deve ser um inteiro ou real")
 
-    def getRotulo(self):
+    def get_rotulo(self):
         return self.rotulo
 
-    def setRotulo(self, r=''):
+    def set_rotulo(self, r=''):
         self.rotulo = r
 
-    def ehPonta(self, v):
+    def eh_ponta(self, v):
         return v == self.v1 or v == self.v2
 
     def __eq__(self, other):
-        return ((self.v1 == other.getV1() and self.v2 == other.getV2()) or (self.v1 == other.getV2() and self.v2 == other.getV1())) and self.rotulo == other.getRotulo() and self.getPeso() == other.getPeso()
+        return ((self.v1 == other.get_v1() and self.v2 == other.get_v2()) or (self.v1 == other.get_v2() and self.v2 == other.get_v1())) and self.rotulo == other.get_rotulo() and self.get_peso() == other.get_peso()
 
     def __str__(self):
-        return "{}({}-{}), {}".format(self.getRotulo(), self.getV1(), self.getV2(), self.getPeso())
+        return "{}({}-{}), {}".format(self.get_rotulo(), self.get_v1(), self.get_v2(), self.get_peso())
 
 class ArestaDirecionada(Aresta):
     def __eq__(self, other):
-        return self.v1 == other.getV1() and self.v2 == other.getV2() and self.rotulo == other.getRotulo() and self.getPeso() == other.getPeso()
+        return self.v1 == other.get_v1() and self.v2 == other.get_v2() and self.rotulo == other.get_rotulo() and self.get_peso() == other.get_peso()
 
     def __str__(self):
-        return "{}({}->{}), {}".format(self.getRotulo(), self.getV1(), self.getV2(), self.getPeso())
+        return "{}({}->{}), {}".format(self.get_rotulo(), self.get_v1(), self.get_v2(), self.get_peso())

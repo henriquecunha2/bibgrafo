@@ -14,7 +14,7 @@ class MeuGrafo(GrafoListaAdjacencia):
         arestas = self.A.values()
         adjacencias = list()
         for a in arestas:
-            adjacencias.append('{}-{}'.format(a.getV1(), a.getV2()))
+            adjacencias.append('{}-{}'.format(a.get_v1(), a.get_v2()))
         return adjacencias
 
     def vertices_nao_adjacentes(self):
@@ -43,9 +43,9 @@ class MeuGrafo(GrafoListaAdjacencia):
 
         grau = 0
         for aresta in self.A.values():
-            if V == aresta.getV1():
+            if V == aresta.get_v1():
                 grau += 1
-            if V == aresta.getV2():
+            if V == aresta.get_v2():
                 grau += 1
         return grau
 
@@ -63,8 +63,8 @@ class MeuGrafo(GrafoListaAdjacencia):
             raise VerticeInvalidoException('O vértice {} não existe no grafo'.format(V))
         arestas = set()
         for a in self.A.values():
-            if a.getV1() == V or a.getV2() == V:
-                arestas.add(a.getRotulo())
+            if a.get_v1() == V or a.get_v2() == V:
+                arestas.add(a.get_rotulo())
         return arestas
 
     def eh_laco(self, adj=''):
@@ -86,7 +86,7 @@ class MeuGrafo(GrafoListaAdjacencia):
 
     def dfs(self, raiz=''):
         arvore_dfs = MeuGrafo()
-        arvore_dfs.adicionaVertice(raiz)
+        arvore_dfs.adiciona_vertice(raiz)
         return self.dfs_rec(raiz, arvore_dfs)
 
     def dfs_rec(self, V, arvore_dfs):
@@ -94,10 +94,10 @@ class MeuGrafo(GrafoListaAdjacencia):
         adj.sort()
         for i in adj:
             a = self.A[i]
-            proximo_vertice = a.getV2() if a.getV1() == V else a.getV1()
-            if not arvore_dfs.existeVertice(proximo_vertice):
-                arvore_dfs.adicionaVertice(proximo_vertice)
-                arvore_dfs.adicionaAresta(a.getRotulo(), a.getV1(), a.getV2())
+            proximo_vertice = a.get_v2() if a.get_v1() == V else a.get_v1()
+            if not arvore_dfs.existe_vertice(proximo_vertice):
+                arvore_dfs.adiciona_vertice(proximo_vertice)
+                arvore_dfs.adiciona_aresta(a.get_rotulo(), a.get_v1(), a.get_v2())
                 self.dfs_rec(proximo_vertice, arvore_dfs)
         return arvore_dfs
 
