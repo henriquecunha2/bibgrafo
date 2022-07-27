@@ -5,9 +5,6 @@ from copy import deepcopy
 
 class GrafoListaAdjacencia(GrafoIF):
 
-    QTDE_MAX_SEPARADOR = 1
-    SEPARADOR_ARESTA = '-'
-
     def __init__(self, N=None, A=None):
         '''
         Constrói um objeto do tipo GrafoListaAdjacencia. Se nenhum parâmetro for passado, cria um Grafo vazio.

@@ -155,6 +155,14 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
         return True
 
+    def __eq__(self, other):
+        '''
+        Define a igualdade entre a instância do GrafoMatrizAdjacenciaNaoDirecionado para o qual essa função foi chamada e a instância de um GrafoMatrizAdjacenciaNaoDirecionado passado como parâmetro.
+        :param other: O grafo que deve ser comparado com este grafo.
+        :return: Um valor booleano caso os grafos sejam iguais.
+        '''
+        return self.N == other.N and self.M == other.M
+
     def __str__(self):
         '''
         Fornece uma representação do tipo String do grafo.
