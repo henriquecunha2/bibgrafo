@@ -113,7 +113,6 @@ class TestGrafo(unittest.TestCase):
         self.g_dijkstra.adiciona_aresta('3', 'B', 'D', 1)
         self.g_dijkstra.adiciona_aresta('2', 'C', 'D', 2)
 
-
     def constroi_matriz(self, g: MeuGrafo):
         ordem = len(g.N)
         m = list()

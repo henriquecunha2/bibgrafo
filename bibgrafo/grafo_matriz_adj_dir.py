@@ -78,7 +78,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         '''
         return GrafoMatrizAdjacenciaDirecionado.vertice_valido(vertice) and vertice in self.N
 
-    def __indice_do_vertice(self, v: str):
+    def indice_do_vertice(self, v: str):
         '''
         Dado um vértice retorna o índice do vértice a na lista de vértices
         :param v: O vértice a ser analisado
@@ -86,14 +86,14 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         '''
         return self.N.index(v)
 
-    def existeAresta(self, a: ArestaDirecionada):
+    def existe_aresta(self, a: ArestaDirecionada):
         '''
         Verifica se uma aresta passada como parâmetro pertence ao grafo.
         :param aresta: A aresta a ser verificada
         :return: Um valor booleano que indica se a aresta existe no grafo.
         '''
         if GrafoMatrizAdjacenciaDirecionado.aresta_valida(self, a):
-            if a.get_rotulo() in self.M[self.__indice_do_vertice(a.get_v1())][self.__indice_do_vertice(a.get_v2())]:
+            if a.get_rotulo() in self.M[self.indice_do_vertice(a.get_v1())][self.indice_do_vertice(a.get_v2())]:
                 return True
         return False
 
@@ -128,12 +128,12 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
 
         a = ArestaDirecionada(rotulo, v1, v2, peso)
 
-        if self.existeAresta(a):
+        if self.existe_aresta(a):
             raise ArestaInvalidaException('A aresta {} já existe no Grafo'.format(a))
 
         if self.aresta_valida(a):
-            i_a1 = self.__indice_do_vertice(v1)
-            i_a2 = self.__indice_do_vertice(v2)
+            i_a1 = self.indice_do_vertice(v1)
+            i_a2 = self.indice_do_vertice(v2)
             self.M[i_a1][i_a2][rotulo] = a
         else:
             raise ArestaInvalidaException('A aresta {} é inválida'.format(a))
