@@ -5,9 +5,6 @@ from copy import deepcopy
 
 class GrafoListaAdjacencia(GrafoIF):
 
-    QTDE_MAX_SEPARADOR = 1
-    SEPARADOR_ARESTA = '-'
-
     def __init__(self, N=None, A=None):
         '''
         Constrói um objeto do tipo GrafoListaAdjacencia. Se nenhum parâmetro for passado, cria um Grafo vazio.
@@ -63,7 +60,7 @@ class GrafoListaAdjacencia(GrafoIF):
         else:
             raise VerticeInvalidoException('O vértice ' + v + ' é inválido ou já existe no grafo')
 
-    def removeVertice(self, v):
+    def remove_vertice(self, v):
         '''
         Remove um vértice passado como parâmetro e remove em cascata as arestas que estão conectadas a esse vértice.
         :param v: O vértice a ser removido.
@@ -87,7 +84,7 @@ class GrafoListaAdjacencia(GrafoIF):
         '''
         return r in self.A
 
-    def getAresta(self, r):
+    def get_aresta(self, r):
         '''
         Retorna uma cópia da aresta que tem o rótulo passado como parâmetro
         :param r: O rótulo da aresta solicitada
@@ -152,7 +149,7 @@ class GrafoListaAdjacencia(GrafoIF):
         for a in self.A:
             if not self.existe_rotulo_aresta(a) or not other.existe_rotulo_aresta(a):
                 return False
-            if not self.A[a] == other.getAresta(a):
+            if not self.A[a] == other.get_aresta(a):
                 return False
         return True
 
