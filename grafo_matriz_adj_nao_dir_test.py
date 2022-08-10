@@ -122,6 +122,25 @@ class TestGrafo(unittest.TestCase):
         with self.assertRaises(ArestaInvalidaException):
             self.g_p.adiciona_aresta('a1', 'J', 'C')
 
+    def test_remove_vertice(self):
+        self.assertTrue(self.g_p.remove_vertice("J"))
+        self.assertFalse(self.g_p.remove_vertice("J"))
+        self.assertTrue(self.g_p.remove_vertice("C"))
+        self.assertTrue(self.g_p.remove_vertice("Z"))
+
+    def test_remove_aresta(self):
+        self.assertTrue(self.g_p.remove_aresta("a1"))
+        self.assertFalse(self.g_p.remove_aresta("a1"))
+        self.assertTrue(self.g_p.remove_aresta("a7"))
+        self.assertFalse(self.g_c.remove_aresta("a"))
+        self.assertTrue(self.g_c.remove_aresta("a6"))
+        with self.assertRaises(VerticeInvalidoException):
+            self.g_p.remove_aresta("a2", "X", "C")
+        with self.assertRaises(VerticeInvalidoException):
+            self.g_p.remove_aresta("a3", "X")
+        with self.assertRaises(VerticeInvalidoException):
+            self.g_p.remove_aresta("a3", v2="X")
+
     def test_eq(self):
         self.assertEqual(self.g_p, self.g_p2)
         self.assertNotEqual(self.g_p, self.g_p3)

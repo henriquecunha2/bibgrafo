@@ -1,5 +1,7 @@
 from bibgrafo.grafo_lista_adjacencia import GrafoListaAdjacencia
+from bibgrafo.aresta import Aresta
 from bibgrafo.grafo_exceptions import *
+from sys import maxsize
 
 
 class MeuGrafo(GrafoListaAdjacencia):
@@ -101,5 +103,80 @@ class MeuGrafo(GrafoListaAdjacencia):
                 self.dfs_rec(proximo_vertice, arvore_dfs)
         return arvore_dfs
 
-    def dijkstra_drone(self, vi, vf, carga:int, carga_max:int, pontos_recarga:list()):
-        pass
+    def vertice_oposto(self, a: Aresta, v):
+        if self.A[a].get_v1() == v:
+            return self.A[a].get_v2()
+        return self.A[a].get_v1()
+
+    def seleciona_proximo_v(self, temp, menor_caminho_v):
+        menor = maxsize
+        menor_v = ""
+        for v in menor_caminho_v:
+            if menor_caminho_v[v] < menor and temp[v]:
+                menor = menor_caminho_v[v]
+                menor_v = v
+        return menor_v
+
+    def dijkstra_drone(self, vi, vf, carga_ini:int, carga_max:int, pontos_recarga:list()):
+        menor_caminho_v = dict()
+        temp = dict()
+        predecessor = dict()
+        carga_v = dict()
+        for v in self.N:
+            menor_caminho_v[v] = maxsize
+            temp[v] = True
+            predecessor[v] = ""
+            carga_v[v] = carga_ini
+
+        menor_caminho_v[vi] = 0
+        carga_v[vi] = carga_ini
+
+        w = vi
+
+        while w != vf:
+            arestas = self.arestas_sobre_vertice(w)
+
+            for a in arestas:
+                v_oposto = self.vertice_oposto(a, w)
+                if (menor_caminho_v[v_oposto] > menor_caminho_v[w] + self.A[a].get_peso()):
+                    nova_carga = carga_v[w] - (menor_caminho_v[w] + self.A[a].get_peso())
+                    if nova_carga != 0 or v_oposto in pontos_recarga:
+                        menor_caminho_v[v_oposto] = menor_caminho_v[w] + self.A[a].get_peso()
+                        carga_v[v_oposto] -= self.A[a].get_peso()
+                        predecessor[v_oposto] = (w, a)
+
+            temp[w] = False
+
+            w = self.seleciona_proximo_v(temp, menor_caminho_v)
+
+        caminho = list()
+        caminho.append(vf)
+        p = predecessor[vf]
+        while True:
+            caminho.insert(0, p[1])
+            caminho.insert(0, p[0])
+            p = predecessor[p[0]]
+            if p[0] == vi:
+                caminho.insert(0, p[1])
+                caminho.insert(0, p[0])
+                break
+        return caminho
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

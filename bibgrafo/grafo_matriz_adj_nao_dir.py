@@ -5,6 +5,9 @@ from copy import deepcopy
 
 class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
+    N: list
+    M: list
+
     def __init__(self, N=None, M=None):
         '''
         Constrói um objeto do tipo Grafo. Se nenhum parâmetro for passado, cria um Grafo vazio.
@@ -132,6 +135,26 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
 
+    def remove_vertice(self, v):
+        '''
+        Remove um vértice no grafo se ele estiver no formato correto.
+        :param v: O vértice a ser removido do grafo.
+        :return False se o vértice não existe no grafo.
+        :return True se o vértice foi removido com sucesso.
+        '''
+        if v not in self.N:
+            return False
+
+        v_i = self.N.index(v)
+
+        self.M.pop(v_i)
+
+        for i in range(len(self.M)):
+            self.M[i].pop(v_i)
+
+        self.N.remove(v)
+        return True
+
     def adiciona_aresta(self, rotulo='', v1='', v2='', peso=1):
         '''
         Adiciona uma aresta ao grafo no formato X-Y, onde X é o primeiro vértice e Y é o segundo vértice
@@ -155,6 +178,69 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
             raise ArestaInvalidaException('A aresta {} é inválida'.format(a))
 
         return True
+
+
+
+    def remove_aresta(self, r: str, v1=None, v2=None):
+        '''
+        Remove uma aresta do grafo. Os parâmetros v1 e v2 são opcionais e servem para acelerar a busca pela aresta de interesse.
+        Se for passado apenas o parâmetro r, deverá ocorrer uma busca por toda a matriz.
+        :param r: O rótulo da aresta a ser removida
+        :param v1: O vértice 1 da aresta a ser removida
+        :param v2: O vértice 2 da aresta a ser removida
+        :raise: lança uma exceção caso a aresta não exista no grafo ou caso algum dos vértices passados não existam
+        :return: Retorna True se a aresta foi removida com sucesso.
+        '''
+
+        def percorre_e_remove(M: dict, i):
+            # linha
+            for j in range(i, len(M)):
+                arestas = M[i][j]
+                for k in arestas:
+                    if r == k:
+                        arestas.pop(r)
+                        return True
+            #coluna
+            for j in range(0, i):
+                arestas = M[j][i]
+                for k in arestas:
+                    if r == k:
+                        arestas.pop(r)
+                        return True
+
+        if v1 == None:
+            if v2 == None:
+                for i in range(len(self.M)):
+                    for j in range(len(self.M)):
+                        if j >= i:
+                            arestas = self.M[i][j]
+                            for k in arestas:
+                                if r == k:
+                                    arestas.pop(r)
+                                    return True
+                return False
+            elif self.existe_vertice(v2):
+                v2_i = self.indice_do_vertice(v2)
+                percorre_e_remove(self.M, v2_i)
+            elif not self.existe_vertice(v2):
+                raise VerticeInvalidoException("O vértice {} é inválido!".format(v2))
+
+        else:
+            if self.existe_vertice(v1):
+                if self.existe_vertice(v2):
+                    v1_i = self.indice_do_vertice(v1)
+                    v2_i = self.indice_do_vertice(v2)
+
+                    arestas = self.M[v1_i][v2_i]
+                    for k in arestas:
+                        if r == k:
+                            arestas.pop(r)
+                            return True
+                    return False
+                else:
+                    raise VerticeInvalidoException("O vértice {} é inválido!".format(v2))
+            else:
+                raise VerticeInvalidoException("O vértice {} é inválido!".format(v1))
 
     def __eq__(self, other):
         '''
