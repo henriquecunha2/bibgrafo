@@ -75,8 +75,8 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
             return True
         return False
 
-    @staticmethod
-    def vertice_valido(vertice=''):
+    @classmethod
+    def vertice_valido(cls, vertice=''):
         '''
         Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
         Um vértice é um string qualquer que não pode ser vazio.
@@ -135,15 +135,16 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
 
+
     def remove_vertice(self, v):
         '''
         Remove um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser removido do grafo.
-        :return False se o vértice não existe no grafo.
         :return True se o vértice foi removido com sucesso.
+        :raises VerticeInvalidoException se o vértice não for encontrado no grafo
         '''
         if v not in self.N:
-            return False
+            raise VerticeInvalidoException("O vértice passado como parâmetro não existe no grafo.")
 
         v_i = self.N.index(v)
 
@@ -179,11 +180,10 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
         return True
 
-
-
     def remove_aresta(self, r: str, v1=None, v2=None):
         '''
-        Remove uma aresta do grafo. Os parâmetros v1 e v2 são opcionais e servem para acelerar a busca pela aresta de interesse.
+        Remove uma aresta do grafo. Os parâmetros v1 e v2 são opcionais e servem para acelerar a busca pela aresta de
+        interesse.
         Se for passado apenas o parâmetro r, deverá ocorrer uma busca por toda a matriz.
         :param r: O rótulo da aresta a ser removida
         :param v1: O vértice 1 da aresta a ser removida
@@ -192,20 +192,20 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :return: Retorna True se a aresta foi removida com sucesso.
         '''
 
-        def percorre_e_remove(M: dict, i):
+        def percorre_e_remove(M, i):
             # linha
             for j in range(i, len(M)):
-                arestas = M[i][j]
-                for k in arestas:
+                arestas_percorrer = M[i][j]
+                for k in arestas_percorrer:
                     if r == k:
-                        arestas.pop(r)
+                        arestas_percorrer.pop(r)
                         return True
             #coluna
             for j in range(0, i):
-                arestas = M[j][i]
-                for k in arestas:
+                arestas_percorrer = M[j][i]
+                for k in arestas_percorrer:
                     if r == k:
-                        arestas.pop(r)
+                        arestas_percorrer.pop(r)
                         return True
 
         if v1 == None:
@@ -221,14 +221,14 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
                 return False
             elif self.existe_vertice(v2):
                 v2_i = self.indice_do_vertice(v2)
-                percorre_e_remove(self.M, v2_i)
+                return percorre_e_remove(self.M, v2_i)
             elif not self.existe_vertice(v2):
                 raise VerticeInvalidoException("O vértice {} é inválido!".format(v2))
 
         else:
             if self.existe_vertice(v1):
+                v1_i = self.indice_do_vertice(v1)
                 if self.existe_vertice(v2):
-                    v1_i = self.indice_do_vertice(v1)
                     v2_i = self.indice_do_vertice(v2)
 
                     arestas = self.M[v1_i][v2_i]
@@ -238,7 +238,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
                             return True
                     return False
                 else:
-                    raise VerticeInvalidoException("O vértice {} é inválido!".format(v2))
+                    return percorre_e_remove(self.M, v1_i)
             else:
                 raise VerticeInvalidoException("O vértice {} é inválido!".format(v1))
 
