@@ -126,6 +126,8 @@ class TestGrafo(unittest.TestCase):
         self.assertTrue(self.g_p.remove_vertice("J"))
         with self.assertRaises(VerticeInvalidoException):
             self.g_p.remove_vertice("J")
+        with self.assertRaises(VerticeInvalidoException):
+            self.g_p.remove_vertice("K")
         self.assertTrue(self.g_p.remove_vertice("C"))
         self.assertTrue(self.g_p.remove_vertice("Z"))
 
@@ -136,6 +138,7 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse(self.g_c.remove_aresta("a"))
         self.assertTrue(self.g_c.remove_aresta("a6"))
         self.assertTrue(self.g_c.remove_aresta("a1", "J"))
+        self.assertTrue(self.g_c.remove_aresta("a5", "C"))
         with self.assertRaises(VerticeInvalidoException):
             self.g_p.remove_aresta("a2", "X", "C")
         with self.assertRaises(VerticeInvalidoException):
