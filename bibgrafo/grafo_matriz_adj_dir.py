@@ -176,14 +176,15 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
 
         def percorre_e_remove(M, i):
             # linha
-            for j in range(i, len(M)):
+            for j in range(0, len(M)):
+                # linha
                 arestas_percorrer = M[i][j]
                 for k in arestas_percorrer:
                     if r == k:
                         arestas_percorrer.pop(r)
                         return True
-            #coluna
-            for j in range(0, i):
+
+                # coluna
                 arestas_percorrer = M[j][i]
                 for k in arestas_percorrer:
                     if r == k:
@@ -208,8 +209,8 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
 
         else:
             if self.existe_vertice(v1):
+                v1_i = self.indice_do_vertice(v1)
                 if self.existe_vertice(v2):
-                    v1_i = self.indice_do_vertice(v1)
                     v2_i = self.indice_do_vertice(v2)
 
                     arestas = self.M[v1_i][v2_i]
@@ -219,7 +220,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
                             return True
                     return False
                 else:
-                    raise VerticeInvalidoException("O vértice {} é inválido!".format(v2))
+                    return percorre_e_remove(self.M, v1_i)
             else:
                 raise VerticeInvalidoException("O vértice {} é inválido!".format(v1))
 
