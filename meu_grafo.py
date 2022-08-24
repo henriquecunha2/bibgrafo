@@ -117,7 +117,7 @@ class MeuGrafo(GrafoListaAdjacencia):
                 menor_v = v
         return menor_v
 
-    def dijkstra_drone(self, vi, vf, carga_ini:int, carga_max:int, pontos_recarga:list()):
+    def dijkstra(self, vi, vf):
         menor_caminho_v = dict()
         temp = dict()
         predecessor = dict()
@@ -126,10 +126,8 @@ class MeuGrafo(GrafoListaAdjacencia):
             menor_caminho_v[v] = maxsize
             temp[v] = True
             predecessor[v] = ""
-            carga_v[v] = carga_ini
 
         menor_caminho_v[vi] = 0
-        carga_v[vi] = carga_ini
 
         w = vi
 
@@ -139,11 +137,8 @@ class MeuGrafo(GrafoListaAdjacencia):
             for a in arestas:
                 v_oposto = self.vertice_oposto(a, w)
                 if (menor_caminho_v[v_oposto] > menor_caminho_v[w] + self.A[a].get_peso()):
-                    nova_carga = carga_v[w] - (menor_caminho_v[w] + self.A[a].get_peso())
-                    if nova_carga != 0 or v_oposto in pontos_recarga:
-                        menor_caminho_v[v_oposto] = menor_caminho_v[w] + self.A[a].get_peso()
-                        carga_v[v_oposto] -= self.A[a].get_peso()
-                        predecessor[v_oposto] = (w, a)
+                    menor_caminho_v[v_oposto] = menor_caminho_v[w] + self.A[a].get_peso()
+                    predecessor[v_oposto] = (w, a)
 
             temp[w] = False
 
