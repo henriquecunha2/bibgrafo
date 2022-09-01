@@ -112,17 +112,25 @@ class TestGrafo(unittest.TestCase):
 
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
-        with self.assertRaises(ArestaInvalidaException):
+        a = Aresta("zxc", "C", "Z")
+        self.assertTrue(self.g_p.adiciona_aresta(a))
+        a = Aresta()
+        with self.assertRaises(ArestaInvalidaError):
+            self.assertTrue(self.g_p.adiciona_aresta(a))
+        a = Aresta("coisa", "J")
+        with self.assertRaises(ArestaInvalidaError):
+            self.g_p.adiciona_aresta(a)
+        with self.assertRaises(ArestaInvalidaError):
             self.assertTrue(self.g_p.adiciona_aresta('b1', '', 'C'))
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(ArestaInvalidaError):
             self.assertTrue(self.g_p.adiciona_aresta('b1', 'A', 'C'))
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(NotImplementedError):
             self.g_p.adiciona_aresta('')
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(NotImplementedError):
             self.g_p.adiciona_aresta('aa-bb')
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(ArestaInvalidaError):
             self.g_p.adiciona_aresta('x', 'J', 'V')
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(ArestaInvalidaError):
             self.g_p.adiciona_aresta('a1', 'J', 'C')
 
     def test_eq(self):
@@ -165,7 +173,7 @@ class TestGrafo(unittest.TestCase):
         self.assertEqual(self.g_p.grau('M'), 2)
         self.assertEqual(self.g_p.grau('T'), 3)
         self.assertEqual(self.g_p.grau('Z'), 1)
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.assertEqual(self.g_p.grau('G'), 5)
 
         self.assertEqual(self.g_d.grau('A'), 1)
@@ -199,7 +207,7 @@ class TestGrafo(unittest.TestCase):
         self.assertEqual(self.g_l2.arestas_sobre_vertice('B'), {'a1', 'a2', 'a3'})
         self.assertEqual(self.g_d.arestas_sobre_vertice('C'), set())
         self.assertEqual(self.g_d.arestas_sobre_vertice('A'), {'asd'})
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.g_p.arestas_sobre_vertice('A')
 
     def test_eh_completo(self):

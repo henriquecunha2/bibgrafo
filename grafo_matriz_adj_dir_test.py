@@ -124,24 +124,32 @@ class TestGrafo(unittest.TestCase):
 
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
-        with self.assertRaises(ArestaInvalidaException):
+        a = ArestaDirecionada("zxc", "C", "Z")
+        self.assertTrue(self.g_p.adiciona_aresta(a))
+        a = ArestaDirecionada()
+        with self.assertRaises(ArestaInvalidaError):
+            self.assertTrue(self.g_p.adiciona_aresta(a))
+        a = ArestaDirecionada("coisa", "J")
+        with self.assertRaises(ArestaInvalidaError):
+            self.g_p.adiciona_aresta(a)
+        with self.assertRaises(ArestaInvalidaError):
             self.assertTrue(self.g_p.adiciona_aresta('b1', '', 'C'))
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(ArestaInvalidaError):
             self.assertTrue(self.g_p.adiciona_aresta('b1', 'A', 'C'))
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(NotImplementedError):
             self.g_p.adiciona_aresta('')
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(NotImplementedError):
             self.g_p.adiciona_aresta('aa-bb')
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(ArestaInvalidaError):
             self.g_p.adiciona_aresta('x', 'J', 'V')
-        with self.assertRaises(ArestaInvalidaException):
+        with self.assertRaises(ArestaInvalidaError):
             self.g_p.adiciona_aresta('a1', 'J', 'C')
 
     def test_remove_vertice(self):
         self.assertTrue(self.g_p.remove_vertice("J"))
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.g_p.remove_vertice("J")
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.g_p.remove_vertice("K")
         self.assertTrue(self.g_p.remove_vertice("C"))
         self.assertTrue(self.g_p.remove_vertice("Z"))
@@ -154,11 +162,11 @@ class TestGrafo(unittest.TestCase):
         self.assertTrue(self.g_c.remove_aresta("a6"))
         self.assertTrue(self.g_c.remove_aresta("a1", "J"))
         self.assertTrue(self.g_c.remove_aresta("a5", "C"))
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.g_p.remove_aresta("a2", "X", "C")
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.g_p.remove_aresta("a3", "X")
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.g_p.remove_aresta("a3", v2="X")
 
     def test_eq(self):
@@ -220,7 +228,7 @@ class TestGrafo(unittest.TestCase):
         self.assertEqual(self.g_p.grau('M'), 2)
         self.assertEqual(self.g_p.grau('T'), 3)
         self.assertEqual(self.g_p.grau('Z'), 1)
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.assertEqual(self.g_p.grau('G'), 5)
 
         self.assertEqual(self.g_d.grau('A'), 1)
@@ -256,7 +264,7 @@ class TestGrafo(unittest.TestCase):
         self.assertEqual(set(self.g_l2.arestas_sobre_vertice('B')), {'a1', 'a2', 'a3'})
         self.assertEqual(set(self.g_d.arestas_sobre_vertice('C')), set())
         self.assertEqual(set(self.g_d.arestas_sobre_vertice('A')), {'asd'})
-        with self.assertRaises(VerticeInvalidoException):
+        with self.assertRaises(VerticeInvalidoError):
             self.g_p.arestas_sobre_vertice('A')
         self.assertEqual(set(self.g_e.arestas_sobre_vertice('D')), {'5', '6', '7', '8'})
 

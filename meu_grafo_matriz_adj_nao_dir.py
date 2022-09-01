@@ -21,7 +21,7 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
     def grau(self, V=''):
 
         if V not in self.N:
-            raise VerticeInvalidoException('O vértice {} não existe no grafo'.format(V))
+            raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
 
         grau = 0
         for i in range(len(self.M)):
@@ -44,7 +44,7 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
     def arestas_sobre_vertice(self, V):
         # Se o vértice não existir
         if V not in self.N:
-            raise VerticeInvalidoException('O vértice {} não existe no grafo'.format(V))
+            raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
         arestas = list()
         v = self.N.index(V)
         for i in range(len(self.M)):

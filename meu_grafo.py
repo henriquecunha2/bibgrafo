@@ -3,7 +3,6 @@ from bibgrafo.aresta import Aresta
 from bibgrafo.grafo_exceptions import *
 from sys import maxsize
 
-
 class MeuGrafo(GrafoListaAdjacencia):
 
     def getListaAdjacencias(self):
@@ -41,7 +40,7 @@ class MeuGrafo(GrafoListaAdjacencia):
     def grau(self, V=''):
 
         if V not in self.N:
-            raise VerticeInvalidoException('O vértice {} não existe no grafo'.format(V))
+            raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
 
         grau = 0
         for aresta in self.A.values():
@@ -62,7 +61,7 @@ class MeuGrafo(GrafoListaAdjacencia):
     def arestas_sobre_vertice(self, V):
         # Se o vértice não existir
         if V not in self.N:
-            raise VerticeInvalidoException('O vértice {} não existe no grafo'.format(V))
+            raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
         arestas = set()
         for a in self.A.values():
             if a.get_v1() == V or a.get_v2() == V:

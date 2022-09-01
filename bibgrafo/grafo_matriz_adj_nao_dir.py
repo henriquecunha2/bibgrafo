@@ -1,6 +1,7 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import Aresta
 from bibgrafo.grafo_exceptions import *
+from multipledispatch import dispatch
 from copy import deepcopy
 
 class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
@@ -23,8 +24,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
         for v in N:
             if not(GrafoMatrizAdjacenciaNaoDirecionado.vertice_valido(v)):
-                raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
-
+                raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
 
         self.N = deepcopy(N)
 
@@ -33,34 +33,31 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
             for k in range(len(N)):
                 self.M.append(list())
                 for l in range(len(N)):
-                    if k>l:
-                        self.M[k].append('-')
-                    else:
-                        self.M[k].append(dict())
-
+                    self.M[k].append(dict())
 
         if len(self.M) != len(N):
-            raise MatrizInvalidaException('A matriz passada como parâmetro não tem o tamanho correto')
+            raise MatrizInvalidaError('A matriz passada como parâmetro não tem o mesmo tamanho da quantidade de vértices')
 
         for c in self.M:
             if len(c) != len(N):
-                raise MatrizInvalidaException('A matriz passada como parâmetro não tem o tamanho correto')
+                raise MatrizInvalidaError('A matriz passada como parâmetro não tem o tamanho correto')
 
         for i in range(len(N)):
             for j in range(len(N)):
                 '''
-                Verifica se os índices passados como parâmetro representam um elemento da matriz abaixo da diagonal principal.
-                Além disso, verifica se o referido elemento é um traço "-". Isso indica que a matriz é não direcionada e foi construída corretamente.
+                Verifica se cada elemento da matriz é um dicionário de arestas válidas
                 '''
-                if i>j and not(self.M[i][j] == '-'):
-                    raise MatrizInvalidaException('A matriz não representa uma matriz não direcionada')
-
-                if i<j:
+                if type(self.M[i][j]) is not dict:
+                    raise MatrizInvalidaError("Algum elemento da matriz não é um dicionário de arestas")
+                else:
                     dicio_aresta = self.M[i][j]
-                    for k in dicio_aresta.values():
-                        aresta = Aresta(k, dicio_aresta[k].get_v1(), dicio_aresta[k].get_v2())
-                        if not(self.aresta_valida(aresta)):
-                            raise ArestaInvalidaException('A aresta ' + aresta + ' é inválida')
+                for k in dicio_aresta.values():
+                    aresta = Aresta(k, dicio_aresta[k].get_v1(), dicio_aresta[k].get_v2())
+                    if not(self.aresta_valida(aresta)):
+                        raise ArestaInvalidaError('A aresta ' + aresta + ' é inválida')
+
+                if i != j and self.M[i][j] != self.M[j][i]:
+                    raise MatrizInvalidaError('A matriz não representa uma matriz de grafo não direcionado')
 
     def aresta_valida(self, aresta=Aresta()):
         '''
@@ -119,22 +116,20 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :raises VerticeInvalidoException se o vértice já existe ou se ele não estiver no formato válido.
         '''
         if GrafoMatrizAdjacenciaNaoDirecionado.existe_vertice(v):
-            raise VerticeInvalidoException('O vértice {} já existe'.format(v))
+            raise VerticeInvalidoError('O vértice {} já existe'.format(v))
 
         if self.vertice_valido(v):
 
             self.N.append(v) # Adiciona vértice na lista de vértices
             self.M.append([]) # Adiciona a linha
 
-            for k in range(len(self.N)):
-                if k != len(self.N) -1:
-                    self.M[k].append(dict()) # adiciona os elementos da coluna do vértice
-                    self.M[self.N.index(v)].append('-') # adiciona os elementos da linha do vértice
-                else:
-                    self.M[self.N.index(v)].append(dict())  # adiciona um zero no último elemento da linha
-        else:
-            raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
+            i_v = self.indice_do_vertice(v)
 
+            for k in range(len(self.N)):
+                self.M[k].append(dict()) # adiciona os elementos da coluna do vértice
+                self.M[i_v].append(dict())  # adiciona um zero no último elemento da linha
+        else:
+            raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
 
     def remove_vertice(self, v):
         '''
@@ -144,7 +139,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :raises VerticeInvalidoException se o vértice não for encontrado no grafo
         '''
         if v not in self.N:
-            raise VerticeInvalidoException("O vértice passado como parâmetro não existe no grafo.")
+            raise VerticeInvalidoError("O vértice passado como parâmetro não existe no grafo.")
 
         v_i = self.N.index(v)
 
@@ -156,6 +151,27 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         self.N.remove(v)
         return True
 
+    @dispatch(Aresta)
+    def adiciona_aresta(self, a: Aresta):
+        '''
+        Adiciona uma aresta ao grafo
+        :param a: a aresta no formato correto
+        :raise: lança uma exceção caso a aresta não estiver em um formato válido
+        '''
+        if self.existeAresta(a):
+            raise ArestaInvalidaError('A aresta {} já existe no Grafo'.format(a))
+
+        if self.aresta_valida(a):
+            i_a1 = self.indice_do_vertice(a.get_v1())
+            i_a2 = self.indice_do_vertice(a.get_v2())
+            self.M[i_a1][i_a2][a.get_rotulo()] = a
+            self.M[i_a2][i_a1][a.get_rotulo()] = a
+        else:
+            raise ArestaInvalidaError('A aresta {} é inválida'.format(a))
+
+        return True
+
+    @dispatch(str, str, str, int)
     def adiciona_aresta(self, rotulo='', v1='', v2='', peso=1):
         '''
         Adiciona uma aresta ao grafo no formato X-Y, onde X é o primeiro vértice e Y é o segundo vértice
@@ -164,21 +180,18 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         '''
 
         a = Aresta(rotulo, v1, v2, peso)
+        return self.adiciona_aresta(a)
 
-        if self.existeAresta(a):
-            raise ArestaInvalidaException('A aresta {} já existe no Grafo'.format(a))
+    @dispatch(str, str, str)
+    def adiciona_aresta(self, rotulo='', v1='', v2=''):
+        '''
+        Adiciona uma aresta ao grafo no formato X-Y, onde X é o primeiro vértice e Y é o segundo vértice
+        :param a: a aresta no formato correto
+        :raise: lança uma exceção caso a aresta não estiver em um formato válido
+        '''
 
-        if self.aresta_valida(a):
-            i_a1 = self.indice_do_vertice(v1)
-            i_a2 = self.indice_do_vertice(v2)
-            if i_a1 < i_a2:
-                self.M[i_a1][i_a2][rotulo] = a
-            else:
-                self.M[i_a2][i_a1][rotulo] = a
-        else:
-            raise ArestaInvalidaException('A aresta {} é inválida'.format(a))
-
-        return True
+        a = Aresta(rotulo, v1, v2, 1) # Quando o peso não é informado, atribui-se peso 1
+        return self.adiciona_aresta(a)
 
     def remove_aresta(self, r: str, v1=None, v2=None):
         '''
@@ -192,55 +205,58 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :return: Retorna True se a aresta foi removida com sucesso.
         '''
 
+        def remove_com_indices(r, v1_i, v2_i):
+            '''
+            Função interna apenas para remover do dicionário de arestas, quando há índices conhecidos
+            '''
+            arestas_top = self.M[v1_i][v2_i]
+            arestas_bottom = self.M[v2_i][v1_i]
+
+            if arestas_top.get(r) is not None:
+                arestas_top.pop(r)
+
+            if arestas_bottom.get(r) is not None:
+                arestas_bottom.pop(r)
+
         def percorre_e_remove(M, i):
+            '''
+            Função interna apenas para remover do dicionário de arestas, quando NÃO há índices conhecidos
+            '''
             # linha
-            for j in range(i, len(M)):
+            for j in range(0, len(M)):
                 arestas_percorrer = M[i][j]
-                for k in arestas_percorrer:
-                    if r == k:
-                        arestas_percorrer.pop(r)
-                        return True
+                if arestas_percorrer.get(r) is not None:
+                    arestas_percorrer.pop(r)
+                    break
             #coluna
-            for j in range(0, i):
+            for j in range(0, len(M)):
                 arestas_percorrer = M[j][i]
-                for k in arestas_percorrer:
-                    if r == k:
-                        arestas_percorrer.pop(r)
-                        return True
+                if arestas_percorrer.get(r) is not None:
+                    arestas_percorrer.pop(r)
 
         if v1 == None:
             if v2 == None:
                 for i in range(len(self.M)):
                     for j in range(len(self.M)):
-                        if j >= i:
-                            arestas = self.M[i][j]
-                            for k in arestas:
-                                if r == k:
-                                    arestas.pop(r)
-                                    return True
-                return False
+                        remove_com_indices(r, i, j)
+
             elif self.existe_vertice(v2):
                 v2_i = self.indice_do_vertice(v2)
                 return percorre_e_remove(self.M, v2_i)
             elif not self.existe_vertice(v2):
-                raise VerticeInvalidoException("O vértice {} é inválido!".format(v2))
+                raise VerticeInvalidoError("O vértice {} é inválido!".format(v2))
 
         else:
             if self.existe_vertice(v1):
                 v1_i = self.indice_do_vertice(v1)
                 if self.existe_vertice(v2):
                     v2_i = self.indice_do_vertice(v2)
-
-                    arestas = self.M[v1_i][v2_i]
-                    for k in arestas:
-                        if r == k:
-                            arestas.pop(r)
-                            return True
-                    return False
+                    remove_com_indices(r, v1_i, v2_i)
                 else:
                     return percorre_e_remove(self.M, v1_i)
             else:
-                raise VerticeInvalidoException("O vértice {} é inválido!".format(v1))
+                raise VerticeInvalidoError("O vértice {} é inválido!".format(v1))
+
 
     def __eq__(self, other):
         '''
@@ -292,37 +308,10 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
         for l in range(len(self.N)):
             for c in range(len(self.N)):
-                if bool(self.M[l][c]) and self.M[l][c] != '-':
+                if bool(self.M[l][c]) and l > c:
                     grafo_str += self.N[l] + '-' + self.N[c] + ': '
                     for k in self.M[l][c]:
                         grafo_str += k + ' | '
                     grafo_str += '\n'
 
         return grafo_str
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
