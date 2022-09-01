@@ -1,6 +1,7 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import Aresta
 from bibgrafo.grafo_exceptions import *
+from multipledispatch import dispatch
 from copy import deepcopy
 
 
@@ -24,7 +25,7 @@ class GrafoListaAdjacencia(GrafoIF):
         else:
             for v in N:
                 if not(GrafoListaAdjacencia.vertice_valido(v)):
-                    raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
+                    raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
         self.N = deepcopy(N)
 
         if A is None:
@@ -32,7 +33,7 @@ class GrafoListaAdjacencia(GrafoIF):
         else:
             for a in A:
                 if not(self.aresta_valida(A[a])):
-                    raise ArestaInvalidaException('A aresta ' + A[a] + ' é inválida')
+                    raise ArestaInvalidaError('A aresta ' + A[a] + ' é inválida')
 
         self.A = deepcopy(A)
 
@@ -58,18 +59,18 @@ class GrafoListaAdjacencia(GrafoIF):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
         :param v: O vértice a ser adicionado
-        :raises: VerticeInvalidoException se o vértice passado como parâmetro não puder ser adicionado
+        :raises: VerticeInvalidoError se o vértice passado como parâmetro não puder ser adicionado
         """
         if self.vertice_valido(v) and not self.existe_vertice(v):
             self.N.append(v)
         else:
-            raise VerticeInvalidoException('O vértice ' + v + ' é inválido ou já existe no grafo')
+            raise VerticeInvalidoError('O vértice ' + v + ' é inválido ou já existe no grafo')
 
     def remove_vertice(self, v):
         """
         Remove um vértice passado como parâmetro e remove em cascata as arestas que estão conectadas a esse vértice.
         :param v: O vértice a ser removido.
-        :raises: VerticeInvalidoException se o vértice passado como parâmetro não puder ser removido.
+        :raises: VerticeInvalidoError se o vértice passado como parâmetro não puder ser removido.
         """
         newA = dict()
         if self.existe_vertice(v):
@@ -79,7 +80,7 @@ class GrafoListaAdjacencia(GrafoIF):
                     newA[a] = self.A[a]
             self.A = newA
         else:
-            raise VerticeInvalidoException('O vértice {} não existe no grafo.'.format(v))
+            raise VerticeInvalidoError('O vértice {} não existe no grafo.'.format(v))
 
     def existe_rotulo_aresta(self, r=''):
         """
@@ -102,7 +103,7 @@ class GrafoListaAdjacencia(GrafoIF):
     def aresta_valida(self, aresta=Aresta()):
         """
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
-        Uma aresta só é válida se conectar dois vértices existentes no grafo.
+        Uma aresta só é válida se conectar dois vértices existentes no grafo e for uma instância da classe Aresta.
         :param aresta: A aresta que se quer verificar se está no formato correto.
         :return: Um valor booleano que indica se a aresta está no formato correto.
         """
@@ -112,37 +113,63 @@ class GrafoListaAdjacencia(GrafoIF):
             return True
         return False
 
+    @dispatch(Aresta)
+    def adiciona_aresta(self, a: Aresta):
+        """
+        Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
+        :param a: Um objeto do tipo aresta a ser adicionado no grafo.
+        :raises: ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
+        :returns: True se a aresta foi adicionada com sucesso
+        """
+        if self.aresta_valida(a):
+            if a.get_rotulo() not in self.A:  # Verifica se a aresta já existe no grafo
+                self.A[a.get_rotulo()] = a
+            else:
+                raise ArestaInvalidaError('A aresta {} não pode ter o mesmo rótulo de uma aresta já existente no '
+                                              'grafo'.format(str(a)))
+        else:
+            raise ArestaInvalidaError('A aresta ' + str(a) + ' é inválida')
+        return True
+
+
+    @dispatch(str, str, str, int)
     def adiciona_aresta(self, rotulo='', v1='', v2='', peso=1):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome
         :param rotulo: O rótulo da aresta a ser adicionada
-        :param v1: A aresta a ser adicionada
-        :param v2:
-        :param peso:
-        :raises: ArestaInvalidaException se a aresta passada como parâmetro não puder ser adicionada
+        :param v1: O primeiro vértice da aresta
+        :param v2: O segundo vértice da aresta
+        :param peso: O peso da aresta
+        :raises: ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
         :returns: True se a aresta foi adicionada com sucesso
         """
         a = Aresta(rotulo, v1, v2, peso)
-        if self.aresta_valida(a):
-            if rotulo not in self.A:  # Verifica se a aresta já existe no grafo
-                self.A[rotulo] = a
-            else:
-                raise ArestaInvalidaException('A aresta {} não pode ter o mesmo rótulo de uma aresta já existente no '
-                                              'grafo'.format(str(a)))
-        else:
-            raise ArestaInvalidaException('A aresta ' + str(a) + ' é inválida')
-        return True
+        return self.adiciona_aresta(a)
+
+    @dispatch(str, str, str)
+    def adiciona_aresta(self, rotulo='', v1='', v2=''):
+        """
+        Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
+        O peso atribuído à aresta será 1.
+        :param rotulo: O rótulo da aresta a ser adicionada
+        :param v1: O primeiro vértice da aresta
+        :param v2: O segundo vértice da aresta
+        :raises: ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
+        :returns: True se a aresta foi adicionada com sucesso
+        """
+        a = Aresta(rotulo, v1, v2, 1)
+        return self.adiciona_aresta(a)
 
     def remove_aresta(self, r):
         """
         Remove uma aresta a partir de seu rótulo
         :param r: O rótulo da aresta a ser removida
-        :raises: ArestaInvalidaException se a aresta passada como parâmetro não puder ser removida
+        :raises: ArestaInvalidaError se a aresta passada como parâmetro não puder ser removida
         """
         if self.existe_rotulo_aresta(r):
             self.A.pop(r)
         else:
-            raise ArestaInvalidaException('A aresta {} não existe no grafo'.format(r))
+            raise ArestaInvalidaError('A aresta {} não existe no grafo'.format(r))
 
     def __eq__(self, other):
         """

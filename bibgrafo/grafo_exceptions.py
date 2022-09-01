@@ -1,8 +1,8 @@
-class VerticeInvalidoException(Exception):
+class VerticeInvalidoError(Exception):
     pass
 
-class ArestaInvalidaException(Exception):
+class ArestaInvalidaError(Exception):
     pass
 
-class MatrizInvalidaException(Exception):
+class MatrizInvalidaError(Exception):
     pass
