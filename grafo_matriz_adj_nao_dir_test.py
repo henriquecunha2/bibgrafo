@@ -140,13 +140,18 @@ class TestGrafo(unittest.TestCase):
         self.assertTrue(self.g_p.remove_vertice("Z"))
 
     def test_remove_aresta(self):
-        self.assertTrue(self.g_p.remove_aresta("a1"))
-        self.assertFalse(self.g_p.remove_aresta("a1"))
-        self.assertTrue(self.g_p.remove_aresta("a7"))
-        self.assertFalse(self.g_c.remove_aresta("a"))
-        self.assertTrue(self.g_c.remove_aresta("a6"))
-        self.assertTrue(self.g_c.remove_aresta("a1", "J"))
-        self.assertTrue(self.g_c.remove_aresta("a5", "C"))
+        self.g_p.remove_aresta("a1")
+        self.assertFalse(self.g_p.existe_rotulo_aresta("a1"))
+        self.g_p.remove_aresta("a7")
+        self.assertFalse(self.g_p.existe_rotulo_aresta("a7"))
+        with self.assertRaises(ArestaInvalidaError):
+            self.g_c.remove_aresta("a")
+        self.g_c.remove_aresta("a6")
+        self.assertFalse(self.g_c.existe_rotulo_aresta("a6"))
+        self.g_c.remove_aresta("a1", "J")
+        self.assertFalse(self.g_c.existe_rotulo_aresta("a1"))
+        self.g_c.remove_aresta("a5", "C")
+        self.assertFalse(self.g_c.existe_rotulo_aresta("a5"))
         with self.assertRaises(VerticeInvalidoError):
             self.g_p.remove_aresta("a2", "X", "C")
         with self.assertRaises(VerticeInvalidoError):
