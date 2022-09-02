@@ -1,18 +1,24 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import ArestaDirecionada
 from bibgrafo.grafo_exceptions import *
+from bibgrafo.vertice import Vertice
 from multipledispatch import dispatch
 from copy import deepcopy
 
 
 class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
 
+    N: list
+    M: list
+
     def __init__(self, N=None, M=None):
         """
         Constrói um objeto do tipo Grafo. Se nenhum parâmetro for passado, cria um Grafo vazio.
         Se houver alguma aresta ou algum vértice inválido, uma exceção é lançada.
         :param N: Uma lista dos vértices (ou nodos) do grafo.
-        :param V: Uma matriz de adjacência que guarda as arestas do grafo. Cada entrada da matriz tem um inteiro que indica a quantidade de arestas que ligam aqueles vértices
+        :param M: Uma matriz de adjacência que guarda as arestas do grafo. Cada entrada da matriz tem um
+        dicionário de arestas (objetos do tipo Aresta) para que seja possível representar arestas paralelas
+        e que cada aresta tenha seus próprios atributos distintos.
         """
 
         if N == None:
@@ -45,7 +51,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
             for j in range(len(N)):
                 dicio_aresta = self.M[i][j]
                 for k in dicio_aresta.values():
-                    aresta = ArestaDirecionada(k, dicio_aresta[k].get_v1(), dicio_aresta[k].get_v2())
+                    aresta = dicio_aresta[k]
                     if not (self.aresta_valida(aresta)):
                         raise ArestaInvalidaError('A aresta ' + aresta + ' é inválida')
 
@@ -64,16 +70,16 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         return False
 
     @classmethod
-    def vertice_valido(self, vertice=''):
+    def vertice_valido(self, vertice: Vertice):
         """
         Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
         Um vértice é um string qualquer que não pode ser vazio.
         :param vertice: Um string que representa o vértice a ser analisado.
         :return: Um valor booleano que indica se o vértice está no formato correto.
         """
-        return vertice != ''
+        return isinstance(vertice, Vertice) and vertice.get_rotulo() != ""
 
-    def existe_vertice(self, vertice=''):
+    def existe_vertice(self, vertice: Vertice):
         """
         Verifica se um vértice passado como parâmetro pertence ao grafo.
         :param vertice: O vértice que deve ser verificado.
@@ -100,7 +106,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
                 return True
         return False
 
-    def adiciona_vertice(self, v):
+    def adiciona_vertice(self, v: Vertice):
         """
         Inclui um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser incluído no grafo.
@@ -122,7 +128,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
 
-    def remove_vertice(self, v):
+    def remove_vertice(self, v: Vertice):
         '''
         Remove um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser removido do grafo.
@@ -162,7 +168,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         return True
 
     @dispatch(str, str, str, int)
-    def adiciona_aresta(self, rotulo='', v1='', v2='', peso=1):
+    def adiciona_aresta(self, rotulo: str, v1: Vertice, v2: Vertice, peso=1):
         """
         Adiciona uma aresta ao grafo
         :param rotulo: O rótulo da aresta
@@ -176,7 +182,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         return self.adiciona_aresta(a)
 
     @dispatch(str, str, str)
-    def adiciona_aresta(self, rotulo='', v1='', v2=''):
+    def adiciona_aresta(self, rotulo: str, v1: Vertice, v2: Vertice):
         """
         Adiciona uma aresta ao grafo
         :param rotulo: O rótulo da aresta

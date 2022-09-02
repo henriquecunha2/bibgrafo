@@ -1,5 +1,6 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import Aresta
+from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_exceptions import *
 from multipledispatch import dispatch
 from copy import deepcopy
@@ -37,17 +38,31 @@ class GrafoListaAdjacencia(GrafoIF):
 
         self.A = deepcopy(A)
 
+    def get_vertice(self, r: str):
+        """
+        Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
+        :param r: O rótulo do vértice a ser retornado
+        :return: Um objeto do tipo vértice que tem como rótulo o parâmetro passado ou False se o vértice não
+        for encontrado.
+        """
+        if not self.existe_rotulo_vertice(r):
+            raise VerticeInvalidoError("O vértice não existe no grafo.")
+        for i in range(len(self.N)):
+            if self.N[i].get_rotulo() == r:
+                return self.N[i]
+        return False
+
     @classmethod
-    def vertice_valido(cls, vertice=''):
+    def vertice_valido(cls, vertice: Vertice):
         """
         Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
         Um vértice é um string qualquer que não pode ser vazio.
         :param vertice: Um string que representa o vértice a ser analisado.
         :return: Um valor booleano que indica se o vértice está no formato correto.
         """
-        return vertice != ''
+        return isinstance(vertice, Vertice) and vertice.get_rotulo() != ""
 
-    def existe_vertice(self, vertice=''):
+    def existe_vertice(self, vertice: Vertice):
         """
         Verifica se um vértice passado como parâmetro pertence ao grafo.
         :param vertice: O vértice que deve ser verificado.
@@ -55,7 +70,31 @@ class GrafoListaAdjacencia(GrafoIF):
         """
         return GrafoListaAdjacencia.vertice_valido(vertice) and vertice in self.N
 
-    def adiciona_vertice(self, v):
+    def existe_rotulo_vertice(self, vertice: str):
+        """
+        Verifica se um vértice passado como parâmetro pertence ao grafo.
+        :param vertice: O vértice que deve ser verificado.
+        :return: Um valor booleano que indica se o vértice existe no grafo.
+        """
+        for i in range(len(self.N)):
+            if self.N[i].get_rotulo() == vertice:
+                return True
+        return False
+
+    @dispatch(str)
+    def adiciona_vertice(self, r: str):
+        """
+        Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
+        :param r: O vértice a ser adicionado
+        :raises: VerticeInvalidoError se o vértice passado como parâmetro não puder ser adicionado
+        """
+        if not self.existe_rotulo_vertice(r):
+            self.N.append(Vertice(r))
+        else:
+            raise VerticeInvalidoError('O rótulo de vértice ' + r + ' já existe no grafo')
+
+    @dispatch(Vertice)
+    def adiciona_vertice(self, v: Vertice):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
         :param v: O vértice a ser adicionado
@@ -66,14 +105,14 @@ class GrafoListaAdjacencia(GrafoIF):
         else:
             raise VerticeInvalidoError('O vértice ' + v + ' é inválido ou já existe no grafo')
 
-    def remove_vertice(self, v):
+    def remove_vertice(self, v: str):
         """
         Remove um vértice passado como parâmetro e remove em cascata as arestas que estão conectadas a esse vértice.
-        :param v: O vértice a ser removido.
+        :param v: O rótulo do vértice a ser removido.
         :raises: VerticeInvalidoError se o vértice passado como parâmetro não puder ser removido.
         """
         newA = dict()
-        if self.existe_vertice(v):
+        if self.existe_rotulo_vertice(v):
             self.N.remove(v)
             for a in self.A.keys():
                 if not(self.A[a].eh_ponta(v)):
@@ -100,7 +139,7 @@ class GrafoListaAdjacencia(GrafoIF):
             return deepcopy(self.A[r])
         return False
     
-    def aresta_valida(self, aresta=Aresta()):
+    def aresta_valida(self, aresta: Aresta):
         """
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
         Uma aresta só é válida se conectar dois vértices existentes no grafo e for uma instância da classe Aresta.
@@ -109,7 +148,8 @@ class GrafoListaAdjacencia(GrafoIF):
         """
 
         # Verifica se os vértices existem no Grafo
-        if type(aresta) == Aresta and self.existe_vertice(aresta.get_v1()) and self.existe_vertice(aresta.get_v2()):
+        if type(aresta) == Aresta and \
+                self.existe_rotulo_vertice(aresta.get_v1().get_rotulo()) and self.existe_rotulo_vertice(aresta.get_v2().get_rotulo()):
             return True
         return False
 
@@ -122,7 +162,7 @@ class GrafoListaAdjacencia(GrafoIF):
         :returns: True se a aresta foi adicionada com sucesso
         """
         if self.aresta_valida(a):
-            if a.get_rotulo() not in self.A:  # Verifica se a aresta já existe no grafo
+            if not self.existe_rotulo_aresta(a.get_rotulo()):  # Verifica se a aresta já existe no grafo
                 self.A[a.get_rotulo()] = a
             else:
                 raise ArestaInvalidaError('A aresta {} não pode ter o mesmo rótulo de uma aresta já existente no '
@@ -133,7 +173,7 @@ class GrafoListaAdjacencia(GrafoIF):
 
 
     @dispatch(str, str, str, int)
-    def adiciona_aresta(self, rotulo='', v1='', v2='', peso=1):
+    def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso: int = 1):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome
         :param rotulo: O rótulo da aresta a ser adicionada
@@ -143,11 +183,11 @@ class GrafoListaAdjacencia(GrafoIF):
         :raises: ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
         :returns: True se a aresta foi adicionada com sucesso
         """
-        a = Aresta(rotulo, v1, v2, peso)
+        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), peso)
         return self.adiciona_aresta(a)
 
     @dispatch(str, str, str)
-    def adiciona_aresta(self, rotulo='', v1='', v2=''):
+    def adiciona_aresta(self, rotulo: str, v1: Vertice, v2: Vertice):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
         O peso atribuído à aresta será 1.
@@ -157,10 +197,10 @@ class GrafoListaAdjacencia(GrafoIF):
         :raises: ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
         :returns: True se a aresta foi adicionada com sucesso
         """
-        a = Aresta(rotulo, v1, v2, 1)
+        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1)
         return self.adiciona_aresta(a)
 
-    def remove_aresta(self, r):
+    def remove_aresta(self, r: str):
         """
         Remove uma aresta a partir de seu rótulo
         :param r: O rótulo da aresta a ser removida
