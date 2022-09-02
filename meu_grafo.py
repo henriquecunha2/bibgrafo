@@ -37,16 +37,18 @@ class MeuGrafo(GrafoListaAdjacencia):
                 return True
         return False
 
-    def grau(self, V=''):
+    def grau(self, v=''):
 
-        if V not in self.N:
-            raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
+        vertice = self.get_vertice(v)
+
+        if vertice not in self.N:
+            raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(v))
 
         grau = 0
         for aresta in self.A.values():
-            if V == aresta.get_v1():
+            if vertice == aresta.get_v1():
                 grau += 1
-            if V == aresta.get_v2():
+            if vertice == aresta.get_v2():
                 grau += 1
         return grau
 
@@ -60,11 +62,11 @@ class MeuGrafo(GrafoListaAdjacencia):
 
     def arestas_sobre_vertice(self, V):
         # Se o vértice não existir
-        if V not in self.N:
+        if not self.existe_rotulo_vertice(V):
             raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
         arestas = set()
         for a in self.A.values():
-            if a.get_v1() == V or a.get_v2() == V:
+            if a.get_v1().get_rotulo() == V or a.get_v2().get_rotulo() == V:
                 arestas.add(a.get_rotulo())
         return arestas
 
