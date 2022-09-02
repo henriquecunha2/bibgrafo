@@ -98,7 +98,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         '''
         return self.N.index(v)
 
-    def existeAresta(self, a: Aresta):
+    def existe_aresta(self, a: Aresta) -> bool:
         '''
         Verifica se uma aresta passada como parâmetro pertence ao grafo.
         :param aresta: A aresta a ser verificada
@@ -107,6 +107,20 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         if GrafoMatrizAdjacenciaNaoDirecionado.aresta_valida(self, a):
             if a.get_rotulo() in self.M[self.indice_do_vertice(a.get_v1())][self.indice_do_vertice(a.get_v2())]:
                 return True
+        else:
+            raise ArestaInvalidaError("A aresta passada como parâmetro é inválida.")
+        return False
+
+    def existe_rotulo_aresta(self, aresta: str) -> bool:
+        '''
+        Verifica se uma aresta passada como parâmetro pertence ao grafo.
+        :param aresta: A aresta a ser verificada
+        :return: Um valor booleano que indica se a aresta existe no grafo.
+        '''
+        for i in range(len(self.M)):
+            for j in range(len(self.M)):
+                if self.M[i][j].get(aresta) is not None:
+                    return True
         return False
 
     def adiciona_vertice(self, v):
@@ -158,7 +172,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :param a: a aresta no formato correto
         :raise: lança uma exceção caso a aresta não estiver em um formato válido
         '''
-        if self.existeAresta(a):
+        if self.existe_aresta(a):
             raise ArestaInvalidaError('A aresta {} já existe no Grafo'.format(a))
 
         if self.aresta_valida(a):
@@ -233,6 +247,9 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
                 arestas_percorrer = M[j][i]
                 if arestas_percorrer.get(r) is not None:
                     arestas_percorrer.pop(r)
+
+        if not self.existe_rotulo_aresta(r):
+            raise ArestaInvalidaError("A aresta não existe no grafo.")
 
         if v1 == None:
             if v2 == None:
