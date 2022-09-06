@@ -1,5 +1,5 @@
 from bibgrafo.grafo_matriz_adj_dir import *
-from bibgrafo.grafo_exceptions import *
+from bibgrafo.grafo_errors import *
 from sys import maxsize
 
 class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):

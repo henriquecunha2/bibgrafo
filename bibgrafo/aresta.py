@@ -1,5 +1,5 @@
 from bibgrafo.vertice import Vertice
-from bibgrafo.grafo_exceptions import VerticeInvalidoError
+from bibgrafo.grafo_errors import VerticeInvalidoError
 
 class Aresta():
     v1: Vertice
@@ -18,7 +18,7 @@ class Aresta():
     def get_v1(self) -> Vertice:
         return self.v1
 
-    def get_v2(self):
+    def get_v2(self) -> Vertice:
         return self.v2
 
     def set_v1(self, v: Vertice):

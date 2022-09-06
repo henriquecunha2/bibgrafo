@@ -1,5 +1,5 @@
 from bibgrafo.grafo_matriz_adj_nao_dir import *
-from bibgrafo.grafo_exceptions import *
+from bibgrafo.grafo_errors import *
 from sys import maxsize
 
 class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
@@ -20,7 +20,7 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
 
     def grau(self, V=''):
 
-        if V not in self.N:
+        if not self.existe_rotulo_vertice(V):
             raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
 
         grau = 0
@@ -28,9 +28,9 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
             for j in range(len(self.M)):
                 if j >= i:
                     for k in self.M[i][j].values():
-                        if k.get_v1() == V:
+                        if k.get_v1().get_rotulo() == V:
                             grau += 1
-                        if k.get_v2() == V:
+                        if k.get_v2().get_rotulo() == V:
                             grau += 1
         return grau
 
@@ -43,17 +43,18 @@ class MeuGrafo(GrafoMatrizAdjacenciaNaoDirecionado):
 
     def arestas_sobre_vertice(self, V):
         # Se o vértice não existir
-        if V not in self.N:
+        if not self.existe_rotulo_vertice(V):
             raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
-        arestas = list()
-        v = self.N.index(V)
+        arestas = set()
+        v = self.get_vertice(V)
+        v = self.N.index(v)
         for i in range(len(self.M)):
             if bool(self.M[v][i]) and v <= i:
                 for k in self.M[v][i]:
-                    arestas.append(k)
+                    arestas.add(k)
             if bool(self.M[i][v]) and i <= v:
                 for l in self.M[i][v]:
-                    arestas.append(l)
+                    arestas.add(l)
         return arestas
 
     def eh_laco(self, a):

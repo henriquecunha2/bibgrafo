@@ -1,6 +1,6 @@
 from bibgrafo.grafo_lista_adjacencia import GrafoListaAdjacencia
 from bibgrafo.aresta import Aresta
-from bibgrafo.grafo_exceptions import *
+from bibgrafo.grafo_errors import *
 from sys import maxsize
 
 class MeuGrafo(GrafoListaAdjacencia):
