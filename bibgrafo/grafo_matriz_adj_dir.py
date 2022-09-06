@@ -55,7 +55,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
                     if not (self.aresta_valida(aresta)):
                         raise ArestaInvalidaError('A aresta ' + aresta + ' é inválida')
 
-    def aresta_valida(self, aresta=ArestaDirecionada()):
+    def aresta_valida(self, aresta: ArestaDirecionada):
         """
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
         Uma aresta só é válida se conectar dois vértices existentes no grafo.
@@ -106,6 +106,46 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
                 return True
         return False
 
+    def get_vertice(self, r: str):
+        """
+        Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
+        :param r: O rótulo do vértice a ser retornado
+        :return: Um objeto do tipo vértice que tem como rótulo o parâmetro passado ou False se o vértice não
+        for encontrado.
+        """
+        for i in self.N:
+            if r == i.get_rotulo():
+                return i
+
+    def existe_rotulo_vertice(self, r: str):
+        """
+        TODO Fazer o docstring
+        """
+        return self.get_vertice(r) is not None
+
+    @dispatch(str)
+    def adiciona_vertice(self, rotulo: str):
+        """
+        Inclui um vértice no grafo se ele estiver no formato correto.
+        :param v: O vértice a ser incluído no grafo.
+        :raises VerticeInvalidoException se o vértice já existe ou se ele não estiver no formato válido.
+        """
+        if self.existe_rotulo_vertice(rotulo):
+            raise VerticeInvalidoError('O vértice {} já existe'.format(rotulo))
+
+        if rotulo != "":
+
+            self.N.append(Vertice(rotulo))  # Adiciona vértice na lista de vértices
+            self.M.append([])  # Adiciona a linha
+
+            for k in range(len(self.N)):
+                self.M[k].append(dict())  # adiciona os elementos da coluna do vértice
+                if k != len(self.N) - 1:
+                    self.M[self.indice_do_vertice(self.get_vertice(rotulo))].append(dict())  # adiciona um zero no último elemento da linha
+        else:
+            raise VerticeInvalidoError('O vértice ' + rotulo + ' é inválido')
+
+    @dispatch(Vertice)
     def adiciona_vertice(self, v: Vertice):
         """
         Inclui um vértice no grafo se ele estiver no formato correto.
@@ -128,17 +168,19 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
 
-    def remove_vertice(self, v: Vertice):
+    def remove_vertice(self, rotulo: str):
         '''
         Remove um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser removido do grafo.
         :return True se o vértice foi removido com sucesso.
         :raises VerticeInvalidoException se o vértice não for encontrado no grafo
         '''
-        if v not in self.N:
+        if not self.existe_rotulo_vertice(rotulo):
             raise VerticeInvalidoError("O vértice passado como parâmetro não existe no grafo.")
 
-        v_i = self.N.index(v)
+        v = self.get_vertice(rotulo)
+
+        v_i = self.indice_do_vertice(v)
 
         self.M.pop(v_i)
 
@@ -178,7 +220,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         :raise: Lança ArestaInvalidaError caso a aresta não estiver em um formato válido
         """
 
-        a = ArestaDirecionada(rotulo, v1, v2, peso)
+        a = ArestaDirecionada(rotulo, self.get_vertice(v1), self.get_vertice(v2), peso)
         return self.adiciona_aresta(a)
 
     @dispatch(str, str, str)
@@ -192,7 +234,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         :raise: Lança ArestaInvalidaError caso a aresta não estiver em um formato válido
         """
 
-        a = ArestaDirecionada(rotulo, v1, v2, 1)
+        a = ArestaDirecionada(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1)
         return self.adiciona_aresta(a)
 
     def remove_aresta(self, r: str, v1=None, v2=None):
@@ -234,17 +276,17 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
                                 arestas.pop(r)
                                 return True
                 return False
-            elif self.existe_vertice(v2):
-                v2_i = self.indice_do_vertice(v2)
+            elif self.existe_rotulo_vertice(v2):
+                v2_i = self.indice_do_vertice(self.get_vertice(v1))
                 percorre_e_remove(self.M, v2_i)
-            elif not self.existe_vertice(v2):
+            elif not self.existe_rotulo_vertice(v2):
                 raise VerticeInvalidoError("O vértice {} é inválido!".format(v2))
 
         else:
-            if self.existe_vertice(v1):
-                v1_i = self.indice_do_vertice(v1)
+            if self.existe_rotulo_vertice(v1):
+                v1_i = self.indice_do_vertice(self.get_vertice(v1))
                 if self.existe_vertice(v2):
-                    v2_i = self.indice_do_vertice(v2)
+                    v2_i = self.indice_do_vertice(self.get_vertice(v1))
 
                     arestas = self.M[v1_i][v2_i]
                     for k in arestas:
