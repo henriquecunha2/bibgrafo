@@ -351,14 +351,14 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         grafo_str = '  '
 
         for v in range(len(self.N)):
-            grafo_str += self.N[v]
+            grafo_str += str(self.N[v])
             if v < (len(self.N) - 1):  # Só coloca o espaço se não for o último vértice
                 grafo_str += ' '
 
         grafo_str += '\n'
 
         for l in range(len(self.M)):
-            grafo_str += self.N[l] + ' '
+            grafo_str += str(self.N[l]) + ' '
             for c in range(len(self.M)):
                 if self.M[l][c] == '-':
                     grafo_str += str(self.M[l][c]) + ' '
@@ -372,7 +372,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         for l in range(len(self.N)):
             for c in range(len(self.N)):
                 if bool(self.M[l][c]) and l > c:
-                    grafo_str += self.N[l] + '-' + self.N[c] + ': '
+                    grafo_str += str(self.N[l]) + '-' + str(self.N[c]) + ': '
                     for k in self.M[l][c]:
                         grafo_str += k + ' | '
                     grafo_str += '\n'
