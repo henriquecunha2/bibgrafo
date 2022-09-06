@@ -237,7 +237,7 @@ class GrafoListaAdjacencia(GrafoIF):
         grafo_str = ''
 
         for v in range(len(self.N)):
-            grafo_str += self.N[v]
+            grafo_str += str(self.N[v])
             if v < (len(self.N) - 1):  # Só coloca a vírgula se não for o último vértice
                 grafo_str += ", "
 
