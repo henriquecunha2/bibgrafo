@@ -1,6 +1,6 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import ArestaDirecionada
-from bibgrafo.grafo_exceptions import *
+from bibgrafo.grafo_errors import *
 from bibgrafo.vertice import Vertice
 from multipledispatch import dispatch
 from copy import deepcopy

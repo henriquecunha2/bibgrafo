@@ -1,6 +1,7 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import Aresta
-from bibgrafo.grafo_exceptions import *
+from bibgrafo.vertice import Vertice
+from bibgrafo.grafo_errors import *
 from multipledispatch import dispatch
 from copy import deepcopy
 
@@ -59,7 +60,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
                 if i != j and self.M[i][j] != self.M[j][i]:
                     raise MatrizInvalidaError('A matriz não representa uma matriz de grafo não direcionado')
 
-    def aresta_valida(self, aresta=Aresta()):
+    def aresta_valida(self, aresta: Aresta):
         '''
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
         Uma aresta só é válida se conectar dois vértices existentes no grafo.
@@ -80,7 +81,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :param vertice: Um string que representa o vértice a ser analisado.
         :return: Um valor booleano que indica se o vértice está no formato correto.
         '''
-        return vertice != ''
+        return isinstance(vertice, Vertice)
 
     def existe_vertice(self, vertice=''):
         '''
@@ -90,7 +91,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         '''
         return GrafoMatrizAdjacenciaNaoDirecionado.vertice_valido(vertice) and vertice in self.N
 
-    def indice_do_vertice(self, v: str):
+    def indice_do_vertice(self, v: Vertice):
         '''
         Dado um vértice retorna o índice do vértice a na lista de vértices
         :param v: O vértice a ser analisado
@@ -112,18 +113,49 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         return False
 
     def existe_rotulo_aresta(self, aresta: str) -> bool:
-        '''
+        """
         Verifica se uma aresta passada como parâmetro pertence ao grafo.
         :param aresta: A aresta a ser verificada
         :return: Um valor booleano que indica se a aresta existe no grafo.
-        '''
+        """
         for i in range(len(self.M)):
             for j in range(len(self.M)):
                 if self.M[i][j].get(aresta) is not None:
                     return True
         return False
 
-    def adiciona_vertice(self, v):
+    def existe_rotulo_vertice(self, r: str):
+        """
+        TODO Fazer o docstring
+        """
+        return self.get_vertice(r) is not None
+
+    @dispatch(str)
+    def adiciona_vertice(self, rotulo: str):
+        """
+        Inclui um vértice no grafo se ele estiver no formato correto.
+        :param v: O vértice a ser incluído no grafo.
+        :raises VerticeInvalidoException se o vértice já existe ou se ele não estiver no formato válido.
+        """
+        if self.existe_rotulo_vertice(rotulo):
+            raise VerticeInvalidoError('O vértice {} já existe'.format(rotulo))
+
+        if rotulo != "":
+
+            v = Vertice(rotulo)
+            self.N.append(v)  # Adiciona vértice na lista de vértices
+            self.M.append([])  # Adiciona a linha
+
+            i_v = self.indice_do_vertice(v)
+
+            for k in range(len(self.N)):
+                self.M[k].append(dict())  # adiciona os elementos da coluna do vértice
+                self.M[i_v].append(dict())  # adiciona um zero no último elemento da linha
+        else:
+            raise VerticeInvalidoError('O vértice ' + rotulo + ' é inválido')
+
+    @dispatch(Vertice)
+    def adiciona_vertice(self, v: Vertice):
         '''
         Inclui um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser incluído no grafo.
@@ -145,17 +177,19 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
 
-    def remove_vertice(self, v):
+    def remove_vertice(self, rotulo: str):
         '''
         Remove um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser removido do grafo.
         :return True se o vértice foi removido com sucesso.
         :raises VerticeInvalidoException se o vértice não for encontrado no grafo
         '''
-        if v not in self.N:
+        if not self.existe_rotulo_vertice(rotulo):
             raise VerticeInvalidoError("O vértice passado como parâmetro não existe no grafo.")
 
-        v_i = self.N.index(v)
+        v = self.get_vertice(rotulo)
+
+        v_i = self.indice_do_vertice(v)
 
         self.M.pop(v_i)
 
@@ -164,6 +198,17 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
         self.N.remove(v)
         return True
+
+    def get_vertice(self, r: str):
+        """
+        Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
+        :param r: O rótulo do vértice a ser retornado
+        :return: Um objeto do tipo vértice que tem como rótulo o parâmetro passado ou False se o vértice não
+        for encontrado.
+        """
+        for i in self.N:
+            if r == i.get_rotulo():
+                return i
 
     @dispatch(Aresta)
     def adiciona_aresta(self, a: Aresta):
@@ -193,7 +238,8 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :raise: lança uma exceção caso a aresta não estiver em um formato válido
         '''
 
-        a = Aresta(rotulo, v1, v2, peso)
+
+        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), peso)
         return self.adiciona_aresta(a)
 
     @dispatch(str, str, str)
@@ -204,7 +250,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         :raise: lança uma exceção caso a aresta não estiver em um formato válido
         '''
 
-        a = Aresta(rotulo, v1, v2, 1) # Quando o peso não é informado, atribui-se peso 1
+        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1) # Quando o peso não é informado, atribui-se peso 1
         return self.adiciona_aresta(a)
 
     def remove_aresta(self, r: str, v1=None, v2=None):
@@ -258,16 +304,16 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
                         remove_com_indices(r, i, j)
 
             elif self.existe_vertice(v2):
-                v2_i = self.indice_do_vertice(v2)
+                v2_i = self.indice_do_vertice(self.get_vertice(v2))
                 return percorre_e_remove(self.M, v2_i)
-            elif not self.existe_vertice(v2):
+            elif not self.existe_vertice(self.get_vertice(v2)):
                 raise VerticeInvalidoError("O vértice {} é inválido!".format(v2))
 
         else:
-            if self.existe_vertice(v1):
-                v1_i = self.indice_do_vertice(v1)
+            if self.existe_rotulo_vertice(v1):
+                v1_i = self.indice_do_vertice(self.get_vertice(v1))
                 if self.existe_vertice(v2):
-                    v2_i = self.indice_do_vertice(v2)
+                    v2_i = self.indice_do_vertice(self.get_vertice(v2))
                     remove_com_indices(r, v1_i, v2_i)
                 else:
                     return percorre_e_remove(self.M, v1_i)
