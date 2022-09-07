@@ -1,22 +1,26 @@
-from bibgrafo.grafo import GrafoIF
+from bibgrafo.grafo_matriz_adj_dir import GrafoMatrizAdjacenciaDirecionado
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import *
 from multipledispatch import dispatch
 from copy import deepcopy
 
-class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
+class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
 
     N: list
     M: list
 
     def __init__(self, N=None, M=None):
-        '''
-        Constrói um objeto do tipo Grafo. Se nenhum parâmetro for passado, cria um Grafo vazio.
+        """
+        Constrói um objeto do tipo grafo não direcionado com matriz de adjacência.
+        Se nenhum parâmetro for passado, cria um grafo vazio.
         Se houver alguma aresta ou algum vértice inválido, uma exceção é lançada.
         :param N: Uma lista dos vértices (ou nodos) do grafo.
-        :param V: Uma matriz de adjacência que guarda as arestas do grafo. Cada entrada da matriz tem um inteiro que indica a quantidade de arestas que ligam aqueles vértices
-        '''
+        :param M: Uma matriz de adjacência que guarda as arestas do grafo. Cada entrada da matriz tem um
+        dicionário de arestas (objetos do tipo Aresta) para que seja possível representar arestas paralelas
+        e que cada aresta tenha seus próprios atributos distintos. Como a matriz é não direcionada, os elementos
+        abaixo da diagonal principal são espelhados em relação aos elementos acima da diagonal principal.
+        """
 
         if N == None:
             N = list()
@@ -59,76 +63,6 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
                 if i != j and self.M[i][j] != self.M[j][i]:
                     raise MatrizInvalidaError('A matriz não representa uma matriz de grafo não direcionado')
-
-    def aresta_valida(self, aresta: Aresta):
-        '''
-        Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
-        Uma aresta só é válida se conectar dois vértices existentes no grafo.
-        :param aresta: A aresta que se quer verificar se está no formato correto.
-        :return: Um valor booleano que indica se a aresta está no formato correto.
-        '''
-
-        # Verifica se os vértices existem no Grafo
-        if type(aresta) == Aresta and self.existe_vertice(aresta.get_v1()) and self.existe_vertice(aresta.get_v2()):
-            return True
-        return False
-
-    @classmethod
-    def vertice_valido(cls, vertice=''):
-        '''
-        Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
-        Um vértice é um string qualquer que não pode ser vazio.
-        :param vertice: Um string que representa o vértice a ser analisado.
-        :return: Um valor booleano que indica se o vértice está no formato correto.
-        '''
-        return isinstance(vertice, Vertice)
-
-    def existe_vertice(self, vertice=''):
-        '''
-        Verifica se um vértice passado como parâmetro pertence ao grafo.
-        :param vertice: O vértice que deve ser verificado.
-        :return: Um valor booleano que indica se o vértice existe no grafo.
-        '''
-        return GrafoMatrizAdjacenciaNaoDirecionado.vertice_valido(vertice) and vertice in self.N
-
-    def indice_do_vertice(self, v: Vertice):
-        '''
-        Dado um vértice retorna o índice do vértice a na lista de vértices
-        :param v: O vértice a ser analisado
-        :return: O índice do primeiro vértice da aresta na lista de vértices
-        '''
-        return self.N.index(v)
-
-    def existe_aresta(self, a: Aresta) -> bool:
-        '''
-        Verifica se uma aresta passada como parâmetro pertence ao grafo.
-        :param aresta: A aresta a ser verificada
-        :return: Um valor booleano que indica se a aresta existe no grafo.
-        '''
-        if GrafoMatrizAdjacenciaNaoDirecionado.aresta_valida(self, a):
-            if a.get_rotulo() in self.M[self.indice_do_vertice(a.get_v1())][self.indice_do_vertice(a.get_v2())]:
-                return True
-        else:
-            raise ArestaInvalidaError("A aresta passada como parâmetro é inválida.")
-        return False
-
-    def existe_rotulo_aresta(self, aresta: str) -> bool:
-        """
-        Verifica se uma aresta passada como parâmetro pertence ao grafo.
-        :param aresta: A aresta a ser verificada
-        :return: Um valor booleano que indica se a aresta existe no grafo.
-        """
-        for i in range(len(self.M)):
-            for j in range(len(self.M)):
-                if self.M[i][j].get(aresta) is not None:
-                    return True
-        return False
-
-    def existe_rotulo_vertice(self, r: str):
-        """
-        TODO Fazer o docstring
-        """
-        return self.get_vertice(r) is not None
 
     @dispatch(str)
     def adiciona_vertice(self, rotulo: str):
@@ -177,38 +111,43 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
 
-    def remove_vertice(self, rotulo: str):
+    def existe_aresta(self, aresta: Aresta) -> bool:
         '''
-        Remove um vértice no grafo se ele estiver no formato correto.
-        :param v: O vértice a ser removido do grafo.
-        :return True se o vértice foi removido com sucesso.
-        :raises VerticeInvalidoException se o vértice não for encontrado no grafo
+        Verifica se uma aresta passada como parâmetro pertence ao grafo.
+        :param aresta: A aresta a ser verificada
+        :return: Um valor booleano que indica se a aresta existe no grafo.
         '''
-        if not self.existe_rotulo_vertice(rotulo):
-            raise VerticeInvalidoError("O vértice passado como parâmetro não existe no grafo.")
+        if GrafoMatrizAdjacenciaNaoDirecionado.aresta_valida(self, aresta):
+            if aresta.get_rotulo() in self.M[self.indice_do_vertice(aresta.get_v1())][self.indice_do_vertice(aresta.get_v2())]:
+                return True
+        else:
+            raise ArestaInvalidaError("A aresta passada como parâmetro é inválida.")
+        return False
 
-        v = self.get_vertice(rotulo)
-
-        v_i = self.indice_do_vertice(v)
-
-        self.M.pop(v_i)
-
+    def existe_rotulo_aresta(self, aresta: str) -> bool:
+        """
+        Verifica se uma aresta passada como parâmetro pertence ao grafo.
+        :param aresta: A aresta a ser verificada
+        :return: Um valor booleano que indica se a aresta existe no grafo.
+        """
         for i in range(len(self.M)):
-            self.M[i].pop(v_i)
+            for j in range(len(self.M)):
+                if self.M[i][j].get(aresta) is not None:
+                    return True
+        return False
 
-        self.N.remove(v)
-        return True
+    def aresta_valida(self, aresta: Aresta):
+        '''
+        Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
+        Uma aresta só é válida se conectar dois vértices existentes no grafo.
+        :param aresta: A aresta que se quer verificar se está no formato correto.
+        :return: Um valor booleano que indica se a aresta está no formato correto.
+        '''
 
-    def get_vertice(self, r: str):
-        """
-        Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
-        :param r: O rótulo do vértice a ser retornado
-        :return: Um objeto do tipo vértice que tem como rótulo o parâmetro passado ou False se o vértice não
-        for encontrado.
-        """
-        for i in self.N:
-            if r == i.get_rotulo():
-                return i
+        # Verifica se os vértices existem no Grafo
+        if type(aresta) == Aresta and self.existe_vertice(aresta.get_v1()) and self.existe_vertice(aresta.get_v2()):
+            return True
+        return False
 
     @dispatch(Aresta)
     def adiciona_aresta(self, a: Aresta):
@@ -231,24 +170,27 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
         return True
 
     @dispatch(str, str, str, int)
-    def adiciona_aresta(self, rotulo='', v1='', v2='', peso=1):
-        '''
-        Adiciona uma aresta ao grafo no formato X-Y, onde X é o primeiro vértice e Y é o segundo vértice
-        :param a: a aresta no formato correto
-        :raise: lança uma exceção caso a aresta não estiver em um formato válido
-        '''
-
-
+    def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso=1):
+        """
+        Adiciona uma aresta ao grafo
+        :param rotulo: O rótulo da aresta
+        :param v1: O primeiro vértice da aresta
+        :param v2: O segundo vértice da aresta
+        :param peso: O peso da aresta
+        :raise: Lança ArestaInvalidaError caso a aresta não estiver em um formato válido
+        """
         a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), peso)
         return self.adiciona_aresta(a)
 
     @dispatch(str, str, str)
-    def adiciona_aresta(self, rotulo='', v1='', v2=''):
-        '''
-        Adiciona uma aresta ao grafo no formato X-Y, onde X é o primeiro vértice e Y é o segundo vértice
-        :param a: a aresta no formato correto
-        :raise: lança uma exceção caso a aresta não estiver em um formato válido
-        '''
+    def adiciona_aresta(self, rotulo: str, v1: str, v2: str):
+        """
+        Adiciona uma aresta ao grafo
+        :param rotulo: O rótulo da aresta
+        :param v1: O primeiro vértice da aresta
+        :param v2: O segundo vértice da aresta
+        :raise: Lança ArestaInvalidaError caso a aresta não estiver em um formato válido
+        """
 
         a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1) # Quando o peso não é informado, atribui-se peso 1
         return self.adiciona_aresta(a)
@@ -323,7 +265,8 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
 
     def __eq__(self, other):
         '''
-        Define a igualdade entre a instância do GrafoListaAdjacencia para o qual essa função foi chamada e a instância de um GrafoListaAdjacencia passado como parâmetro.
+        Define a igualdade entre a instância do grafo para o qual essa função foi chamada e a instância de um
+        GrafoMatrizAdjacenciaNaoDirecionado passado como parâmetro.
         :param other: O grafo que deve ser comparado com este grafo.
         :return: Um valor booleano caso os grafos sejam iguais.
         '''
@@ -344,7 +287,6 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoIF):
     def __str__(self):
         '''
         Fornece uma representação do tipo String do grafo.
-        O String contém um sequência dos vértices separados por vírgula, seguido de uma sequência das arestas no formato padrão.
         :return: Uma string que representa o grafo
         '''
 

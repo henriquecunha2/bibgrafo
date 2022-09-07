@@ -14,11 +14,11 @@ class GrafoListaAdjacencia(GrafoIF):
     def __init__(self, N=None, A=None):
         """
         Constrói um objeto do tipo GrafoListaAdjacencia. Se nenhum parâmetro for passado, cria um Grafo vazio.
-        Se houver alguma aresta ou algum vértice inválido, uma exceção é lançada.
+        Se houver alguma aresta ou algum vértice inválido, um erro é lançado.
         Nessa implementação o Grafo é representado por uma lista de adjacências.
         :param N: Uma lista dos vértices (ou nodos) do grafo.
-        :param A: Uma dicionário que guarda as arestas do grafo. A chave representa o nome da aresta e o valor é uma
-        tupla que contém dois os 2 vértices da aresta.
+        :param A: Uma dicionário que guarda as arestas do grafo. A chave representa o nome da aresta e o valor é um
+        objeto do tipo Aresta que deve conter uma referência para os vértices
         """
 
         if N is None:
@@ -38,31 +38,17 @@ class GrafoListaAdjacencia(GrafoIF):
 
         self.A = deepcopy(A)
 
-    def get_vertice(self, r: str):
-        """
-        Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
-        :param r: O rótulo do vértice a ser retornado
-        :return: Um objeto do tipo vértice que tem como rótulo o parâmetro passado ou False se o vértice não
-        for encontrado.
-        """
-        if not self.existe_rotulo_vertice(r):
-            raise VerticeInvalidoError("O vértice não existe no grafo.")
-        for i in range(len(self.N)):
-            if self.N[i].get_rotulo() == r:
-                return self.N[i]
-        return False
-
     @classmethod
-    def vertice_valido(cls, vertice: Vertice):
+    def vertice_valido(cls, vertice: Vertice) -> bool:
         """
         Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
-        Um vértice é um string qualquer que não pode ser vazio.
-        :param vertice: Um string que representa o vértice a ser analisado.
+        O rótulo do vértice não pode ser vazio.
+        :param vertice: Um objeto do tipo Vertice que representa o vértice a ser analisado.
         :return: Um valor booleano que indica se o vértice está no formato correto.
         """
         return isinstance(vertice, Vertice) and vertice.get_rotulo() != ""
 
-    def existe_vertice(self, vertice: Vertice):
+    def existe_vertice(self, vertice: Vertice) -> bool:
         """
         Verifica se um vértice passado como parâmetro pertence ao grafo.
         :param vertice: O vértice que deve ser verificado.
@@ -70,28 +56,41 @@ class GrafoListaAdjacencia(GrafoIF):
         """
         return GrafoListaAdjacencia.vertice_valido(vertice) and vertice in self.N
 
-    def existe_rotulo_vertice(self, vertice: str):
+    def existe_rotulo_vertice(self, rotulo: str) -> bool:
         """
-        Verifica se um vértice passado como parâmetro pertence ao grafo.
-        :param vertice: O vértice que deve ser verificado.
+        Verifica se há algum vértice no grafo com o rótulo que é passado como parâmetro.
+        :param rotulo: O vértice que deve ser verificado.
         :return: Um valor booleano que indica se o vértice existe no grafo.
         """
         for i in range(len(self.N)):
-            if self.N[i].get_rotulo() == vertice:
+            if self.N[i].get_rotulo() == rotulo:
                 return True
         return False
 
+    def get_vertice(self, rotulo: str) -> Vertice:
+        """
+        Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
+        :param rotulo: O rótulo do vértice a ser retornado
+        :return: Um objeto do tipo vértice que tem como rótulo o parâmetro passado
+        :raises: VerticeInvalidoError se o vértice não for encontrado.
+        """
+        if not self.existe_rotulo_vertice(rotulo):
+            raise VerticeInvalidoError("O vértice não existe no grafo.")
+        for i in range(len(self.N)):
+            if self.N[i].get_rotulo() == rotulo:
+                return self.N[i]
+
     @dispatch(str)
-    def adiciona_vertice(self, r: str):
+    def adiciona_vertice(self, rotulo: str):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
-        :param r: O vértice a ser adicionado
-        :raises: VerticeInvalidoError se o vértice passado como parâmetro não puder ser adicionado
+        :param rotulo: O rótulo do vértice a ser adicionado
+        :raises: VerticeInvalidoError se já houver um vértice com o mesmo nome no grafo
         """
-        if not self.existe_rotulo_vertice(r):
-            self.N.append(Vertice(r))
+        if not self.existe_rotulo_vertice(rotulo):
+            self.N.append(Vertice(rotulo))
         else:
-            raise VerticeInvalidoError('O rótulo de vértice ' + r + ' já existe no grafo')
+            raise VerticeInvalidoError('O rótulo de vértice ' + rotulo + ' já existe no grafo')
 
     @dispatch(Vertice)
     def adiciona_vertice(self, v: Vertice):
@@ -100,16 +99,17 @@ class GrafoListaAdjacencia(GrafoIF):
         :param v: O vértice a ser adicionado
         :raises: VerticeInvalidoError se o vértice passado como parâmetro não puder ser adicionado
         """
-        if self.vertice_valido(v) and not self.existe_vertice(v):
+        if self.vertice_valido(v) and not self.existe_vertice(v) and not self.existe_rotulo_vertice(v.get_rotulo()):
             self.N.append(v)
         else:
             raise VerticeInvalidoError('O vértice ' + v + ' é inválido ou já existe no grafo')
 
     def remove_vertice(self, v: str):
         """
-        Remove um vértice passado como parâmetro e remove em cascata as arestas que estão conectadas a esse vértice.
+        Remove um vértice que tenha o rótulo passado como parâmetro e remove em cascata as arestas que estão
+        conectadas a esse vértice.
         :param v: O rótulo do vértice a ser removido.
-        :raises: VerticeInvalidoError se o vértice passado como parâmetro não puder ser removido.
+        :raises: VerticeInvalidoError se o vértice passado como parâmetro não existir no grafo.
         """
         newA = dict()
         if self.existe_rotulo_vertice(v):
@@ -131,12 +131,12 @@ class GrafoListaAdjacencia(GrafoIF):
 
     def get_aresta(self, r):
         """
-        Retorna uma cópia da aresta que tem o rótulo passado como parâmetro
+        Retorna uma referência para a aresta que tem o rótulo passado como parâmetro
         :param r: O rótulo da aresta solicitada
-        :return: Um objeto do tipo Aresta que é a aresta requisitada ou False se a aresta não existe
+        :return: Um objeto do tipo Aresta que é uma referência para a aresta requisitada ou False se a aresta não existe
         """
         if self.existe_rotulo_aresta(r):
-            return deepcopy(self.A[r])
+            return self.A[r]
         return False
     
     def aresta_valida(self, aresta: Aresta):
@@ -148,8 +148,8 @@ class GrafoListaAdjacencia(GrafoIF):
         """
 
         # Verifica se os vértices existem no Grafo
-        if type(aresta) == Aresta and \
-                self.existe_rotulo_vertice(aresta.get_v1().get_rotulo()) and self.existe_rotulo_vertice(aresta.get_v2().get_rotulo()):
+        if isinstance(aresta, Aresta) and \
+                self.existe_vertice(aresta.get_v1()) and self.existe_vertice(aresta.get_v2()):
             return True
         return False
 
@@ -214,8 +214,9 @@ class GrafoListaAdjacencia(GrafoIF):
     def __eq__(self, other):
         """
         Define a igualdade entre a instância do GrafoListaAdjacencia para o qual essa função foi chamada e a
-        instância de um GrafoListaAdjacencia passado como parâmetro. :param other: O grafo que deve ser comparado com
-        este grafo. :return: Um valor booleano caso os grafos sejam iguais.
+        instância de um GrafoListaAdjacencia passado como parâmetro.
+        :param other: O grafo que deve ser comparado com este grafo.
+        :return: Um valor booleano caso os grafos sejam iguais.
         """
         if len(self.A) != len(other.A) or len(self.N) != len(other.N):
             return False
@@ -232,7 +233,8 @@ class GrafoListaAdjacencia(GrafoIF):
     def __str__(self):
         """
         Fornece uma representação do tipo String do grafo. O String contém um sequência dos vértices separados por
-        vírgula, seguido de uma sequência das arestas no formato padrão. :return: Uma string que representa o grafo.
+        vírgula, seguido de uma sequência das arestas no formato padrão.
+        :return: Uma string que representa o grafo.
         """
         grafo_str = ''
 
