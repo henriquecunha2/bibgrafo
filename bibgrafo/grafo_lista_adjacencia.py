@@ -1,8 +1,8 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
-from bibgrafo.grafo_errors import *
 from multipledispatch import dispatch
+from bibgrafo.grafo_errors import *
 from copy import deepcopy
 
 
@@ -102,7 +102,7 @@ class GrafoListaAdjacencia(GrafoIF):
         if self.vertice_valido(v) and not self.existe_vertice(v) and not self.existe_rotulo_vertice(v.get_rotulo()):
             self.N.append(v)
         else:
-            raise VerticeInvalidoError('O vértice ' + v + ' é inválido ou já existe no grafo')
+            raise VerticeInvalidoError('O vértice ' + str(v) + ' é inválido ou já existe no grafo')
 
     def remove_vertice(self, v: str):
         """
@@ -165,12 +165,11 @@ class GrafoListaAdjacencia(GrafoIF):
             if not self.existe_rotulo_aresta(a.get_rotulo()):  # Verifica se a aresta já existe no grafo
                 self.A[a.get_rotulo()] = a
             else:
-                raise ArestaInvalidaError('A aresta {} não pode ter o mesmo rótulo de uma aresta já existente no '
-                                              'grafo'.format(str(a)))
+                raise ArestaInvalidaError('A aresta {} não pode ter o mesmo rótulo de uma aresta já existente'
+                                          'no grafo'.format(str(a)))
         else:
             raise ArestaInvalidaError('A aresta ' + str(a) + ' é inválida')
         return True
-
 
     @dispatch(str, str, str, int)
     def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso: int = 1):
@@ -187,7 +186,7 @@ class GrafoListaAdjacencia(GrafoIF):
         return self.adiciona_aresta(a)
 
     @dispatch(str, str, str)
-    def adiciona_aresta(self, rotulo: str, v1: Vertice, v2: Vertice):
+    def adiciona_aresta(self, rotulo: str, v1: str, v2: str):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
         O peso atribuído à aresta será 1.
