@@ -5,6 +5,7 @@ from bibgrafo.grafo_errors import *
 from multipledispatch import dispatch
 from copy import deepcopy
 
+
 class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
 
     N: list
@@ -22,9 +23,9 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         abaixo da diagonal principal são espelhados em relação aos elementos acima da diagonal principal.
         """
 
-        if N == None:
+        if N is None:
             N = list()
-        if M == None:
+        if M is None:
             M = list()
 
         for v in N:
@@ -33,15 +34,16 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
 
         self.N = deepcopy(N)
 
-        if M == []:
+        if not M:
             self.M = list()
             for k in range(len(N)):
                 self.M.append(list())
-                for l in range(len(N)):
+                for m in range(len(N)):
                     self.M[k].append(dict())
 
         if len(self.M) != len(N):
-            raise MatrizInvalidaError('A matriz passada como parâmetro não tem o mesmo tamanho da quantidade de vértices')
+            raise MatrizInvalidaError('A matriz passada como parâmetro não tem o mesmo tamanho da quantidade de'
+                                      'vértices')
 
         for c in self.M:
             if len(c) != len(N):
@@ -59,7 +61,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
                 for k in dicio_aresta.values():
                     aresta = Aresta(k, dicio_aresta[k].get_v1(), dicio_aresta[k].get_v2())
                     if not(self.aresta_valida(aresta)):
-                        raise ArestaInvalidaError('A aresta ' + aresta + ' é inválida')
+                        raise ArestaInvalidaError('A aresta ' + str(aresta) + ' é inválida')
 
                 if i != j and self.M[i][j] != self.M[j][i]:
                     raise MatrizInvalidaError('A matriz não representa uma matriz de grafo não direcionado')
@@ -68,7 +70,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
     def adiciona_vertice(self, rotulo: str):
         """
         Inclui um vértice no grafo se ele estiver no formato correto.
-        :param v: O vértice a ser incluído no grafo.
+        :param rotulo: O vértice a ser incluído no grafo.
         :raises VerticeInvalidoException se o vértice já existe ou se ele não estiver no formato válido.
         """
         if self.existe_rotulo_vertice(rotulo):
@@ -90,33 +92,33 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
 
     @dispatch(Vertice)
     def adiciona_vertice(self, v: Vertice):
-        '''
+        """
         Inclui um vértice no grafo se ele estiver no formato correto.
         :param v: O vértice a ser incluído no grafo.
         :raises VerticeInvalidoException se o vértice já existe ou se ele não estiver no formato válido.
-        '''
+        """
         if GrafoMatrizAdjacenciaNaoDirecionado.existe_vertice(v):
             raise VerticeInvalidoError('O vértice {} já existe'.format(v))
 
         if self.vertice_valido(v):
 
-            self.N.append(v) # Adiciona vértice na lista de vértices
-            self.M.append([]) # Adiciona a linha
+            self.N.append(v)  # Adiciona vértice na lista de vértices
+            self.M.append([])  # Adiciona a linha
 
             i_v = self.indice_do_vertice(v)
 
             for k in range(len(self.N)):
-                self.M[k].append(dict()) # adiciona os elementos da coluna do vértice
+                self.M[k].append(dict())  # adiciona os elementos da coluna do vértice
                 self.M[i_v].append(dict())  # adiciona um zero no último elemento da linha
         else:
-            raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
+            raise VerticeInvalidoError('O vértice ' + str(v) + ' é inválido')
 
     def existe_aresta(self, aresta: Aresta) -> bool:
-        '''
+        """
         Verifica se uma aresta passada como parâmetro pertence ao grafo.
         :param aresta: A aresta a ser verificada
         :return: Um valor booleano que indica se a aresta existe no grafo.
-        '''
+        """
         if GrafoMatrizAdjacenciaNaoDirecionado.aresta_valida(self, aresta):
             if aresta.get_rotulo() in self.M[self.indice_do_vertice(aresta.get_v1())][self.indice_do_vertice(aresta.get_v2())]:
                 return True
@@ -137,12 +139,12 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         return False
 
     def aresta_valida(self, aresta: Aresta):
-        '''
+        """
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
         Uma aresta só é válida se conectar dois vértices existentes no grafo.
         :param aresta: A aresta que se quer verificar se está no formato correto.
         :return: Um valor booleano que indica se a aresta está no formato correto.
-        '''
+        """
 
         # Verifica se os vértices existem no Grafo
         if type(aresta) == Aresta and self.existe_vertice(aresta.get_v1()) and self.existe_vertice(aresta.get_v2()):
@@ -151,11 +153,11 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
 
     @dispatch(Aresta)
     def adiciona_aresta(self, a: Aresta):
-        '''
+        """
         Adiciona uma aresta ao grafo
         :param a: a aresta no formato correto
         :raise: lança uma exceção caso a aresta não estiver em um formato válido
-        '''
+        """
         if self.existe_aresta(a):
             raise ArestaInvalidaError('A aresta {} já existe no Grafo'.format(a))
 
@@ -192,11 +194,12 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         :raise: Lança ArestaInvalidaError caso a aresta não estiver em um formato válido
         """
 
-        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1) # Quando o peso não é informado, atribui-se peso 1
+        # Quando o peso não é informado, atribui-se peso 1
+        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1)
         return self.adiciona_aresta(a)
 
     def remove_aresta(self, r: str, v1=None, v2=None):
-        '''
+        """
         Remove uma aresta do grafo. Os parâmetros v1 e v2 são opcionais e servem para acelerar a busca pela aresta de
         interesse.
         Se for passado apenas o parâmetro r, deverá ocorrer uma busca por toda a matriz.
@@ -205,42 +208,42 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         :param v2: O vértice 2 da aresta a ser removida
         :raise: lança uma exceção caso a aresta não exista no grafo ou caso algum dos vértices passados não existam
         :return: Retorna True se a aresta foi removida com sucesso.
-        '''
+        """
 
-        def remove_com_indices(r, v1_i, v2_i):
-            '''
+        def remove_com_indices(rotulo, v1_ind, v2_ind):
+            """
             Função interna apenas para remover do dicionário de arestas, quando há índices conhecidos
-            '''
-            arestas_top = self.M[v1_i][v2_i]
-            arestas_bottom = self.M[v2_i][v1_i]
+            """
+            arestas_top = self.M[v1_ind][v2_ind]
+            arestas_bottom = self.M[v2_ind][v1_ind]
 
-            if arestas_top.get(r) is not None:
-                arestas_top.pop(r)
+            if arestas_top.get(rotulo) is not None:
+                arestas_top.pop(rotulo)
 
-            if arestas_bottom.get(r) is not None:
-                arestas_bottom.pop(r)
+            if arestas_bottom.get(rotulo) is not None:
+                arestas_bottom.pop(rotulo)
 
-        def percorre_e_remove(M, i):
-            '''
+        def percorre_e_remove(M, ind):
+            """
             Função interna apenas para remover do dicionário de arestas, quando NÃO há índices conhecidos
-            '''
+            """
             # linha
-            for j in range(0, len(M)):
-                arestas_percorrer = M[i][j]
+            for x in range(0, len(M)):
+                arestas_percorrer = M[ind][x]
                 if arestas_percorrer.get(r) is not None:
                     arestas_percorrer.pop(r)
                     break
-            #coluna
-            for j in range(0, len(M)):
-                arestas_percorrer = M[j][i]
+            # coluna
+            for x in range(0, len(M)):
+                arestas_percorrer = M[x][ind]
                 if arestas_percorrer.get(r) is not None:
                     arestas_percorrer.pop(r)
 
         if not self.existe_rotulo_aresta(r):
             raise ArestaInvalidaError("A aresta não existe no grafo.")
 
-        if v1 == None:
-            if v2 == None:
+        if v1 is None:
+            if v2 is None:
                 for i in range(len(self.M)):
                     for j in range(len(self.M)):
                         remove_com_indices(r, i, j)
@@ -262,14 +265,13 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
             else:
                 raise VerticeInvalidoError("O vértice {} é inválido!".format(v1))
 
-
     def __eq__(self, other):
-        '''
+        """
         Define a igualdade entre a instância do grafo para o qual essa função foi chamada e a instância de um
         GrafoMatrizAdjacenciaNaoDirecionado passado como parâmetro.
         :param other: O grafo que deve ser comparado com este grafo.
         :return: Um valor booleano caso os grafos sejam iguais.
-        '''
+        """
         if len(self.M) != len(other.M) or len(self.N) != len(other.N):
             return False
         for n in self.N:
@@ -285,10 +287,10 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         return True
 
     def __str__(self):
-        '''
+        """
         Fornece uma representação do tipo String do grafo.
         :return: Uma string que representa o grafo
-        '''
+        """
 
         grafo_str = '  '
 
@@ -299,23 +301,23 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
 
         grafo_str += '\n'
 
-        for l in range(len(self.M)):
-            grafo_str += str(self.N[l]) + ' '
+        for m in range(len(self.M)):
+            grafo_str += str(self.N[m]) + ' '
             for c in range(len(self.M)):
-                if self.M[l][c] == '-':
-                    grafo_str += str(self.M[l][c]) + ' '
+                if self.M[m][c] == '-':
+                    grafo_str += str(self.M[m][c]) + ' '
                 else:
-                    if bool(self.M[l][c]):
+                    if bool(self.M[m][c]):
                         grafo_str += '*' + ' '
                     else:
                         grafo_str += 'o' + ' '
             grafo_str += '\n'
 
-        for l in range(len(self.N)):
+        for m in range(len(self.N)):
             for c in range(len(self.N)):
-                if bool(self.M[l][c]) and l > c:
-                    grafo_str += str(self.N[l]) + '-' + str(self.N[c]) + ': '
-                    for k in self.M[l][c]:
+                if bool(self.M[m][c]) and m > c:
+                    grafo_str += str(self.N[m]) + '-' + str(self.N[c]) + ': '
+                    for k in self.M[m][c]:
                         grafo_str += k + ' | '
                     grafo_str += '\n'
 
