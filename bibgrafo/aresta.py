@@ -1,7 +1,8 @@
 from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import VerticeInvalidoError
 
-class Aresta():
+class Aresta:
+
     v1: Vertice
     v2: Vertice
     rotulo: str
@@ -47,7 +48,7 @@ class Aresta():
 
     def __eq__(self, other):
         return ((self.v1 == other.get_v1() and self.v2 == other.get_v2()) or (
-                    self.v1 == other.get_v2() and self.v2 == other.get_v1())) and self.rotulo == other.get_rotulo() and self.get_peso() == other.get_peso()
+                self.v1 == other.get_v2() and self.v2 == other.get_v1())) and self.rotulo == other.get_rotulo() and self.get_peso() == other.get_peso()
 
     def __str__(self):
         return "{}({}-{}), {}".format(self.get_rotulo(), self.get_v1(), self.get_v2(), self.get_peso())
