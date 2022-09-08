@@ -1,8 +1,8 @@
 from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
-from multipledispatch import dispatch
 from bibgrafo.grafo_errors import *
+from multipledispatch import dispatch
 from copy import deepcopy
 
 
