@@ -1,0 +1,48 @@
+site_name: Biblioteca bibgrafo
+
+
+# Repository
+repo_name: bibgrafo
+repo: https://github.com/henriquecunha2/bibgrafo
+# Copyright
+copyright: Jeremy DiBattista
+
+#This specifies the autogeneration portion
+pages:
+  - page: "modules/bibgrafo/aresta.md"
+    source: "bibgrafo/aresta.py"
+    classes:
+      - Aresta
+      - ArestaDirecionada
+
+  - page: "modules/bibgrafo/grafo_matriz_adj_dir.md"
+    source: "bibgrafo/grafo_matriz_adj_dir.py"
+    classes:
+      - GrafoMatrizAdjacenciaDirecionado
+
+  - page: "modules/bibgrafo/grafo_matriz_adj_nao_dir.md"
+    source: "bibgrafo/grafo_matriz_adj_nao_dir.py"
+    classes:
+      - GrafoMatrizAdjacenciaNaoDirecionado
+
+  - page: "modules/bibgrafo/grafo.md"
+    source: "bibgrafo/grafo.py"
+    classes:
+      - GrafoIF
+
+  - page: "modules/bibgrafo/vertice.md"
+    source: "bibgrafo/vertice.py"
+    classes:
+      - Vertice
+
+  - page: "modules/bibgrafo/grafo_errors.md"
+    source: "bibgrafo/grafo_errors.py"
+    classes:
+      - VerticeInvalidoError
+      - ArestaInvalidaError
+      - MatrizInvalidaError
+
+  - page: "modules/bibgrafo/grafo_lista_adjacencia.md"
+    source: "bibgrafo/grafo_lista_adjacencia.py"
+    classes:
+      - GrafoListaAdjacencia

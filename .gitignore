@@ -3,6 +3,7 @@
 .venv/
 /bibgrafo.egg-info/
 /build/
+/docs/
 __pycache__
 .idea
 settings.json

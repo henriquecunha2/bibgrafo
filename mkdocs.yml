@@ -1,0 +1,37 @@
+site_name: Biblioteca bibgrafo
+
+
+# Repository
+repo_name: bibgrafo
+repo_url: https://github.com/henriquecunha2/bibgrafo
+edit_uri: ""
+# Copyright
+copyright: Henrique Cunha
+
+docs_dir: "docs/sources"
+
+plugins:
+  - search
+
+theme:
+  name: 'mkdocs'
+  custom_dir: 'docs'
+  palette:
+    primary: 'white'
+  logo: 'assets/images/logo_full.svg'
+  favicon: 'assets/images/favicon.svg'
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - instant
+nav:
+  - Home: index.md
+  - modules:
+    - bibgrafo:
+      - aresta: modules/bibgrafo/aresta.md
+      - grafo: modules/bibgrafo/grafo.md
+      - grafo_errors: modules/bibgrafo/grafo_errors.md
+      - grafo_lista_adjacencia: modules/bibgrafo/grafo_lista_adjacencia.md
+      - grafo_matriz_adj_dir: modules/bibgrafo/grafo_matriz_adj_dir.md
+      - grafo_matriz_adj_nao_dir: modules/bibgrafo/grafo_matriz_adj_nao_dir.md
+      - vertice: modules/bibgrafo/vertice.md
