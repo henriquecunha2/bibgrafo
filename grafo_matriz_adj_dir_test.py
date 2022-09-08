@@ -221,7 +221,7 @@ class TestGrafo(unittest.TestCase):
         self.g_dijkstra.adiciona_aresta('2', 'C', 'D', 2)
 
     def constroi_matriz(self, g: MeuGrafo):
-        ordem = len(g.N)
+        ordem = len(g._vertices)
         m = list()
         for i in range(ordem):
             m.append(list())

@@ -12,17 +12,17 @@ class MeuGrafo(GrafoListaAdjacencia):
         ['A-B', 'A-C']
         :return: A lista de adjacências
         '''
-        arestas = self.A.values()
+        arestas = self._arestas.values()
         adjacencias = list()
         for a in arestas:
-            adjacencias.append('{}-{}'.format(a.get_v1(), a.get_v2()))
+            adjacencias.append('{}-{}'.format(a.v1, a.v2))
         return adjacencias
 
     def vertices_nao_adjacentes(self):
         adjacencias = self.getListaAdjacencias()
         nao_adjacentes = set()
-        for i in self.N:
-            for j in self.N:
+        for i in self._vertices:
+            for j in self._vertices:
                 aresta_indo = '{}-{}'.format(i, j)
                 aresta_vindo = '{}-{}'.format(j, i)
                 if i != j and aresta_indo not in adjacencias and aresta_vindo not in adjacencias and aresta_vindo not in nao_adjacentes:
@@ -31,7 +31,7 @@ class MeuGrafo(GrafoListaAdjacencia):
 
     def ha_laco(self):
         adjacencias = self.getListaAdjacencias()
-        for i in self.N:
+        for i in self._vertices:
             aresta = '{}-{}'.format(i, i)
             if aresta in adjacencias:
                 return True
@@ -41,14 +41,14 @@ class MeuGrafo(GrafoListaAdjacencia):
 
         vertice = self.get_vertice(v)
 
-        if vertice not in self.N:
+        if vertice not in self._vertices:
             raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(v))
 
         grau = 0
-        for aresta in self.A.values():
-            if vertice == aresta.get_v1():
+        for aresta in self._arestas.values():
+            if vertice == aresta.v1:
                 grau += 1
-            if vertice == aresta.get_v2():
+            if vertice == aresta.v2:
                 grau += 1
         return grau
 
@@ -65,9 +65,9 @@ class MeuGrafo(GrafoListaAdjacencia):
         if not self.existe_rotulo_vertice(V):
             raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
         arestas = set()
-        for a in self.A.values():
-            if a.get_v1().get_rotulo() == V or a.get_v2().get_rotulo() == V:
-                arestas.add(a.get_rotulo())
+        for a in self._arestas.values():
+            if a.v1.rotulo == V or a.v2.rotulo == V:
+                arestas.add(a.rotulo)
         return arestas
 
     def eh_laco(self, adj=''):
@@ -96,18 +96,18 @@ class MeuGrafo(GrafoListaAdjacencia):
         adj = list(self.arestas_sobre_vertice(V))
         adj.sort()
         for i in adj:
-            a = self.A[i]
-            proximo_vertice = a.get_v2() if a.get_v1() == V else a.get_v1()
+            a = self._arestas[i]
+            proximo_vertice = a.v2() if a.v1() == V else a.v1()
             if not arvore_dfs.existe_vertice(proximo_vertice):
                 arvore_dfs.adiciona_vertice(proximo_vertice)
-                arvore_dfs.adiciona_aresta(a.get_rotulo(), a.get_v1(), a.get_v2())
+                arvore_dfs.adiciona_aresta(a.rotulo(), a.v1(), a.v2())
                 self.dfs_rec(proximo_vertice, arvore_dfs)
         return arvore_dfs
 
     def vertice_oposto(self, a: Aresta, v):
-        if self.A[a].get_v1() == v:
-            return self.A[a].get_v2()
-        return self.A[a].get_v1()
+        if self._arestas[a].v1() == v:
+            return self._arestas[a].v2()
+        return self._arestas[a].v1()
 
     def seleciona_proximo_v(self, temp, menor_caminho_v):
         menor = maxsize
@@ -123,7 +123,7 @@ class MeuGrafo(GrafoListaAdjacencia):
         temp = dict()
         predecessor = dict()
         carga_v = dict()
-        for v in self.N:
+        for v in self._vertices:
             menor_caminho_v[v] = maxsize
             temp[v] = True
             predecessor[v] = ""
@@ -137,8 +137,8 @@ class MeuGrafo(GrafoListaAdjacencia):
 
             for a in arestas:
                 v_oposto = self.vertice_oposto(a, w)
-                if (menor_caminho_v[v_oposto] > menor_caminho_v[w] + self.A[a].get_peso()):
-                    menor_caminho_v[v_oposto] = menor_caminho_v[w] + self.A[a].get_peso()
+                if (menor_caminho_v[v_oposto] > menor_caminho_v[w] + self._arestas[a].peso()):
+                    menor_caminho_v[v_oposto] = menor_caminho_v[w] + self._arestas[a].peso()
                     predecessor[v_oposto] = (w, a)
 
             temp[w] = False

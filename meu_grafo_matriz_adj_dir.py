@@ -6,15 +6,15 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
 
     def vertices_nao_adjacentes(self):
         nao_adjacentes = list()
-        for i in range(len(self.N)):
-            for j in range(len(self.N)):
-                if i != j and not bool(self.M[i][j]):
-                    nao_adjacentes.append('{}-{}'.format(self.N[i], self.N[j]))
+        for i in range(len(self._vertices)):
+            for j in range(len(self._vertices)):
+                if i != j and not bool(self._matriz[i][j]):
+                    nao_adjacentes.append('{}-{}'.format(self._vertices[i], self._vertices[j]))
         return nao_adjacentes
 
     def ha_laco(self):
-        for i in range(len(self.M)):
-            if bool(self.M[i][i]):
+        for i in range(len(self._matriz)):
+            if bool(self._matriz[i][i]):
                 return True
         return False
 
@@ -24,19 +24,19 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
             raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
 
         grau = 0
-        for i in range(len(self.M)):
-            for j in range(len(self.M)):
-                for k in self.M[i][j].values():
-                    if k.get_v1().get_rotulo() == V:
+        for i in range(len(self._matriz)):
+            for j in range(len(self._matriz)):
+                for k in self._matriz[i][j].values():
+                    if k.v1.rotulo == V:
                         grau += 1
-                    if k.get_v2().get_rotulo() == V:
+                    if k.v2.rotulo == V:
                         grau += 1
         return grau
 
     def ha_paralelas(self):
-        for i in range(len(self.M)):
-            for j in range(len(self.M)):
-                if len(self.M[i][j]) > 1:
+        for i in range(len(self._matriz)):
+            for j in range(len(self._matriz)):
+                if len(self._matriz[i][j]) > 1:
                     return True
         return False
 
@@ -46,13 +46,13 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
             raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
         arestas = set()
         v = self.get_vertice(V)
-        v = self.N.index(v)
-        for i in range(len(self.M)):
-            if bool(self.M[v][i]):
-                for k in self.M[v][i]:
+        v = self._vertices.index(v)
+        for i in range(len(self._matriz)):
+            if bool(self._matriz[v][i]):
+                for k in self._matriz[v][i]:
                     arestas.add(k)
-            if bool(self.M[i][v]):
-                for l in self.M[i][v]:
+            if bool(self._matriz[i][v]):
+                for l in self._matriz[i][v]:
                     arestas.add(l)
         return arestas
 
@@ -79,41 +79,41 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
         adj.sort()
         for i in adj:
             a = self.A[i]
-            proximo_vertice = a.get_v2() if a.get_v1() == V else a.get_v1()
+            proximo_vertice = a.v2() if a.v1() == V else a.v1()
             if not arvore_dfs.existe_vertice(proximo_vertice):
                 arvore_dfs.adiciona_vertice(proximo_vertice)
-                arvore_dfs.adiciona_aresta(a.get_rotulo(), a.get_v1(), a.get_v2())
+                arvore_dfs.adiciona_aresta(a.rotulo(), a.v1(), a.v2())
                 self.dfs_rec(proximo_vertice, arvore_dfs)
         return arvore_dfs
 
     def warshall(self):
-        m = deepcopy(self.M)
-        for i in range(len(self.N)):
-            for j in range(len(self.N)):
-                if len(self.M[i][j]) > 0:
+        m = deepcopy(self._matriz)
+        for i in range(len(self._vertices)):
+            for j in range(len(self._vertices)):
+                if len(self._matriz[i][j]) > 0:
                     m[i][j] = 1
                 else:
                     m[i][j] = 0
 
-        for i in range(len(self.N)):
-            for j in range(len(self.N)):
+        for i in range(len(self._vertices)):
+            for j in range(len(self._vertices)):
                 if m[j][i] == 1:
-                    for k in range(len(self.N)):
+                    for k in range(len(self._vertices)):
                         m[j][k] = max(m[j][k], m[i][k])
 
         return m
 
     def vertice_oposto(self, a, v):
-        if a.get_v1() == v:
-            return a.get_v2()
-        return a.get_v1()
+        if a.v1() == v:
+            return a.v2()
+        return a.v1()
 
     def menor_nao_visitado(self, beta, visitado):
         aux = deepcopy(beta)
         while True:
             minimo = min(aux)
             i_v = beta.index(minimo)
-            v = self.N[i_v]
+            v = self._vertices[i_v]
             if visitado[v] == 1 and len(aux) > 0:
                 aux.remove(minimo)
             else:
@@ -127,12 +127,12 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
         visitado = dict()
         predecessor = dict()
 
-        for i in self.N:
+        for i in self._vertices:
             beta.append(maxsize)
             visitado[i] = 0
             predecessor[i] = 0
 
-        indice_v = self.N.index(u)
+        indice_v = self._vertices.index(u)
         beta[indice_v] = 0
         visitado[u] = 1
 
@@ -142,10 +142,10 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
             arestas = self.arestas_sobre_vertice(w)
             for a in arestas:
                 r = self.vertice_oposto(a, w)
-                i_r = self.N.index(r)
-                i_w = self.N.index(w)
-                if beta[i_r] > beta[i_w]+a.get_peso():
-                    beta[i_r] = beta[i_w]+a.get_peso()
+                i_r = self._vertices.index(r)
+                i_w = self._vertices.index(w)
+                if beta[i_r] > beta[i_w]+a.peso():
+                    beta[i_r] = beta[i_w]+a.peso()
                     predecessor[r] = w
 
             # Achando r*
