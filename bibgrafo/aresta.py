@@ -1,62 +1,123 @@
+# -*- coding: utf-8 -*-
+
 from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import VerticeInvalidoError
 
-class Aresta:
 
-    v1: Vertice
-    v2: Vertice
-    rotulo: str
-    peso: int
+class Aresta:
+    """
+    Esta classe representa uma aresta de um Grafo.
+
+    Attributes:
+        _rotulo (str): O rótulo (ou nome) da aresta
+        _v1 (Vertice): O primeiro vértice da aresta
+        _v2 (Vertice): O segundo vértice da aresta
+        _peso (int): O peso da aresta
+    """
+
+    _rotulo: str
+    _v1: Vertice
+    _v2: Vertice
+    _peso: int
 
     def __init__(self, rotulo: str, v1: Vertice, v2: Vertice, peso: int = 1):
+        """
+        Constrói um objeto do tipo Aresta.
+        Se o peso não for especificado, será considerado 1.
+        Args:
+            rotulo (str): O rótulo (ou nome) do vértice.
+            v1 (Vertice): O primeiro vértice da aresta.
+            v2 (Vertice): O segundo vértice da aresta.
+            peso (int): O peso da aresta.
+        """
         if not isinstance(v1, Vertice) or not isinstance(v2, Vertice):
-            raise VerticeInvalidoError("Os vértices passados com parâmetro são inválidos")
-        self.set_v1(v1)
-        self.set_v2(v2)
-        self.set_rotulo(rotulo)
-        self.set_peso(peso)
+            raise VerticeInvalidoError("Os vértices passados com parâmetro são inválidos.")
+        self._v1 = v1
+        self._v2 = v2
+        self._rotulo = rotulo
+        self._peso = peso
 
-    def get_v1(self) -> Vertice:
-        return self.v1
+    @property
+    def rotulo(self):
+        """ str: O rótulo (ou nome) da aresta. """
+        return self._rotulo
 
-    def get_v2(self) -> Vertice:
-        return self.v2
+    @rotulo.setter
+    def rotulo(self, novo_rotulo):
+        self._rotulo = novo_rotulo
 
-    def set_v1(self, v: Vertice):
-        self.v1 = v
+    @property
+    def v1(self):
+        """ Vertice: O primeiro vértice da aresta. """
+        return self._v1
 
-    def set_v2(self, v: Vertice):
-        self.v2 = v
+    @v1.setter
+    def v1(self, v: Vertice):
+        self._v1 = v
 
-    def get_peso(self):
-        return self.peso
+    @property
+    def v2(self):
+        """ Vertice: O segundo vértice da aresta. """
+        return self._v2
 
-    def set_peso(self, p):
+    @v2.setter
+    def v2(self, v: Vertice):
+        self._v2 = v
+
+    @property
+    def peso(self):
+        """ int: O peso da aresta. """
+        return self._peso
+
+    @peso.setter
+    def peso(self, p):
         if type(p) == int or type(p) == float:
-            self.peso = p
+            self._peso = p
         else:
-            raise TypeError("O peso deve ser um inteiro ou real")
-
-    def get_rotulo(self):
-        return self.rotulo
-
-    def set_rotulo(self, r=''):
-        self.rotulo = r
+            raise TypeError("O peso deve ser um inteiro ou real.")
 
     def eh_ponta(self, v):
-        return v == self.v1 or v == self.v2
+        """
+        Verifica se um vértice passado como parâmetro é uma das pontas da aresta.
+        Args:
+            v: O vértice que se deseja verificar se é ponta da aresta.
+        Returns:
+            True se for ponta da aresta ou False, caso contrário.
+        """
+        return v == self._v1 or v == self._v2
 
     def __eq__(self, other):
-        return ((self.v1 == other.get_v1() and self.v2 == other.get_v2()) or (
-                self.v1 == other.get_v2() and self.v2 == other.get_v1())) and self.rotulo == other.get_rotulo() and self.get_peso() == other.get_peso()
+        """
+        É chamado quando se tenta usar o operador de igualdade entre uma Aresta e outro objeto.
+        Args:
+            other: O outro objeto que se deseja verificar a igualdade.
+        Returns:
+            True se os objetos forem iguais ou False, caso contrário.
+        """
+        return ((self._v1 == other.v1 and self._v2 == other.v2) or
+                (self._v1 == other.v2 and self._v2 == other.v1)) and \
+                self._rotulo == other.rotulo and self.peso == other.peso
 
     def __str__(self):
-        return "{}({}-{}), {}".format(self.get_rotulo(), self.get_v1(), self.get_v2(), self.get_peso())
+        """
+        Fornece uma representação em String de uma aresta
+        """
+        return "{}({}-{}), {}".format(self.rotulo, self.v1, self.v2, self.peso)
 
 
 class ArestaDirecionada(Aresta):
     def __eq__(self, other):
-        return self.v1 == other.get_v1() and self.v2 == other.get_v2() and self.rotulo == other.get_rotulo() and self.get_peso() == other.get_peso()
+        """
+        É chamado quando se tenta usar o operador de igualdade entre uma Aresta e outro objeto.
+        Args:
+            other: O outro objeto que se deseja verificar a igualdade.
+        Returns:
+            True se os objetos forem iguais ou False, caso contrário.
+        """
+        return self._v1 == other.v1 and self._v2 == other.v2 and self._rotulo == other.rotulo and self._peso == other.peso()
 
     def __str__(self):
-        return "{}({}->{}), {}".format(self.get_rotulo(), self.get_v1(), self.get_v2(), self.get_peso())
+        """
+        Fornece uma representação em String de uma aresta
+        """
+        return "{}({}->{}), {}".format(self._rotulo, self._v1, self._v2, self._peso)
