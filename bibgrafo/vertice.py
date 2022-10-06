@@ -38,7 +38,7 @@ class Vertice:
     def attr(self):
         """
         dict: Um dicionário de atributos do vértice.
-        De acordo com a modelagem ques e deseja fazer, vértices podem ter atributos não previstos nessa implementação.
+        De acordo com a modelagem que se deseja fazer, vértices podem ter atributos não previstos nessa implementação.
         Dessa forma, foi incluído um dicionário de atributos para que o usuário possa incluir outros atributos que
         desejar.
         """

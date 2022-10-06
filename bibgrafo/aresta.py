@@ -1,7 +1,3 @@
-"""
-Este módulo contém a classe Aresta
-"""
-
 from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import VerticeInvalidoError
 
