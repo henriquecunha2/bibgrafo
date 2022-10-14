@@ -17,9 +17,6 @@ class GrafoListaAdjacencia(GrafoIF):
         objeto do tipo Aresta que deve conter referências para os vértices
     """
 
-    _vertices: list
-    _arestas: dict
-
     def __init__(self, vertices=None, arestas=None):
         """
         Constrói um objeto do tipo GrafoListaAdjacencia. Se nenhum parâmetro for passado, cria um Grafo vazio.

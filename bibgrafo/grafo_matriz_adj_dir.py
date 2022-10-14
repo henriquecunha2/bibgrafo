@@ -17,9 +17,6 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         e que cada aresta tenha seus próprios atributos distintos.
     """
 
-    _vertices: list
-    _matriz: list
-
     def __init__(self, vertices: list = None, matriz: list = None):
         """
         Constrói um objeto do tipo grafo direcionado com matriz de adjacência.

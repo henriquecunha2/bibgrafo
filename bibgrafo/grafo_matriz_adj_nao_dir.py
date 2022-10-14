@@ -17,9 +17,6 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         objeto do tipo Aresta que deve conter referências para os vértices
     """
 
-    _vertices: list
-    _matriz: list
-
     def __init__(self, vertices=None, matriz=None):
         """
         Constrói um objeto do tipo grafo não direcionado com matriz de adjacência.
