@@ -175,6 +175,12 @@ class TestGrafo(unittest.TestCase):
         self.g_d2.adiciona_vertice("C")
         self.g_d2.adiciona_vertice("D")
 
+        # Grafo p\teste de remoção em casta
+        self.g_r = MeuGrafo()
+        self.g_r.adiciona_vertice('A')
+        self.g_r.adiciona_vertice('B')
+        self.g_r.adiciona_aresta('1', 'A', 'B')
+
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
         a = Aresta("zxc", self.g_p.get_vertice("C"), self.g_p.get_vertice("Z"))
@@ -193,6 +199,15 @@ class TestGrafo(unittest.TestCase):
             self.g_p.adiciona_aresta('x', 'J', 'V')
         with self.assertRaises(ArestaInvalidaError):
             self.g_p.adiciona_aresta('a1', 'J', 'C')
+
+    def test_remove_vertice(self):
+        self.assertIsNone(self.g_r.remove_vertice('A'))
+        self.assertFalse(self.g_r.existe_rotulo_vertice('A'))
+        self.assertFalse(self.g_r.existe_rotulo_aresta('1'))
+        with self.assertRaises(VerticeInvalidoError):
+            self.g_r.get_vertice('A')
+        self.assertFalse(self.g_r.get_aresta('1'))
+        self.assertEqual(self.g_r.arestas_sobre_vertice('B'), set())
 
     def test_eq(self):
         self.assertEqual(self.g_p, self.g_p2)
