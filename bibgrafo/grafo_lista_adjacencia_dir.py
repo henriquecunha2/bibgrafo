@@ -165,14 +165,6 @@ class GrafoListaAdjacenciaDir(GrafoIF):
             VerticeInvalidoError se o vértice passado como parâmetro não existir no grafo.
         """
         newA = dict()
-        #if self.existe_rotulo_vertice(v):
-        #    self._vertices.remove(v)
-        #    for a in self._arestas.keys():
-        #        if not(self._arestas[a].eh_ponta(v)):
-        #            newA[a] = self._arestas[a]
-        #    self._arestas = newA
-        # else:
-        #    raise VerticeInvalidoError('O vértice {} não existe no grafo.'.format(v))
         vertice = self.get_vertice(v)
         for a in self._arestas.keys():
             if not(self._arestas[a].eh_ponta(vertice)): newA[a] = self._arestas[a]
