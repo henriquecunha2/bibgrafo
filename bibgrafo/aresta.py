@@ -111,7 +111,7 @@ class ArestaDirecionada(Aresta):
         Returns:
             True se os objetos forem iguais ou False, caso contrário.
         """
-        return self._v1 == other.v1 and self._v2 == other.v2 and self._rotulo == other.rotulo and self._peso == other.peso()
+        return self._v1 == other.v1 and self._v2 == other.v2 and self._rotulo == other.rotulo and self._peso == other.peso
 
     def __str__(self):
         """
