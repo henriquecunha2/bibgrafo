@@ -85,17 +85,41 @@ class MeuGrafo(GrafoListaAdjacenciaDirecionado):
 
         def dfs_rec(V: str, arvore_dfs: MeuGrafo):
             adj = list(self.arestas_sobre_vertice(V))
-            # adj.sort()
+            adj.sort()
             for i in adj:
-                a: ArestaDirecionada = self._arestas[i.rotulo]
-                proximo_vertice = a.v2 if a.v1.rotulo == V else a.v1
-                if not arvore_dfs.existe_vertice(proximo_vertice):
+                a: ArestaDirecionada = self._arestas[i]
+                proximo_vertice = a.v2 if a.v1.rotulo == V else None
+                if not proximo_vertice: continue
+                elif not arvore_dfs.existe_rotulo_vertice(proximo_vertice.rotulo):
                     arvore_dfs.adiciona_vertice(proximo_vertice.rotulo)
                     arvore_dfs.adiciona_aresta(a.rotulo, a.v1.rotulo, a.v2.rotulo)
                     dfs_rec(proximo_vertice.rotulo, arvore_dfs)
             return arvore_dfs
 
         return dfs_rec(raiz, arvore_dfs)
+
+
+    def bfs(self, raiz=''):
+        arvore_bfs = MeuGrafo()
+        arvore_bfs.adiciona_vertice(raiz)
+
+        def bfs_rec(V: str, arvore_bfs: MeuGrafo):
+            adj = list(self.arestas_sobre_vertice(V))
+            adj = sorted(adj)
+            vertices_adj = []
+            for i in adj:
+                a: ArestaDirecionada = self._arestas[i]
+                proximo_vertice = a.v2 if a.v1.rotulo == V else None
+                if not proximo_vertice: continue
+                elif not arvore_bfs.existe_rotulo_vertice(proximo_vertice.rotulo):
+                    vertices_adj.append(proximo_vertice)
+                    arvore_bfs.adiciona_vertice(proximo_vertice.rotulo)
+                    arvore_bfs.adiciona_aresta(a.rotulo, a.v1.rotulo, a.v2.rotulo)
+            for v in vertices_adj: bfs_rec(v.rotulo, arvore_bfs)
+            return arvore_bfs
+
+        return bfs_rec(raiz, arvore_bfs)
+
 
 
 
