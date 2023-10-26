@@ -68,7 +68,7 @@ class GrafoBuilder:
                     self.__grafo.adiciona_aresta(str(i) + 'l',
                         vertices[v], vertices[v], peso(peso_max))
 
-            if sum(range(1, len(vertices) + 1)) < 2 * qtd:
+            if qtd > (len(vertices) * (len(vertices) - 1)) / 2: # créditos ao ChatGPT
                 raise GrafoBuilderError('Não é possível gerar um grafo com esta quantidade de arestas')
             for i in range(qtd):
                 if len(vertices) > 2:
