@@ -5,6 +5,7 @@ from bibgrafo.grafo import GrafoIF
 class GrafoBuilder:
     def __init__(self):
         self.__grafo = None
+        self.__completo = False
 
     def build(self):
         return self.__grafo
@@ -25,13 +26,19 @@ class GrafoBuilder:
                 self.__grafo.adiciona_vertice(chr(ord(start) + i))
         return self
 
-    def arestas(self, qtd: int=1, completo=False, laco=False, qtd_laco=1,
+    def arestas(self, arestas=list(), qtd: int=1, completo=False, laco=False, qtd_laco=1,
         conexo=True, qtd_desconexo=2, paralelas=False, qtd_paralelas=1, peso_max=1):
 
         def peso(peso_max: int):
             if peso_max == 0: raise GrafoBuilderError('O peso das arestas deve ser maior que zero')
             elif peso_max == 1: return 1
             else: return randrange(1, peso_max)
+
+        if len(arestas) > 0:
+            for a in arestas:
+                try: self.__grafo.adiciona_aresta(a)
+                except NotImplementedError: raise GrafoBuilderError('Este grafo não suporta este tipo de Aresta')
+            return self
 
         name_a = 'a'
         vertices = [v.rotulo for v in self.__grafo.vertices]
