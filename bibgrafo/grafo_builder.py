@@ -1,5 +1,5 @@
-from random import randrange
-from bibgrafo.grafo_errors import GrafoBuilderError, GrafoInvalidoError
+from random import randrange, shuffle
+from bibgrafo.errors import GrafoBuilderError, GrafoInvalidoError
 from bibgrafo.grafo import GrafoIF
 
 class GrafoBuilder:
@@ -47,8 +47,10 @@ class GrafoBuilder:
                 raise GrafoBuilderError('A lista de vértices ainda está vazia.')
             for v1 in range(len(vertices)):
                 for v2 in range(v1 + 1, len(vertices)):
+                    par_v = [vertices[v1], vertices[v2]]
+                    shuffle(par_v)
                     self.__grafo.adiciona_aresta(name_a + str(v2),
-                        vertices[v1], vertices[v2], peso(peso_max))
+                        par_v[0], par_v[1], peso(peso_max))
                 name_a = chr(ord(name_a) + 1)
 
         else:
@@ -82,12 +84,14 @@ class GrafoBuilder:
                     while True:
                         v1 = randrange(len(vertices))
                         v2 = randrange(len(vertices))
-                        par_v = '%s-%s' % (vertices[v1], vertices[v2])
-                        if par_v not in adjacentes and v2 != v1: break
+                        par_adj = '%s-%s' % (vertices[v1], vertices[v2])
+                        if par_adj not in adjacentes and v2 != v1: break
                 else:
                     v1, v2 = 0, 1
+                par_v = [vertices[v1], vertices[v2]]
+                shuffle(par_v)
                 self.__grafo.adiciona_aresta(name_a + str(i),
-                    vertices[v1], vertices[v2], peso(peso_max))
+                    par_v[0], par_v[1], peso(peso_max))
                 adjacentes.add('%s-%s' % (vertices[v1], vertices[v2]))
 
             if paralelas:
