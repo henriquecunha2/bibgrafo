@@ -1,5 +1,5 @@
 from random import randrange, shuffle
-from bibgrafo.errors import GrafoBuilderError, GrafoInvalidoError
+from bibgrafo.grafo_errors import GrafoBuilderError, GrafoInvalidoError
 from bibgrafo.grafo import GrafoIF
 
 class GrafoBuilder:
