@@ -5,9 +5,10 @@ from bibgrafo.grafo import GrafoIF
 class GrafoBuilder:
     def __init__(self):
         self.__grafo = None
-        self.__completo = False
 
     def build(self):
+        # TODO: O build deve gravar o grafo construído em um arquivo JSON
+        # (construir um bibgrafo.grafo_reader)
         return self.__grafo
 
     def tipo(self, grafo: GrafoIF):
@@ -24,15 +25,16 @@ class GrafoBuilder:
         else:
             for i in range(qtd):
                 self.__grafo.adiciona_vertice(chr(ord(start) + i))
+        # TODO: e se qtd > 26? (alfabeto) gerar 27 == 'AA'
         return self
 
     def arestas(self, arestas=list(), qtd: int=1, completo=False, laco=False, qtd_laco=1,
-        conexo=True, qtd_desconexo=2, paralelas=False, qtd_paralelas=1, peso_max=1):
+        conexo=True, qtd_desconexo=2, paralelas=False, qtd_paralelas=1, peso_max=1, peso_min=0):
 
         def peso(peso_max: int):
-            if peso_max == 0: raise GrafoBuilderError('O peso das arestas deve ser maior que zero')
-            elif peso_max == 1: return 1
-            else: return randrange(1, peso_max)
+            if peso_max <= peso_min: raise GrafoBuilderError('O intervalo para o peso das arestas é inválido')
+            elif peso_max == 1 and peso_min: return 1
+            else: return randrange(peso_min, peso_max)
 
         if len(arestas) > 0:
             for a in arestas:
@@ -80,6 +82,7 @@ class GrafoBuilder:
             if qtd > (len(vertices) * (len(vertices) - 1)) / 2: # créditos ao ChatGPT
                 raise GrafoBuilderError('Não é possível gerar um grafo com esta quantidade de arestas')
             for i in range(qtd):
+                # TODO: gerar uma lista de todos os pares possíveis, ao invés de usar um while
                 if len(vertices) > 2:
                     while True:
                         v1 = randrange(len(vertices))

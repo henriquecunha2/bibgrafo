@@ -5,9 +5,13 @@ from meu_grafo_teste_builder import *
 
 class TestBuilderGrafo(unittest.TestCase):
 
+    def test_arestas(self):
+        pass
+
     def test_grafo_completo(self):
         for i in range(50):
-            grafo = GrafoBuilder().tipo(MeuGrafo()).vertices(qtd=5)\
+            if i == 0: continue
+            grafo = GrafoBuilder().tipo(MeuGrafo()).vertices(qtd=i)\
                 .arestas(completo=True).build()
             self.assertTrue(grafo.eh_completo())
 
