@@ -176,7 +176,6 @@ class GrafoBuilder:
                 pares_arestas.append(par_v)
 
             if paralelas:
-                arestas = [a for a in self.__grafo.arestas.values()]
                 for i in range(qtd_paralelas):
                     a = pares_arestas[randint(0, len(pares_arestas) - 1)]
                     self.__grafo.adiciona_aresta(str(i) + 'p',
