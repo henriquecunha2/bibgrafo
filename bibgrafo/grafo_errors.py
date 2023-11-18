@@ -20,3 +20,9 @@ class MatrizInvalidaError(Exception):
     Pode ser usada nas classes GrafoMatrizAdjacenciaDirecionado e GrafoMatrizAdjacenciaNaoDirecionado.
     """
     pass
+
+class GrafoJSONError(Exception):
+    """
+    Esta classe deve ser usada para erros no módulo GrafoJSON, quando informações inválidas forem passadas
+    para as funções do módulo.
+    """
