@@ -14,7 +14,6 @@ class GrafoJSON:
 
         for v in grafo.vertices: grafo_dict['n'].append(v.rotulo)
 
-        # para matriz de adj
         if hasattr(grafo, 'matriz'):
             for v1 in range(len(grafo.vertices)):
                 for v2 in range(len(grafo.vertices)):
@@ -42,7 +41,7 @@ class GrafoJSON:
         return grafo_dict
 
     @staticmethod
-    def json_to_grafo(path:str, grafo: GrafoIF):
+    def json_to_grafo(path: str, grafo: GrafoIF):
         if not isinstance(grafo, GrafoIF):
             raise GrafoJSONError('O objeto informado não é um grafo')
 
@@ -55,3 +54,5 @@ class GrafoJSON:
         for a in grafo_dict['a']:
             grafo.adiciona_aresta(a, grafo_dict['g'][a]['v1'],
                 grafo_dict['g'][a]['v2'], grafo_dict['g'][a]['peso'])
+
+        return grafo
