@@ -42,7 +42,7 @@ class GrafoJSON:
         return grafo_dict
 
     @staticmethod
-    def json_to_grafo(grafo: GrafoIF, path: str):
+    def json_to_grafo(path:str, grafo: GrafoIF):
         if not isinstance(grafo, GrafoIF):
             raise GrafoJSONError('O objeto informado não é um grafo')
 
