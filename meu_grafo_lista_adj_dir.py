@@ -1,4 +1,4 @@
-from bibgrafo.grafo_lista_adjacencia_dir import *
+from bibgrafo.grafo_lista_adj_dir import *
 from bibgrafo.grafo_errors import *
 from bibgrafo.aresta import ArestaDirecionada
 from bibgrafo.vertice import Vertice

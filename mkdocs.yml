@@ -31,7 +31,8 @@ nav:
       - aresta: modules/bibgrafo/aresta.md
       - grafo: modules/bibgrafo/grafo.md
       - grafo_errors: modules/bibgrafo/grafo_errors.md
-      - grafo_lista_adjacencia: modules/bibgrafo/grafo_lista_adjacencia.md
+      - grafo_lista_adj_nao_dir: modules/bibgrafo/grafo_lista_adj_nao_dir.md
+      - grafo_lista_adj_dir: modules/bibgrafo/grafo_lista_adj_dir.md
       - grafo_matriz_adj_dir: modules/bibgrafo/grafo_matriz_adj_dir.md
       - grafo_matriz_adj_nao_dir: modules/bibgrafo/grafo_matriz_adj_nao_dir.md
       - vertice: modules/bibgrafo/vertice.md

@@ -1,9 +1,9 @@
-from bibgrafo.grafo_lista_adjacencia import GrafoListaAdjacencia
+from bibgrafo.grafo_lista_adj_nao_dir import GrafoListaAdjacenciaNaoDirecionado
 from bibgrafo.aresta import Aresta
 from bibgrafo.grafo_errors import *
 from sys import maxsize
 
-class MeuGrafo(GrafoListaAdjacencia):
+class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
 
     def getListaAdjacencias(self):
         '''
