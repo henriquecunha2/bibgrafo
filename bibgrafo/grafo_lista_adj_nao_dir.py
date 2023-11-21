@@ -6,7 +6,7 @@ from multipledispatch import dispatch
 from copy import deepcopy
 
 
-class GrafoListaAdjacencia(GrafoIF):
+class GrafoListaAdjacenciaNaoDirecionado(GrafoIF):
 
     """
     Esta classe representa um grafo com implementação interna em lista de adjacência
@@ -19,7 +19,8 @@ class GrafoListaAdjacencia(GrafoIF):
 
     def __init__(self, vertices=None, arestas=None):
         """
-        Constrói um objeto do tipo GrafoListaAdjacencia. Se nenhum parâmetro for passado, cria um Grafo vazio.
+        Constrói um objeto do tipo GrafoListaAdjacenciaNaoDirecionado.
+        Se nenhum parâmetro for passado, cria um Grafo vazio.
         Se houver alguma aresta ou algum vértice inválido, um erro é lançado.
         Nessa implementação o Grafo é representado por uma lista de adjacências.
 
@@ -33,7 +34,7 @@ class GrafoListaAdjacencia(GrafoIF):
             vertices = list()
         else:
             for v in vertices:
-                if not (GrafoListaAdjacencia.vertice_valido(v)):
+                if not (GrafoListaAdjacenciaNaoDirecionado.vertice_valido(v)):
                     raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
         self._vertices = deepcopy(vertices)
 
@@ -57,7 +58,7 @@ class GrafoListaAdjacencia(GrafoIF):
             novos_vertices = list()
         else:
             for v in novos_vertices:
-                if not(GrafoListaAdjacencia.vertice_valido(v)):
+                if not(GrafoListaAdjacenciaNaoDirecionado.vertice_valido(v)):
                     raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
         self._vertices = deepcopy(novos_vertices)
 
@@ -96,7 +97,7 @@ class GrafoListaAdjacencia(GrafoIF):
             vertice: O vértice que deve ser verificado.
         Return: Um valor booleano que indica se o vértice existe no grafo.
         """
-        return GrafoListaAdjacencia.vertice_valido(vertice) and vertice in self._vertices
+        return GrafoListaAdjacenciaNaoDirecionado.vertice_valido(vertice) and vertice in self._vertices
 
     def existe_rotulo_vertice(self, rotulo: str) -> bool:
         """
@@ -280,8 +281,8 @@ class GrafoListaAdjacencia(GrafoIF):
 
     def __eq__(self, other):
         """
-        Define a igualdade entre a instância do GrafoListaAdjacencia para o qual essa função foi chamada e a
-        instância de um GrafoListaAdjacencia passado como parâmetro.
+        Define a igualdade entre a instância do GrafoListaAdjacenciaNaoDirecionado para o qual essa função foi chamada e a
+        instância de um GrafoListaAdjacenciaNaoDirecionado passado como parâmetro.
         Args:
             other: O grafo que deve ser comparado com este grafo.
         Returns:
