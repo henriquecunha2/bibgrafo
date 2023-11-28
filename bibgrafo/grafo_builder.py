@@ -1,5 +1,5 @@
 from functools import singledispatchmethod
-from random import randrange, shuffle, randint
+from random import randint, shuffle
 from bibgrafo.grafo_errors import GrafoBuilderError, GrafoInvalidoError
 from bibgrafo.grafo import GrafoIF
 
@@ -120,7 +120,7 @@ class GrafoBuilder:
                 peso_max: peso máximo possível das arestas.
                 lacos: quantidade de laços a serem adicionados.
                 paralelas: quantidade de arestas paralelas a serem adicionadas.
-                desconexos: quantidade de vértices desconexos.
+                desconexos: quantidade de vértices desconexos. Máximo: n - 2
             Raises:
                 GrafoBuilderError: se algum dos parâmetros passados for inválido (ex.: número
                 negativo de arestas ou laços), se o número de arestas for grande demais
@@ -133,7 +133,7 @@ class GrafoBuilder:
         if len(vertices) == 0: raise GrafoBuilderError('A lista de vértices ainda está vazia')
 
         desconexos = kwargs.get('desconexos', 0)
-        if desconexos < 0 or desconexos > len(vertices):
+        if desconexos < 0 or desconexos >= len(vertices) - 1:
             raise GrafoBuilderError('Forneça um número válido para os vértices desconexos')
         lacos = kwargs.get('lacos', 0)
         if lacos < 0: raise GrafoBuilderError('Forneça um número de laços positivo')
