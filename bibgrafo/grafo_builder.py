@@ -41,18 +41,21 @@ class GrafoBuilder:
     @singledispatchmethod
     def vertices(self, arg:int, **kwargs):
         '''
-            Recebe os parâmetros para inserção dos vértices pelo GrafoBuilder.
+            Esta assinatura da função vertices recebe um número inteiro
+            representando a quantidade de vértices a serem inseridos.
             Args:
-                vertices: recebe uma lista de objetos do tipo bibgrafo.Vertice
-                Caso esta lista tenha um tamanho maior do que 1, este parâmetro
-                fará com que todos os outros sejam ignorados pela função.
-                qtd: a quantidade de vértices a serem adicionados.
-                start: recebe uma letra do alfabeto maiúscula, que será o rótulo
-                do primeiro vértice.
+                arg: número inteiro positivo para a quantidade de vértices
+                a serem adicionados no grafo.
+            Kwargs:
+                start: argumento opcional que recebe uma letra maiúscula,
+                que será o rótulo o primeiro vértice, a partir do qual
+                serão definidos os rótulos seguintes. O seu valor padrão
+                é a letra "A".
             Raises:
-                GrafoBuilderError: caso a lista de vértices não contenha objetos do tipo bibgrafo.Vertice
+                GrafoBuilderError: caso o valor de arg seja menor que zero
                 ou caso o caractere passado para 'start' não seja uma letra maiúscula
         '''
+        if arg < 0: raise GrafoBuilderError('Forneça um número de vértices válido')
         start = kwargs.get('start', 'A')
         if not start.isupper() or not start.isalpha():
             raise GrafoBuilderError('O rótulo dos vértices deve ser uma letra maiúscula')
@@ -73,6 +76,15 @@ class GrafoBuilder:
 
     @vertices.register
     def _(self, arg: list, **kwargs):
+        '''
+            Esta assinatura da função vertices recebe uma lista de vértices
+            a serem adicionados no grafo.
+            Args:
+                arg: lista de vértices, podendo ser do tipo bibgrafo.Vertice
+                ou strings, representando os seus rótulos.
+            Raises:
+                GrafoBuilderError: caso arg seja uma lista vazia.
+        '''
         if len(arg) == 0: raise GrafoBuilderError('A lista de vértices não pode estar vazia')
         for v in arg:
             self._grafo.adiciona_vertice(v)
@@ -80,15 +92,45 @@ class GrafoBuilder:
         return self
 
     def _peso(self, min, max):
+        '''
+            Função privada que randomiza o peso das arestas a serem adicionadas.
+            Caso min e max sejam 0 e 1, respectivamente, o valor retornado será 1.
+            Args:
+                min: valor mínimo, que tem por padrão o valor 0.
+                max: que tem por padrão o valor 1.
+            Raises:
+                GrafoBuilderError: caso o valor de min seja maior ou igual ao valor de max.
+        '''
         if min >= max: raise GrafoBuilderError('Forneça um intervalo válido para o peso das arestas')
         if min == 0 and max == 1: return max
         else: return randint(min, max)
 
     @singledispatchmethod
     def arestas(self, arg: int, **kwargs):
+        '''
+            Esta assinatura de arestas recebe um número inteiro positivo, que representa
+            a quantidade de arestas a serem adicionadas. Caso não sejam especificadas
+            quantidades de laços ou arestas paralelas, o grafo gerado será um grafo
+            simples. Também é possível especificar uma quantidade de vértices desconexos,
+            gerando assim um subgrafo completo entre estes.
+            Args:
+                arg: número inteiro positivo, quantidade de arestas a serem adicionadas.
+            Kwargs:
+                peso_min: peso mínimo possível das arestas.
+                peso_max: peso máximo possível das arestas.
+                lacos: quantidade de laços a serem adicionados.
+                paralelas: quantidade de arestas paralelas a serem adicionadas.
+                desconexos: quantidade de vértices desconexos.
+            Raises:
+                GrafoBuilderError: se algum dos parâmetros passados for inválido (ex.: número
+                negativo de arestas ou laços), se o número de arestas for grande demais
+                para um grafo simples (máximo: (n * (n - 1)) / 2), ou se a lista de vértices
+                não tiver sido implementada no grafo.
+        '''
         vertices = [v.rotulo for v in self._grafo.vertices]
-        if arg > (len(vertices) * (len(vertices) - 1)) / 2:
+        if arg > (len(vertices) * (len(vertices) - 1)) / 2 or arg < 0:
             raise GrafoBuilderError('Não é possível construir um grafo com esta quantidade de arestas')
+        if len(vertices) == 0: raise GrafoBuilderError('A lista de vértices ainda está vazia')
 
         desconexos = kwargs.get('desconexos', 0)
         if desconexos < 0 or desconexos > len(vertices):
@@ -145,10 +187,20 @@ class GrafoBuilder:
         return self
 
     @arestas.register
+        '''
+            Esta assinatura da função arestas recebe um valor booleano,
+            sinalizando assim que o grafo a ser construído deve ser um grafo
+            Kn, sendo n o número de vértices adicionados.
+            Args:
+                arg: valor booleano.
+            Raises:
+                GrafoBuilderError: caso a lista de vértices ainda estiver vazia.
+        '''
     def _(self, arg: bool, **kwargs):
         peso_min = kwargs.get('peso_min', 0)
         peso_max = kwargs.get('peso_max', 1)
         vertices = [v.rotulo for v in self._grafo.vertices]
+        if len(vertices) == 0: raise GrafoBuilderError('A lista de vértices ainda está vazia')
         rotulo_a = 1
         for v1 in range(len(vertices)):
             for v2 in range(v1 + 1, len(vertices)):
@@ -160,6 +212,15 @@ class GrafoBuilder:
 
     @arestas.register
     def _(self, arg:list, **kwargs):
+        '''
+            Esta assinatura da função arestas recebe uma lista de objetos
+            do tipo bibgrafo.Aresta, que serão adicionadas no grafo.
+            Args:
+                arg: lista de objetos do tipo bibgrafo.Aresta.
+            Raises:
+                GrafoBuilderError: caso a lista de vértices ainda estiver vazia.
+        '''
+        if len(self.__grafo.vertices) == 0: raiseGrafoBuilderError('A lista de vértices ainda está vazia')
         for aresta in arg:
             self._grafo.adiciona_aresta(aresta)
         return self
