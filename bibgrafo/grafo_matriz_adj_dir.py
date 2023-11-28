@@ -139,10 +139,13 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         Returns:
             Um objeto do tipo vértice que tem como rótulo o parâmetro passado ou False se o vértice não
             for encontrado.
+        Raises:
+            VerticeInvalidoError: caso o vértice não seja encontrado.
         """
         for i in self._vertices:
             if rotulo == i.rotulo:
                 return i
+        raise VerticeInvalidoError('O vértice de rótulo %s não existe no grafo' % rotulo)
 
     def existe_rotulo_vertice(self, rotulo: str):
         """
