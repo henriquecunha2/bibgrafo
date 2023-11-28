@@ -187,16 +187,19 @@ class GrafoBuilder:
         return self
 
     @arestas.register
+    def _(self, arg: bool, **kwargs):
         '''
             Esta assinatura da função arestas recebe um valor booleano,
             sinalizando assim que o grafo a ser construído deve ser um grafo
             Kn, sendo n o número de vértices adicionados.
             Args:
                 arg: valor booleano.
+            Kwargs:
+                peso_min: peso mínimo possível das arestas.
+                peso_max: peso máximo possível das arestas.
             Raises:
                 GrafoBuilderError: caso a lista de vértices ainda estiver vazia.
         '''
-    def _(self, arg: bool, **kwargs):
         peso_min = kwargs.get('peso_min', 0)
         peso_max = kwargs.get('peso_max', 1)
         vertices = [v.rotulo for v in self._grafo.vertices]
@@ -215,12 +218,24 @@ class GrafoBuilder:
         '''
             Esta assinatura da função arestas recebe uma lista de objetos
             do tipo bibgrafo.Aresta, que serão adicionadas no grafo.
+            É possível também usar os parâmetros opcionais de peso_min
+            e peso_max para randomizar o peso das arestas passadas.
             Args:
                 arg: lista de objetos do tipo bibgrafo.Aresta.
+            Kwargs:
+                peso_min: peso mínimo possível das arestas.
+                peso_max: peso máximo possível das arestas.
             Raises:
-                GrafoBuilderError: caso a lista de vértices ainda estiver vazia.
+                GrafoBuilderError: caso a lista de vértices ainda estiver vazia
+                ou se a lista de arestas passadas estiver vazia.
         '''
-        if len(self.__grafo.vertices) == 0: raiseGrafoBuilderError('A lista de vértices ainda está vazia')
+        peso_min = kwargs.get('peso_min', 0)
+        peso_max = kwargs.get('peso_max', 1)
+        if peso_min != 0 and peso_max != 1:
+            for aresta in arg: aresta.peso = self._peso(peso_min, peso_max)
+
+        if len(self._grafo.vertices) == 0: raiseGrafoBuilderError('A lista de vértices ainda está vazia')
+        elif len(arg) == 0: raise GrafoBuilderError('A lista de arestas não pode estar vazia')
         for aresta in arg:
             self._grafo.adiciona_aresta(aresta)
         return self
