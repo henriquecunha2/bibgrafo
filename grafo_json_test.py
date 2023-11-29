@@ -8,9 +8,9 @@ class GrafoJSONTest(unittest.TestCase):
     def setUp(self):
         self.g_l = GrafoListaAdjacenciaDirecionado()
         self.g_m = GrafoMatrizAdjacenciaDirecionado()
-        for i in range(5):
-            self.g_l.adiciona_vertice(chr(ord('A') + i))
-            self.g_m.adiciona_vertice(chr(ord('A') + i))
+        for v in ('A', 'B', 'C', 'D', 'E'):
+            self.g_l.adiciona_vertice(v)
+            self.g_m.adiciona_vertice(v)
         for v1 in range(len(self.g_l.vertices)):
             for v2 in range(v1 + 1, len(self.g_l.vertices)):
                 self.g_l.adiciona_aresta(chr(ord('a') + (v1)) + str(v2),
