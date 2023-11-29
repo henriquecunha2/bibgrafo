@@ -21,6 +21,12 @@ class MatrizInvalidaError(Exception):
     """
     pass
 
+class GrafoJSONError(Exception):
+    """
+    Esta classe deve ser usada para erros no módulo GrafoJSON, quando informações inválidas forem passadas
+    para as funções do módulo.
+    """
+
 class GrafoInvalidoError(Exception):
     """
     Esta classe deve ser usada quando uma instância que não herde de GrafoIF seja passada para o builder.
