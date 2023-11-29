@@ -1,7 +1,7 @@
 import unittest
 import os
 from bibgrafo.grafo_json import *
-from bibgrafo.grafo_lista_adjacencia_dir import *
+from bibgrafo.grafo_lista_adj_dir import *
 from bibgrafo.grafo_matriz_adj_dir import *
 
 class GrafoJSONTest(unittest.TestCase):
