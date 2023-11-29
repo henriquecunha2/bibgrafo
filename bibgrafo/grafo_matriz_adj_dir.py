@@ -155,7 +155,7 @@ class GrafoMatrizAdjacenciaDirecionado(GrafoIF):
         Returns:
             Um valor booleano que indica se o vértice existe no grafo.
         """
-        return self.get_vertice(rotulo) is not None
+        return rotulo in [v.rotulo for v in self.vertices]
 
     def indice_do_vertice(self, v: Vertice):
         """
