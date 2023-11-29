@@ -6,7 +6,7 @@ from random import shuffle
 from copy import deepcopy
 from multipledispatch import dispatch
 
-class MeuGrafo(GrafoListaAdjacencia):
+class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
 
     def vertices_nao_adjacentes(self):
         '''
