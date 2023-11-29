@@ -42,7 +42,12 @@ pages:
       - ArestaInvalidaError
       - MatrizInvalidaError
 
-  - page: "modules/bibgrafo/grafo_lista_adjacencia.md"
-    source: "bibgrafo/grafo_lista_adjacencia.py"
+  - page: "modules/bibgrafo/grafo_lista_adj_nao_dir.md"
+    source: "bibgrafo/grafo_lista_adj_nao_dir.py"
     classes:
-      - GrafoListaAdjacencia
+      - GrafoListaAdjacenciaNaoDirecionado
+
+  - page: "modules/bibgrafo/grafo_lista_adj_dir.md"
+    source: "bibgrafo/grafo_lista_adj_dir.py"
+    classes:
+      - GrafoListaAdjacenciaDirecionado
