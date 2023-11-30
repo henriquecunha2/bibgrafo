@@ -1,88 +1,26 @@
 import unittest
-from meu_grafo import *
+from meu_grafo_lista_adj_nao_dir import *
 from bibgrafo.grafo_errors import *
+from bibgrafo.grafo_json import GrafoJSON
+from bibgrafo.grafo_builder import GrafoBuilder
 
 
 class TestGrafo(unittest.TestCase):
 
     def setUp(self):
         # Grafo da Paraíba
-        self.g_p = MeuGrafo()
-        self.g_p.adiciona_vertice("J")
-        self.g_p.adiciona_vertice("C")
-        self.g_p.adiciona_vertice("E")
-        self.g_p.adiciona_vertice("P")
-        self.g_p.adiciona_vertice("M")
-        self.g_p.adiciona_vertice("T")
-        self.g_p.adiciona_vertice("Z")
-        self.g_p.adiciona_aresta('a1', 'J', 'C')
-        self.g_p.adiciona_aresta('a2', 'C', 'E')
-        self.g_p.adiciona_aresta('a3', 'C', 'E')
-        self.g_p.adiciona_aresta('a4', 'P', 'C')
-        self.g_p.adiciona_aresta('a5', 'P', 'C')
-        self.g_p.adiciona_aresta('a6', 'T', 'C')
-        self.g_p.adiciona_aresta('a7', 'M', 'C')
-        self.g_p.adiciona_aresta('a8', 'M', 'T')
-        self.g_p.adiciona_aresta('a9', 'T', 'Z')
+        self.g_p = GrafoJSON.json_to_grafo('test_json/grafo_pb.json', MeuGrafo())
 
         # Clone do Grafo da Paraíba para ver se o método equals está funcionando
-        self.g_p2 = MeuGrafo()
-        self.g_p2.adiciona_vertice("J")
-        self.g_p2.adiciona_vertice("C")
-        self.g_p2.adiciona_vertice("E")
-        self.g_p2.adiciona_vertice("P")
-        self.g_p2.adiciona_vertice("M")
-        self.g_p2.adiciona_vertice("T")
-        self.g_p2.adiciona_vertice("Z")
-        self.g_p2.adiciona_aresta('a1', 'J', 'C')
-        self.g_p2.adiciona_aresta('a2', 'C', 'E')
-        self.g_p2.adiciona_aresta('a3', 'C', 'E')
-        self.g_p2.adiciona_aresta('a4', 'P', 'C')
-        self.g_p2.adiciona_aresta('a5', 'P', 'C')
-        self.g_p2.adiciona_aresta('a6', 'T', 'C')
-        self.g_p2.adiciona_aresta('a7', 'M', 'C')
-        self.g_p2.adiciona_aresta('a8', 'M', 'T')
-        self.g_p2.adiciona_aresta('a9', 'T', 'Z')
+        self.g_p2 = GrafoJSON.json_to_grafo('test_json/grafo_pb2.json', MeuGrafo())
 
         # Outro clone do Grafo da Paraíba para ver se o método equals está funcionando
         # Esse tem um pequena diferença na primeira aresta
-        self.g_p3 = MeuGrafo()
-        self.g_p3.adiciona_vertice("J")
-        self.g_p3.adiciona_vertice("C")
-        self.g_p3.adiciona_vertice("E")
-        self.g_p3.adiciona_vertice("P")
-        self.g_p3.adiciona_vertice("M")
-        self.g_p3.adiciona_vertice("T")
-        self.g_p3.adiciona_vertice("Z")
-        self.g_p3.adiciona_aresta('a', 'J', 'C')
-        self.g_p3.adiciona_aresta('a2', 'C', 'E')
-        self.g_p3.adiciona_aresta('a3', 'C', 'E')
-        self.g_p3.adiciona_aresta('a4', 'P', 'C')
-        self.g_p3.adiciona_aresta('a5', 'P', 'C')
-        self.g_p3.adiciona_aresta('a6', 'T', 'C')
-        self.g_p3.adiciona_aresta('a7', 'M', 'C')
-        self.g_p3.adiciona_aresta('a8', 'M', 'T')
-        self.g_p3.adiciona_aresta('a9', 'T', 'Z')
+        self.g_p3 = GrafoJSON.json_to_grafo('test_json/grafo_pb3.json', MeuGrafo())
 
         # Outro clone do Grafo da Paraíba para ver se o método equals está funcionando
         # Esse tem um pequena diferença na segunda aresta
-        self.g_p4 = MeuGrafo()
-        self.g_p4.adiciona_vertice("J")
-        self.g_p4.adiciona_vertice("C")
-        self.g_p4.adiciona_vertice("E")
-        self.g_p4.adiciona_vertice("P")
-        self.g_p4.adiciona_vertice("M")
-        self.g_p4.adiciona_vertice("T")
-        self.g_p4.adiciona_vertice("Z")
-        self.g_p4.adiciona_aresta('a1', 'J', 'C')
-        self.g_p4.adiciona_aresta('a2', 'J', 'E')
-        self.g_p4.adiciona_aresta('a3', 'C', 'E')
-        self.g_p4.adiciona_aresta('a4', 'P', 'C')
-        self.g_p4.adiciona_aresta('a5', 'P', 'C')
-        self.g_p4.adiciona_aresta('a6', 'T', 'C')
-        self.g_p4.adiciona_aresta('a7', 'M', 'C')
-        self.g_p4.adiciona_aresta('a8', 'M', 'T')
-        self.g_p4.adiciona_aresta('a9', 'T', 'Z')
+        self.g_p4 = GrafoJSON.json_to_grafo('test_json/grafo_pb4.json', MeuGrafo())
 
         # Grafo da Paraíba sem arestas paralelas
         self.g_p_sem_paralelas = MeuGrafo()
