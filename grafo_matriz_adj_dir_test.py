@@ -75,15 +75,6 @@ class TestGrafo(unittest.TestCase):
         self.g_e.adiciona_aresta('9', 'E', 'A')
         self.g_e.adiciona_aresta('11', 'E', 'B')
 
-    def constroi_matriz(self, g: MeuGrafo):
-        ordem = len(g._vertices)
-        m = list()
-        for i in range(ordem):
-            m.append(list())
-            for j in range(ordem):
-                m[i].append(0)
-        return m
-
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
         a = ArestaDirecionada("zxc", self.g_p.get_vertice("C"), self.g_p.get_vertice("Z"))
