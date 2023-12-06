@@ -75,40 +75,6 @@ class TestGrafo(unittest.TestCase):
         self.g_e.adiciona_aresta('9', 'E', 'A')
         self.g_e.adiciona_aresta('11', 'E', 'B')
 
-        # Matrizes para teste do algoritmo de Warshall
-
-        self.g_p_m = self.constroi_matriz(self.g_p)
-        self.g_p_m[0][1] = 1
-        self.g_p_m[0][2] = 1
-        self.g_p_m[1][2] = 1
-        self.g_p_m[3][1] = 1
-        self.g_p_m[3][2] = 1
-        self.g_p_m[4][1] = 1
-        self.g_p_m[4][2] = 1
-        self.g_p_m[4][5] = 1
-        self.g_p_m[4][6] = 1
-        self.g_p_m[5][1] = 1
-        self.g_p_m[5][2] = 1
-        self.g_p_m[5][6] = 1
-
-        self.g_e_m = self.constroi_matriz(self.g_e)
-        for i in range(0, len(self.g_e_m)):
-            self.g_e_m[0][i] = 1
-            self.g_e_m[2][i] = 1
-            self.g_e_m[3][i] = 1
-            self.g_e_m[4][i] = 1
-
-        # Grafos desconexos
-        self.g_dijkstra = MeuGrafo()
-        self.g_dijkstra.adiciona_vertice("A")
-        self.g_dijkstra.adiciona_vertice("B")
-        self.g_dijkstra.adiciona_vertice("C")
-        self.g_dijkstra.adiciona_vertice("D")
-        self.g_dijkstra.adiciona_aresta('1', 'A', 'B', 1)
-        self.g_dijkstra.adiciona_aresta('2', 'A', 'C', 1)
-        self.g_dijkstra.adiciona_aresta('3', 'B', 'D', 1)
-        self.g_dijkstra.adiciona_aresta('2', 'C', 'D', 2)
-
     def constroi_matriz(self, g: MeuGrafo):
         ordem = len(g._vertices)
         m = list()
@@ -253,10 +219,3 @@ class TestGrafo(unittest.TestCase):
         with self.assertRaises(VerticeInvalidoError):
             self.g_p.arestas_sobre_vertice('A')
         self.assertEqual(set(self.g_e.arestas_sobre_vertice('D')), {'5', '6', '7', '8'})
-
-#     def test_warshall(self):
-#         self.assertEqual(self.g_p.warshall(), self.g_p_m)
-#         self.assertEqual(self.g_e.warshall(), self.g_e_m)
-
-#     def test_dijkstra(self):
-#         pass
