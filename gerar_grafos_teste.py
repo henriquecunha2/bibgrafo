@@ -4,11 +4,17 @@ from bibgrafo.grafo_lista_adj_dir import *
 from bibgrafo.aresta import ArestaDirecionada
 
 '''
-    TODO: adicionar docstring
+    Este arquivo pode ser executado para gerar os arquivos .json
+    que contém os grafos a serem utilizados pelos testes unitários
+    da biblioteca.
 '''
 
 vertices = ['J', 'C', 'E', 'P', 'M', 'T', 'Z']
 vertices_pb = {v: Vertice(v) for v in vertices}
+
+'''
+    Grafo da Paraíba.
+'''
 
 grafo_pb = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
     .vertices(vertices).arestas([
@@ -24,6 +30,11 @@ grafo_pb = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
     ]).build()
 
 GrafoJSON.grafo_to_json(grafo_pb, 'test_json/grafo_pb.json')
+
+'''
+    Cópia do grafo da Paraíba, para testes com o método
+    __eq__ (operador '==').
+'''
 
 grafo_pb2 = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
     .vertices(vertices).arestas([
@@ -79,6 +90,12 @@ grafo_pb4 = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
 
 GrafoJSON.grafo_to_json(grafo_pb4, 'test_json/grafo_pb4.json')
 
+'''
+    Este grafo é utilizado nos testes de grafos direcionados
+    para a função de detecção de arestas paralelas, contendo
+    arestas bidirecionais (sendo assim, não paralelas).
+'''
+
 grafo_pb5 = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
     .vertices(vertices).arestas([
         ArestaDirecionada('a1', vertices_pb['J'], vertices_pb['C']),
@@ -93,6 +110,10 @@ grafo_pb5 = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
     ]).build()
 
 GrafoJSON.grafo_to_json(grafo_pb5, 'test_json/grafo_pb5.json')
+
+'''
+    Este grafo é um grafo da Paraíba simples, sem as arestas paralelas.
+'''
 
 grafo_pb_simples = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
     .vertices(vertices).arestas([
@@ -120,6 +141,9 @@ b = Vertice('B')
 c = Vertice('C')
 d = Vertice('D')
 
+'''
+    Nesta seção, ficam os grafos que contém laços.
+'''
 grafo_l1 = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()).vertices(2) \
     .arestas([
         ArestaDirecionada('a1', a, a),
@@ -146,5 +170,3 @@ grafo_l3 = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
 GrafoJSON.grafo_to_json(grafo_l3, 'test_json/grafo_l3.json')
 
 grafo_l4 = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()).vertices([Vertice('A')]).build()
-
-# grafo_l4 e grafo_l5 para matrizes de adjacência podem ser aleatórios
