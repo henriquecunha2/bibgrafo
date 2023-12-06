@@ -164,7 +164,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         Raises:
             VerticeInvalidoException: se o vértice já existe ou se ele não estiver no formato válido.
         """
-        if GrafoMatrizAdjacenciaNaoDirecionado.existe_vertice(v):
+        if self.existe_vertice(v):
             raise VerticeInvalidoError('O vértice {} já existe'.format(v))
 
         if self.vertice_valido(v):

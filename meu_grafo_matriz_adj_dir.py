@@ -18,19 +18,18 @@ class MeuGrafo(GrafoMatrizAdjacenciaDirecionado):
                 return True
         return False
 
-    def grau(self, V=''):
-
-        if not self.existe_rotulo_vertice(V):
-            raise VerticeInvalidoError('O vértice {} não existe no grafo'.format(V))
-
+    def grau_entrada(self, V=''):
+        v = self.indice_do_vertice(self.get_vertice(V))
         grau = 0
-        for i in range(len(self._matriz)):
-            for j in range(len(self._matriz)):
-                for k in self._matriz[i][j].values():
-                    if k.v1.rotulo == V:
-                        grau += 1
-                    if k.v2.rotulo == V:
-                        grau += 1
+        for i in range(len(self.vertices)):
+            for a in self._matriz[i][v]: grau += 1
+        return grau
+
+    def grau_saida(self, V=''):
+        v = self.indice_do_vertice(self.get_vertice(V))
+        grau = 0
+        for i in range(len(self.vertices)):
+            for a in self._matriz[v][i]: grau += 1
         return grau
 
     def ha_paralelas(self):
