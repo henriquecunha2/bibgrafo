@@ -7,7 +7,7 @@ from bibgrafo.aresta import ArestaDirecionada
     TODO: adicionar docstring
 '''
 
-vertices = ['J', 'C', 'E', 'P', 'M', 'Z', 'T']
+vertices = ['J', 'C', 'E', 'P', 'M', 'T', 'Z']
 vertices_pb = {v: Vertice(v) for v in vertices}
 
 grafo_pb = GrafoBuilder().tipo(GrafoListaAdjacenciaDirecionado()) \
