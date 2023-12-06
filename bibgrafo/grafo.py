@@ -9,6 +9,10 @@ class GrafoIF(ABC):
     """
     Esta classe de base abstrata (ou ABC) define todas as funções
     que devem ser instanciadas pelas instâncias de grafos.
+    Todos os métodos marcados como abstratos deverão ser
+    obrigatoriamente implementados em Listas e Matrizes
+    de Adjacência. Outros, são pertinentes apenas às
+    classes de Lista de Adjacência.
     Esta classe não é concreta. Não deve ser instanciada.
     """
 
@@ -95,7 +99,6 @@ class GrafoIF(ABC):
         """
         pass
 
-    @abstractmethod
     def existe_rotulo_aresta(self, r: str) -> bool:
         """
         Verifica se um rótulo de aresta passada como parâmetro pertence ao grafo.
@@ -106,7 +109,6 @@ class GrafoIF(ABC):
         """
         pass
 
-    @abstractmethod
     def get_aresta(self, r):
         """
         Retorna uma referência para a aresta que tem o rótulo passado como parâmetro
@@ -117,7 +119,6 @@ class GrafoIF(ABC):
         """
         pass
 
-    @abstractmethod
     def aresta_valida(self, aresta: Aresta):
         """
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
