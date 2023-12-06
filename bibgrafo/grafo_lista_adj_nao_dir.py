@@ -151,7 +151,7 @@ class GrafoListaAdjacenciaNaoDirecionado(GrafoIF):
         Raises:
             VerticeInvalidoError se o vértice passado como parâmetro não puder ser adicionado
         """
-        if self.vertice_valido(v) and not self.existe_vertice(v) and not self.existe_rotulo_vertice(v.rotulo()):
+        if self.vertice_valido(v) and not self.existe_vertice(v) and not self.existe_rotulo_vertice(v.rotulo):
             self._vertices.append(v)
         else:
             raise VerticeInvalidoError('O vértice ' + str(v) + ' é inválido ou já existe no grafo')
