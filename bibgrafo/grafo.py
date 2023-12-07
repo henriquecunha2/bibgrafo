@@ -9,10 +9,8 @@ class GrafoIF(ABC):
     """
     Esta classe de base abstrata (ou ABC) define todas as funções
     que devem ser instanciadas pelas instâncias de grafos.
-    Todos os métodos marcados como abstratos deverão ser
-    obrigatoriamente implementados em Listas e Matrizes
-    de Adjacência. Outros, são pertinentes apenas às
-    classes de Lista de Adjacência.
+    Todos os métodos marcados como abstratos deverão ser obrigatoriamente
+    implementados em Listas e Matrizes  de Adjacência.
     Esta classe não é concreta. Não deve ser instanciada.
     """
 
@@ -96,37 +94,6 @@ class GrafoIF(ABC):
             v: O rótulo do vértice a ser removido.
         Raises:
             VerticeInvalidoError se o vértice passado como parâmetro não existir no grafo.
-        """
-        pass
-
-    def existe_rotulo_aresta(self, r: str) -> bool:
-        """
-        Verifica se um rótulo de aresta passada como parâmetro pertence ao grafo.
-        Args:
-            r: O rótulo da aresta a ser verificada
-        Returns:
-            Um valor booleano que indica se o rótulo da aresta existe no grafo.
-        """
-        pass
-
-    def get_aresta(self, r):
-        """
-        Retorna uma referência para a aresta que tem o rótulo passado como parâmetro
-        Args:
-            r: O rótulo da aresta solicitada
-        Returns:
-            Um objeto do tipo Aresta que é uma referência para a aresta requisitada ou False se a aresta não existe
-        """
-        pass
-
-    def aresta_valida(self, aresta: Aresta):
-        """
-        Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
-        Uma aresta só é válida se conectar dois vértices existentes no grafo e for uma instância da classe Aresta.
-        Args:
-            aresta: A aresta que se quer verificar se está no formato correto.
-        Returns:
-            Um valor booleano que indica se a aresta está no formato correto.
         """
         pass
 
