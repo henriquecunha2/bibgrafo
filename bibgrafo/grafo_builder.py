@@ -234,7 +234,7 @@ class GrafoBuilder:
         if peso_min != 0 and peso_max != 1:
             for aresta in arg: aresta.peso = self._peso(peso_min, peso_max)
 
-        if len(self._grafo.vertices) == 0: raiseGrafoBuilderError('A lista de vértices ainda está vazia')
+        if len(self._grafo.vertices) == 0: raise GrafoBuilderError('A lista de vértices ainda está vazia')
         elif len(arg) == 0: raise GrafoBuilderError('A lista de arestas não pode estar vazia')
         for aresta in arg:
             self._grafo.adiciona_aresta(aresta)
