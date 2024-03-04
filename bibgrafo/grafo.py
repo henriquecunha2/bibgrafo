@@ -1,16 +1,21 @@
+from abc import ABC, abstractmethod
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
 from multipledispatch import dispatch
 
 
-class GrafoIF:
+class GrafoIF(ABC):
 
     """
-    Esta classe define uma interface que todos as classes que implementam um grafo devem ter.
+    Esta classe de base abstrata (ou ABC) define todas as funções
+    que devem ser instanciadas pelas instâncias de grafos.
+    Todos os métodos marcados como abstratos deverão ser obrigatoriamente
+    implementados em Listas e Matrizes  de Adjacência.
     Esta classe não é concreta. Não deve ser instanciada.
     """
 
     @classmethod
+    @abstractmethod
     def vertice_valido(cls, vertice: Vertice) -> bool:
         """
         Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
@@ -22,6 +27,7 @@ class GrafoIF:
         """
         pass
 
+    @abstractmethod
     def existe_vertice(self, vertice: Vertice) -> bool:
         """
         Verifica se um vértice passado como parâmetro pertence ao grafo.
@@ -31,6 +37,7 @@ class GrafoIF:
         """
         pass
 
+    @abstractmethod
     def existe_rotulo_vertice(self, rotulo: str) -> bool:
         """
         Verifica se há algum vértice no grafo com o rótulo que é passado como parâmetro.
@@ -41,6 +48,7 @@ class GrafoIF:
         """
         pass
 
+    @abstractmethod
     def get_vertice(self, rotulo: str) -> Vertice:
         """
         Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
@@ -54,6 +62,7 @@ class GrafoIF:
         pass
 
     @dispatch(str)
+    @abstractmethod
     def adiciona_vertice(self, rotulo: str):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
@@ -65,6 +74,7 @@ class GrafoIF:
         pass
 
     @dispatch(Vertice)
+    @abstractmethod
     def adiciona_vertice(self, v: Vertice):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
@@ -75,6 +85,7 @@ class GrafoIF:
         """
         pass
 
+    @abstractmethod
     def remove_vertice(self, v: str):
         """
         Remove um vértice que tenha o rótulo passado como parâmetro e remove em cascata as arestas que estão
@@ -86,38 +97,8 @@ class GrafoIF:
         """
         pass
 
-    def existe_rotulo_aresta(self, r: str) -> bool:
-        """
-        Verifica se um rótulo de aresta passada como parâmetro pertence ao grafo.
-        Args:
-            r: O rótulo da aresta a ser verificada
-        Returns:
-            Um valor booleano que indica se o rótulo da aresta existe no grafo.
-        """
-        pass
-
-    def get_aresta(self, r):
-        """
-        Retorna uma referência para a aresta que tem o rótulo passado como parâmetro
-        Args:
-            r: O rótulo da aresta solicitada
-        Returns:
-            Um objeto do tipo Aresta que é uma referência para a aresta requisitada ou False se a aresta não existe
-        """
-        pass
-
-    def aresta_valida(self, aresta: Aresta):
-        """
-        Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
-        Uma aresta só é válida se conectar dois vértices existentes no grafo e for uma instância da classe Aresta.
-        Args:
-            aresta: A aresta que se quer verificar se está no formato correto.
-        Returns:
-            Um valor booleano que indica se a aresta está no formato correto.
-        """
-        pass
-
     @dispatch(Aresta)
+    @abstractmethod
     def adiciona_aresta(self, a: Aresta):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
@@ -131,6 +112,7 @@ class GrafoIF:
         pass
 
     @dispatch(str, str, str, int)
+    @abstractmethod
     def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso: int = 1):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome
@@ -147,6 +129,7 @@ class GrafoIF:
         pass
 
     @dispatch(str, str, str)
+    @abstractmethod
     def adiciona_aresta(self, rotulo: str, v1: str, v2: str):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
@@ -162,6 +145,7 @@ class GrafoIF:
         """
         pass
 
+    @abstractmethod
     def remove_aresta(self, r: str):
         """
         Remove uma aresta a partir de seu rótulo.
@@ -172,6 +156,7 @@ class GrafoIF:
         """
         pass
 
+    @abstractmethod
     def __eq__(self, other) -> bool:
         """
         Define a igualdade entre a instância do GrafoListaAdjacencia para o qual essa função foi chamada e a
@@ -183,6 +168,7 @@ class GrafoIF:
         """
         pass
 
+    @abstractmethod
     def __str__(self) -> str:
         """
         Fornece uma representação do tipo String do grafo.
