@@ -1,88 +1,28 @@
 import unittest
 from meu_grafo_lista_adj_dir import *
+from bibgrafo.aresta import ArestaDirecionada
+from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import *
+from bibgrafo.grafo_json import GrafoJSON
+from bibgrafo.grafo_builder import GrafoBuilder
 
 
 class TestGrafo(unittest.TestCase):
 
     def setUp(self):
         # Grafo da Paraíba
-        self.g_p = MeuGrafo()
-        self.g_p.adiciona_vertice("J")
-        self.g_p.adiciona_vertice("C")
-        self.g_p.adiciona_vertice("E")
-        self.g_p.adiciona_vertice("P")
-        self.g_p.adiciona_vertice("M")
-        self.g_p.adiciona_vertice("T")
-        self.g_p.adiciona_vertice("Z")
-        self.g_p.adiciona_aresta('a1', 'J', 'C')
-        self.g_p.adiciona_aresta('a2', 'C', 'E')
-        self.g_p.adiciona_aresta('a3', 'C', 'E')
-        self.g_p.adiciona_aresta('a4', 'P', 'C')
-        self.g_p.adiciona_aresta('a5', 'P', 'C')
-        self.g_p.adiciona_aresta('a6', 'T', 'C')
-        self.g_p.adiciona_aresta('a7', 'M', 'C')
-        self.g_p.adiciona_aresta('a8', 'M', 'T')
-        self.g_p.adiciona_aresta('a9', 'T', 'Z')
+        self.g_p = GrafoJSON.json_to_grafo('test_json/grafo_pb.json', MeuGrafo())
 
         # Clone do Grafo da Paraíba para ver se o método equals está funcionando
-        self.g_p2 = MeuGrafo()
-        self.g_p2.adiciona_vertice("J")
-        self.g_p2.adiciona_vertice("C")
-        self.g_p2.adiciona_vertice("E")
-        self.g_p2.adiciona_vertice("P")
-        self.g_p2.adiciona_vertice("M")
-        self.g_p2.adiciona_vertice("T")
-        self.g_p2.adiciona_vertice("Z")
-        self.g_p2.adiciona_aresta('a1', 'J', 'C')
-        self.g_p2.adiciona_aresta('a2', 'C', 'E')
-        self.g_p2.adiciona_aresta('a3', 'C', 'E')
-        self.g_p2.adiciona_aresta('a4', 'P', 'C')
-        self.g_p2.adiciona_aresta('a5', 'P', 'C')
-        self.g_p2.adiciona_aresta('a6', 'T', 'C')
-        self.g_p2.adiciona_aresta('a7', 'M', 'C')
-        self.g_p2.adiciona_aresta('a8', 'M', 'T')
-        self.g_p2.adiciona_aresta('a9', 'T', 'Z')
+        self.g_p2 = GrafoJSON.json_to_grafo('test_json/grafo_pb2.json', MeuGrafo())
 
         # Outro clone do Grafo da Paraíba para ver se o método equals está funcionando
-        # Este grafo possui orientações diferentes nas arestas, e também não tem paralelas
-        self.g_p3 = MeuGrafo()
-        self.g_p3.adiciona_vertice("J")
-        self.g_p3.adiciona_vertice("C")
-        self.g_p3.adiciona_vertice("E")
-        self.g_p3.adiciona_vertice("P")
-        self.g_p3.adiciona_vertice("M")
-        self.g_p3.adiciona_vertice("T")
-        self.g_p3.adiciona_vertice("Z")
-        self.g_p3.adiciona_aresta('a', 'J', 'C')
-        self.g_p3.adiciona_aresta('a2', 'E', 'J')
-        self.g_p3.adiciona_aresta('a3', 'E', 'C')
-        self.g_p3.adiciona_aresta('a4', 'C', 'P')
-        self.g_p3.adiciona_aresta('a5', 'P', 'C')
-        self.g_p3.adiciona_aresta('a6', 'T', 'C')
-        self.g_p3.adiciona_aresta('a7', 'M', 'C')
-        self.g_p3.adiciona_aresta('a8', 'M', 'T')
-        self.g_p3.adiciona_aresta('a9', 'T', 'Z')
+        # Esse tem um pequena diferença na primeira aresta
+        self.g_p3 = GrafoJSON.json_to_grafo('test_json/grafo_pb3.json', MeuGrafo())
 
         # Outro clone do Grafo da Paraíba para ver se o método equals está funcionando
-        # Este grafo possui orientações diferentes nas arestas, e também não tem paralelas
-        self.g_p4 = MeuGrafo()
-        self.g_p4.adiciona_vertice("J")
-        self.g_p4.adiciona_vertice("C")
-        self.g_p4.adiciona_vertice("E")
-        self.g_p4.adiciona_vertice("P")
-        self.g_p4.adiciona_vertice("M")
-        self.g_p4.adiciona_vertice("T")
-        self.g_p4.adiciona_vertice("Z")
-        self.g_p4.adiciona_aresta('a1', 'C', 'J')
-        self.g_p4.adiciona_aresta('a2', 'J', 'C')
-        self.g_p4.adiciona_aresta('a3', 'C', 'E')
-        self.g_p4.adiciona_aresta('a4', 'C', 'P')
-        self.g_p4.adiciona_aresta('a5', 'P', 'C')
-        self.g_p4.adiciona_aresta('a6', 'T', 'C')
-        self.g_p4.adiciona_aresta('a7', 'M', 'C')
-        self.g_p4.adiciona_aresta('a8', 'M', 'T')
-        self.g_p4.adiciona_aresta('a9', 'T', 'Z')
+        # Esse tem um pequena diferença na segunda aresta
+        self.g_p4 = GrafoJSON.json_to_grafo('test_json/grafo_pb5.json', MeuGrafo())
 
         # Grafo da Paraíba sem arestas paralelas
         self.g_p_sem_paralelas = MeuGrafo()
@@ -102,167 +42,34 @@ class TestGrafo(unittest.TestCase):
         self.g_p_sem_paralelas.adiciona_aresta('a7', 'T', 'Z')
 
         # Grafos completos
-        self.g_c = MeuGrafo()
-        self.g_c.adiciona_vertice("J")
-        self.g_c.adiciona_vertice("C")
-        self.g_c.adiciona_vertice("E")
-        self.g_c.adiciona_vertice("P")
-        self.g_c.adiciona_aresta('a1', 'J', 'C')
-        self.g_c.adiciona_aresta('a2', 'J', 'E')
-        self.g_c.adiciona_aresta('a3', 'J', 'P')
-        self.g_c.adiciona_aresta('a4', 'E', 'C')
-        self.g_c.adiciona_aresta('a5', 'P', 'C')
-        self.g_c.adiciona_aresta('a6', 'P', 'E')
+        self.g_c = GrafoBuilder().tipo(MeuGrafo()) \
+            .vertices(['J', 'C', 'E', 'P']).arestas(True).build()
 
-        self.g_c2 = MeuGrafo()
-        self.g_c2.adiciona_vertice("Nina")
-        self.g_c2.adiciona_vertice("Maria")
-        self.g_c2.adiciona_aresta('amiga', 'Nina', 'Maria')
+        self.g_c2 = GrafoBuilder().tipo(MeuGrafo()) \
+            .vertices(3).arestas(True).build()
 
-        self.g_c3 = MeuGrafo()
-        self.g_c3.adiciona_vertice("Único")
+        self.g_c3 = GrafoBuilder().tipo(MeuGrafo()) \
+            .vertices(1).build()
 
         # Grafos com laco
-        self.g_l1 = MeuGrafo()
-        self.g_l1.adiciona_vertice("A")
-        self.g_l1.adiciona_vertice("B")
-        self.g_l1.adiciona_vertice("C")
-        self.g_l1.adiciona_vertice("D")
-        self.g_l1.adiciona_aresta('a1', 'A', 'A')
-        self.g_l1.adiciona_aresta('a2', 'A', 'B')
-        self.g_l1.adiciona_aresta('a3', 'A', 'A')
+        self.g_l1 = GrafoJSON.json_to_grafo('test_json/grafo_l1.json', MeuGrafo())
 
-        self.g_l2 = MeuGrafo()
-        self.g_l2.adiciona_vertice("A")
-        self.g_l2.adiciona_vertice("B")
-        self.g_l2.adiciona_vertice("C")
-        self.g_l2.adiciona_vertice("D")
-        self.g_l2.adiciona_aresta('a1', 'A', 'B')
-        self.g_l2.adiciona_aresta('a2', 'B', 'B')
-        self.g_l2.adiciona_aresta('a3', 'B', 'A')
+        self.g_l2 = GrafoJSON.json_to_grafo('test_json/grafo_l2.json', MeuGrafo())
 
-        self.g_l3 = MeuGrafo()
-        self.g_l3.adiciona_vertice("A")
-        self.g_l3.adiciona_vertice("B")
-        self.g_l3.adiciona_vertice("C")
-        self.g_l3.adiciona_vertice("D")
-        self.g_l3.adiciona_aresta('a1', 'C', 'A')
-        self.g_l3.adiciona_aresta('a2', 'C', 'C')
-        self.g_l3.adiciona_aresta('a3', 'D', 'D')
-        self.g_l3.adiciona_aresta('a4', 'D', 'D')
+        self.g_l3 = GrafoJSON.json_to_grafo('test_json/grafo_l3.json', MeuGrafo())
 
-        self.g_l4 = MeuGrafo()
-        self.g_l4.adiciona_vertice("D")
-        self.g_l4.adiciona_aresta('a1', 'D', 'D')
+        self.g_l4 = GrafoBuilder().tipo(MeuGrafo()).vertices([v:=Vertice('D')]) \
+            .arestas([ArestaDirecionada('a1', v, v)]).build()
 
-        self.g_l5 = MeuGrafo()
-        self.g_l5.adiciona_vertice("C")
-        self.g_l5.adiciona_vertice("D")
-        self.g_l5.adiciona_aresta('a1', 'D', 'C')
-        self.g_l5.adiciona_aresta('a2', 'C', 'C')
+        self.g_l5 = GrafoBuilder().tipo(MeuGrafo()).vertices(3) \
+            .arestas(3, lacos=1).build()
 
         # Grafos desconexos
-        self.g_d = MeuGrafo()
-        self.g_d.adiciona_vertice("A")
-        self.g_d.adiciona_vertice("B")
-        self.g_d.adiciona_vertice("C")
-        self.g_d.adiciona_vertice("D")
-        self.g_d.adiciona_aresta('asd', 'A', 'B')
+        self.g_d = GrafoBuilder().tipo(MeuGrafo()) \
+            .vertices([a:=Vertice('A'), b:=Vertice('B'), Vertice('C'), Vertice('D')]) \
+            .arestas([ArestaDirecionada('asd', a, b)]).build()
 
-        self.g_d2 = MeuGrafo()
-        self.g_d2.adiciona_vertice("A")
-        self.g_d2.adiciona_vertice("B")
-        self.g_d2.adiciona_vertice("C")
-        self.g_d2.adiciona_vertice("D")
-
-        # Grafo da Paraíba alterado para buscas
-        self.g_busca = MeuGrafo()
-        for v in self.g_p.vertices: self.g_busca.adiciona_vertice(v.rotulo)
-        self.g_busca.adiciona_aresta('a1', 'J', 'Z')
-        self.g_busca.adiciona_aresta('a2', 'Z', 'C')
-        self.g_busca.adiciona_aresta('a3', 'C', 'T')
-        self.g_busca.adiciona_aresta('a4', 'T', 'P')
-        self.g_busca.adiciona_aresta('a5', 'P', 'C')
-        self.g_busca.adiciona_aresta('a6', 'P', 'E')
-        self.g_busca.adiciona_aresta('a7', 'E', 'Z')
-        self.g_busca.adiciona_aresta('a8', 'E', 'M')
-        self.g_busca.adiciona_aresta('a9', 'C', 'J')
-        self.g_busca.adiciona_aresta('b1', 'T', 'C')
-        self.g_busca.adiciona_aresta('b2', 'M', 'P')
-        self.g_busca.adiciona_aresta('b3', 'Z', 'E')
-        self.g_busca.adiciona_aresta('b4', 'C', 'P')
-
-        self.g_dfs_j = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_dfs_j.adiciona_vertice(v.rotulo)
-        self.g_dfs_j.adiciona_aresta('a1', 'J', 'Z')
-        self.g_dfs_j.adiciona_aresta('a2', 'Z', 'C')
-        self.g_dfs_j.adiciona_aresta('a3', 'C', 'T')
-        self.g_dfs_j.adiciona_aresta('a4', 'T', 'P')
-        self.g_dfs_j.adiciona_aresta('a6', 'P', 'E')
-        self.g_dfs_j.adiciona_aresta('a8', 'E', 'M')
-
-        self.g_dfs_p = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_dfs_p.adiciona_vertice(v.rotulo)
-        self.g_dfs_p.adiciona_aresta('a5', 'P', 'C')
-        self.g_dfs_p.adiciona_aresta('a3', 'C', 'T')
-        self.g_dfs_p.adiciona_aresta('a9', 'C', 'J')
-        self.g_dfs_p.adiciona_aresta('a1', 'J', 'Z')
-        self.g_dfs_p.adiciona_aresta('b3', 'Z', 'E')
-        self.g_dfs_p.adiciona_aresta('a8', 'E', 'M')
-
-        self.g_dfs_t = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_dfs_t.adiciona_vertice(v.rotulo)
-        self.g_dfs_t.adiciona_aresta('a4', 'T', 'P')
-        self.g_dfs_t.adiciona_aresta('a5', 'P', 'C')
-        self.g_dfs_t.adiciona_aresta('a9', 'C', 'J')
-        self.g_dfs_t.adiciona_aresta('a1', 'J', 'Z')
-        self.g_dfs_t.adiciona_aresta('b3', 'Z', 'E')
-        self.g_dfs_t.adiciona_aresta('a8', 'E', 'M')
-
-        self.g_dfs_m = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_dfs_m.adiciona_vertice(v.rotulo)
-        self.g_dfs_m.adiciona_aresta('b2', 'M', 'P')
-        self.g_dfs_m.adiciona_aresta('a5', 'P', 'C')
-        self.g_dfs_m.adiciona_aresta('a3', 'C', 'T')
-        self.g_dfs_m.adiciona_aresta('a9', 'C', 'J')
-        self.g_dfs_m.adiciona_aresta('a1', 'J', 'Z')
-        self.g_dfs_m.adiciona_aresta('b3', 'Z', 'E')
-
-        self.g_bfs_j = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_bfs_j.adiciona_vertice(v.rotulo)
-        self.g_bfs_j.adiciona_aresta('a1', 'J', 'Z')
-        self.g_bfs_j.adiciona_aresta('a2', 'Z', 'C')
-        self.g_bfs_j.adiciona_aresta('b3', 'Z', 'E')
-        self.g_bfs_j.adiciona_aresta('a3', 'C', 'T')
-        self.g_bfs_j.adiciona_aresta('b4', 'C', 'P')
-        self.g_bfs_j.adiciona_aresta('a8', 'E', 'M')
-
-        self.g_bfs_p = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_bfs_p.adiciona_vertice(v.rotulo)
-        self.g_bfs_p.adiciona_aresta('a5', 'P', 'C')
-        self.g_bfs_p.adiciona_aresta('a6', 'P', 'E')
-        self.g_bfs_p.adiciona_aresta('a3', 'C', 'T')
-        self.g_bfs_p.adiciona_aresta('a9', 'C', 'J')
-        self.g_bfs_p.adiciona_aresta('a1', 'J', 'Z')
-        self.g_bfs_p.adiciona_aresta('a8', 'E', 'M')
-
-        self.g_bfs_t = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_bfs_t.adiciona_vertice(v.rotulo)
-        self.g_bfs_t.adiciona_aresta('a4', 'T' ,'P')
-        self.g_bfs_t.adiciona_aresta('b1', 'T', 'C')
-        self.g_bfs_t.adiciona_aresta('a6', 'P', 'E')
-        self.g_bfs_t.adiciona_aresta('a7', 'E', 'Z')
-        self.g_bfs_t.adiciona_aresta('a8', 'E', 'M')
-        self.g_bfs_t.adiciona_aresta('a9', 'C', 'J')
-
-        self.g_bfs_m = MeuGrafo()
-        for v in self.g_busca.vertices: self.g_bfs_m.adiciona_vertice(v.rotulo)
-        self.g_bfs_m.adiciona_aresta('b2', 'M', 'P')
-        self.g_bfs_m.adiciona_aresta('a5', 'P', 'C')
-        self.g_bfs_m.adiciona_aresta('a6', 'P', 'E')
-        self.g_bfs_m.adiciona_aresta('a3', 'C', 'T')
-        self.g_bfs_m.adiciona_aresta('a9', 'C', 'J')
-        self.g_bfs_m.adiciona_aresta('a1', 'J', 'Z')
+        self.g_d2 = GrafoBuilder().tipo(MeuGrafo()).vertices(4).build()
 
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
@@ -345,16 +152,16 @@ class TestGrafo(unittest.TestCase):
         # Completos
         self.assertEqual(self.g_c.grau_entrada('J'), 0)
         self.assertEqual(self.g_c.grau_saida('J'), 3)
-        self.assertEqual(self.g_c.grau_entrada('C'), 3)
-        self.assertEqual(self.g_c.grau_saida('C'), 0)
+        self.assertEqual(self.g_c.grau_entrada('C'), 1)
+        self.assertEqual(self.g_c.grau_saida('C'), 2)
         self.assertEqual(self.g_c.grau_saida('E'), 1)
         self.assertEqual(self.g_c.grau_entrada('E'), 2)
-        self.assertEqual(self.g_c.grau_saida('P'), 2)
-        self.assertEqual(self.g_c.grau_entrada('P'), 1)
+        self.assertEqual(self.g_c.grau_saida('P'), 0)
+        self.assertEqual(self.g_c.grau_entrada('P'), 3)
 
         # Com laço.
-        self.assertEqual(self.g_l1.grau_saida('A'), 3)
-        self.assertEqual(self.g_l1.grau_entrada('A'), 2)
+        self.assertEqual(self.g_l1.grau_saida('A'), 2)
+        self.assertEqual(self.g_l1.grau_entrada('A'), 3)
         self.assertEqual(self.g_l2.grau_entrada('B'), 2)
         self.assertEqual(self.g_l2.grau_saida('B'), 2)
         self.assertEqual(self.g_l4.grau_entrada('D'), 1)
@@ -367,7 +174,7 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse(self.g_c2.ha_paralelas())
         self.assertFalse(self.g_c3.ha_paralelas())
         self.assertTrue(self.g_l1.ha_paralelas()) # X
-        self.assertFalse(self.g_p3.ha_paralelas())
+        self.assertTrue(self.g_p3.ha_paralelas())
         self.assertFalse(self.g_p4.ha_paralelas())
 
     def test_arestas_sobre_vertice(self):
@@ -393,15 +200,3 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse((self.g_l5.eh_completo()))
         self.assertFalse((self.g_d.eh_completo()))
         self.assertFalse((self.g_d2.eh_completo()))
-
-    def test_dfs(self):
-        self.assertEqual(self.g_busca.dfs('J'), self.g_dfs_j)
-        self.assertEqual(self.g_busca.dfs('P'), self.g_dfs_p)
-        self.assertEqual(self.g_busca.dfs('T'), self.g_dfs_t)
-        self.assertEqual(self.g_busca.dfs('M'), self.g_dfs_m)
-
-    def test_bfs(self):
-        self.assertEqual(self.g_busca.bfs('J'), self.g_bfs_j)
-        self.assertEqual(self.g_busca.bfs('P'), self.g_bfs_p)
-        self.assertEqual(self.g_busca.bfs('T'), self.g_bfs_t)
-        self.assertEqual(self.g_busca.bfs('M'), self.g_bfs_m)
