@@ -2,7 +2,7 @@ from bibgrafo.grafo_matriz_adj_dir import GrafoMatrizAdjacenciaDirecionado
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import *
-from multipledispatch import dispatch
+from functools import singledispatchmethod
 from copy import deepcopy
 
 
@@ -129,7 +129,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
                 if i != j and self._matriz[i][j] != self._matriz[j][i]:
                     raise MatrizInvalidaError('A matriz não representa uma matriz de grafo não direcionado')
 
-    @dispatch(str)
+    @singledispatchmethod
     def adiciona_vertice(self, rotulo: str):
         """
         Inclui um vértice no grafo se ele estiver no formato correto.
@@ -155,8 +155,8 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
         else:
             raise VerticeInvalidoError('O vértice ' + rotulo + ' é inválido.')
 
-    @dispatch(Vertice)
-    def adiciona_vertice(self, v: Vertice):
+    @adiciona_vertice.register
+    def _(self, v: Vertice):
         """
         Inclui um vértice no grafo se ele estiver no formato correto.
         Args:
@@ -224,7 +224,7 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
             return True
         return False
 
-    @dispatch(Aresta)
+    @singledispatchmethod
     def adiciona_aresta(self, a: Aresta):
         """
         Adiciona uma aresta ao grafo
@@ -246,8 +246,8 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
 
         return True
 
-    @dispatch(str, str, str, int)
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso=1):
+    @adiciona_aresta.register
+    def _(self, rotulo: str, v1: str, v2: str, peso=1):
         """
         Adiciona uma aresta ao grafo.
         Args:
@@ -259,22 +259,6 @@ class GrafoMatrizAdjacenciaNaoDirecionado(GrafoMatrizAdjacenciaDirecionado):
             ArestaInvalidaError: caso a aresta não estiver em um formato válido
         """
         a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), peso)
-        return self.adiciona_aresta(a)
-
-    @dispatch(str, str, str)
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str):
-        """
-        Adiciona uma aresta ao grafo.
-        Args:
-            rotulo: O rótulo da aresta
-            v1: O primeiro vértice da aresta
-            v2: O segundo vértice da aresta
-        Raises:
-            ArestaInvalidaError: caso a aresta não estiver em um formato válido
-        """
-
-        # Quando o peso não é informado, atribui-se peso 1
-        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1)
         return self.adiciona_aresta(a)
 
     def remove_aresta(self, r: str, v1=None, v2=None):
