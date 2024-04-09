@@ -1,9 +1,7 @@
 from bibgrafo.grafo_lista_adj_dir import GrafoListaAdjacenciaDirecionado
 from bibgrafo.aresta import Aresta
-from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import *
-from multipledispatch import dispatch
-from copy import deepcopy
+from functools import singledispatchmethod
 
 
 class GrafoListaAdjacenciaNaoDirecionado(GrafoListaAdjacenciaDirecionado):
@@ -35,7 +33,7 @@ class GrafoListaAdjacenciaNaoDirecionado(GrafoListaAdjacenciaDirecionado):
             return True
         return False
 
-    @dispatch(Aresta)
+    @singledispatchmethod
     def adiciona_aresta(self, a: Aresta):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
@@ -56,8 +54,8 @@ class GrafoListaAdjacenciaNaoDirecionado(GrafoListaAdjacenciaDirecionado):
             raise ArestaInvalidaError('A aresta ' + str(a) + ' é inválida')
         return True
 
-    @dispatch(str, str, str, int)
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso: int = 1):
+    @adiciona_aresta.register
+    def _(self, rotulo: str, v1: str, v2: str, peso: int = 1):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome
         Args:
@@ -71,23 +69,6 @@ class GrafoListaAdjacenciaNaoDirecionado(GrafoListaAdjacenciaDirecionado):
             ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
         """
         a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), peso)
-        return self.adiciona_aresta(a)
-
-    @dispatch(str, str, str)
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str):
-        """
-        Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
-        O peso atribuído à aresta será 1.
-        Args:
-            rotulo: O rótulo da aresta a ser adicionada.
-            v1: O primeiro vértice da aresta.
-            v2: O segundo vértice da aresta.
-        Returns:
-            True se a aresta foi adicionada com sucesso.
-        Raises:
-            ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada.
-        """
-        a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1)
         return self.adiciona_aresta(a)
 
     def __eq__(self, other):

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
-from multipledispatch import dispatch
+from functools import singledispatchmethod
 
 
 class GrafoIF(ABC):
@@ -61,7 +61,7 @@ class GrafoIF(ABC):
         """
         pass
 
-    @dispatch(str)
+    @singledispatchmethod
     @abstractmethod
     def adiciona_vertice(self, rotulo: str):
         """
@@ -73,9 +73,9 @@ class GrafoIF(ABC):
         """
         pass
 
-    @dispatch(Vertice)
+    @adiciona_vertice.register
     @abstractmethod
-    def adiciona_vertice(self, v: Vertice):
+    def _(self, v: Vertice):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
         Args:
@@ -97,7 +97,7 @@ class GrafoIF(ABC):
         """
         pass
 
-    @dispatch(Aresta)
+    @singledispatchmethod
     @abstractmethod
     def adiciona_aresta(self, a: Aresta):
         """
@@ -111,9 +111,9 @@ class GrafoIF(ABC):
         """
         pass
 
-    @dispatch(str, str, str, int)
+    @adiciona_aresta.register
     @abstractmethod
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso: int = 1):
+    def _(self, rotulo: str, v1: str, v2: str, peso: int = 1):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome
         Args:
@@ -125,23 +125,6 @@ class GrafoIF(ABC):
             True se a aresta foi adicionada com sucesso
         Raises:
             ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
-        """
-        pass
-
-    @dispatch(str, str, str)
-    @abstractmethod
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str):
-        """
-        Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
-        O peso atribuído à aresta será 1.
-        Args:
-            rotulo: O rótulo da aresta a ser adicionada.
-            v1: O primeiro vértice da aresta.
-            v2: O segundo vértice da aresta.
-        Returns:
-            True se a aresta foi adicionada com sucesso.
-        Raises:
-            ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada.
         """
         pass
 
