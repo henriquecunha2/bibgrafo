@@ -1,4 +1,4 @@
-from bibgrafo.grafo import GrafoIF
+from bibgrafo.grafo_lista_adj_dir import GrafoListaAdjacenciaDirecionado
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import *
@@ -6,195 +6,19 @@ from multipledispatch import dispatch
 from copy import deepcopy
 
 
-class GrafoListaAdjacenciaNaoDirecionado(GrafoIF):
+class GrafoListaAdjacenciaNaoDirecionado(GrafoListaAdjacenciaDirecionado):
 
     """
     Esta classe representa um grafo com implementação interna em lista de adjacência
+    não-direcionada, herdando a maioria dos métodos da classe GrafoListaAdjacenciaDirecionado,
+    porém utilizando em sua implementação interna a classe bibgrafo.Aresta ao invés de bibgrafo.ArestaDirecionada.
 
     Attributes:
         _vertices (list): Uma lista dos vértices (ou nodos) do grafo.
         _arestas: Uma dicionário que guarda as arestas do grafo. A chave representa o nome da aresta e o valor é um
         objeto do tipo Aresta que deve conter referências para os vértices
     """
-
-    def __init__(self, vertices=None, arestas=None):
-        """
-        Constrói um objeto do tipo GrafoListaAdjacenciaNaoDirecionado.
-        Se nenhum parâmetro for passado, cria um Grafo vazio.
-        Se houver alguma aresta ou algum vértice inválido, um erro é lançado.
-        Nessa implementação o Grafo é representado por uma lista de adjacências.
-
-        Args:
-            vertices: Uma lista dos vértices (ou nodos) do grafo.
-            arestas: Uma dicionário que guarda as arestas do grafo. A chave representa o nome da aresta e o valor é um
-            objeto do tipo Aresta que deve conter uma referência para os vértices
-        """
-
-        if vertices is None:
-            vertices = list()
-        else:
-            for v in vertices:
-                if not (GrafoListaAdjacenciaNaoDirecionado.vertice_valido(v)):
-                    raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
-        self._vertices = deepcopy(vertices)
-
-        if arestas is None:
-            arestas = dict()
-        else:
-            for a in arestas:
-                if not(self.aresta_valida(arestas[a])):
-                    raise ArestaInvalidaError('A aresta ' + arestas[a] + ' é inválida')
-
-        self._arestas = deepcopy(arestas)
-
-    @property
-    def vertices(self):
-        """ list: Uma lista de vértices. """
-        return self._vertices
-
-    @vertices.setter
-    def vertices(self, novos_vertices):
-        if novos_vertices is None:
-            novos_vertices = list()
-        else:
-            for v in novos_vertices:
-                if not(GrafoListaAdjacenciaNaoDirecionado.vertice_valido(v)):
-                    raise VerticeInvalidoError('O vértice ' + v + ' é inválido')
-        self._vertices = deepcopy(novos_vertices)
-
-    @property
-    def arestas(self):
-        """ dict: Um dicionário de arestas. """
-        return self._arestas
-
-    @arestas.setter
-    def arestas(self, novas_arestas):
-        if novas_arestas is None:
-            novas_arestas = dict()
-        else:
-            for a in novas_arestas:
-                if not(self.aresta_valida(novas_arestas[a])):
-                    raise ArestaInvalidaError('A aresta ' + novas_arestas[a] + ' é inválida')
-
-        self._arestas = deepcopy(novas_arestas)
-
-    @classmethod
-    def vertice_valido(cls, vertice: Vertice) -> bool:
-        """
-        Verifica se um vértice passado como parâmetro está dentro do padrão estabelecido.
-        O rótulo do vértice não pode ser vazio.
-        Args:
-            vertice: Um objeto do tipo Vertice que representa o vértice a ser analisado.
-        Returns:
-            Um valor booleano que indica se o vértice está no formato correto.
-        """
-        return isinstance(vertice, Vertice) and vertice.rotulo != ""
-
-    def existe_vertice(self, vertice: Vertice) -> bool:
-        """
-        Verifica se um vértice passado como parâmetro pertence ao grafo.
-        Args:
-            vertice: O vértice que deve ser verificado.
-        Return: Um valor booleano que indica se o vértice existe no grafo.
-        """
-        return GrafoListaAdjacenciaNaoDirecionado.vertice_valido(vertice) and vertice in self._vertices
-
-    def existe_rotulo_vertice(self, rotulo: str) -> bool:
-        """
-        Verifica se há algum vértice no grafo com o rótulo que é passado como parâmetro.
-        Args:
-            rotulo: O vértice que deve ser verificado.
-        Returns:
-            Um valor booleano que indica se o vértice existe no grafo.
-        """
-        for i in range(len(self.vertices)):
-            if self.vertices[i].rotulo == rotulo:
-                return True
-        return False
-
-    def get_vertice(self, rotulo: str) -> Vertice:
-        """
-        Retorna o objeto do tipo vértice que tem como rótulo o parâmetro passado.
-        Args:
-            rotulo: O rótulo do vértice a ser retornado
-        Returns:
-            Um objeto do tipo vértice que tem como rótulo o parâmetro passado
-        Raises:
-            VerticeInvalidoError se o vértice não for encontrado.
-        """
-        if not self.existe_rotulo_vertice(rotulo):
-            raise VerticeInvalidoError("O vértice não existe no grafo.")
-        for i in range(len(self._vertices)):
-            if self._vertices[i].rotulo == rotulo:
-                return self._vertices[i]
-
-    @dispatch(str)
-    def adiciona_vertice(self, rotulo: str):
-        """
-        Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
-        Args:
-            rotulo: O rótulo do vértice a ser adicionado
-        Raises:
-            VerticeInvalidoError se já houver um vértice com o mesmo nome no grafo
-        """
-        if not self.existe_rotulo_vertice(rotulo):
-            self._vertices.append(Vertice(rotulo))
-        else:
-            raise VerticeInvalidoError('O rótulo de vértice ' + rotulo + ' já existe no grafo')
-
-    @dispatch(Vertice)
-    def adiciona_vertice(self, v: Vertice):
-        """
-        Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
-        Args:
-            v: O vértice a ser adicionado
-        Raises:
-            VerticeInvalidoError se o vértice passado como parâmetro não puder ser adicionado
-        """
-        if self.vertice_valido(v) and not self.existe_vertice(v) and not self.existe_rotulo_vertice(v.rotulo):
-            self._vertices.append(v)
-        else:
-            raise VerticeInvalidoError('O vértice ' + str(v) + ' é inválido ou já existe no grafo')
-
-    def remove_vertice(self, v: str):
-        """
-        Remove um vértice que tenha o rótulo passado como parâmetro e remove em cascata as arestas que estão
-        conectadas a esse vértice.
-        Args:
-            v: O rótulo do vértice a ser removido.
-        Raises:
-            VerticeInvalidoError se o vértice passado como parâmetro não existir no grafo.
-        """
-        newA = dict()
-        vertice = self.get_vertice(v)
-        for a in self._arestas.keys():
-            if not(self._arestas[a].eh_ponta(vertice)):
-                newA[a] = self._arestas[a]
-        self._arestas = newA
-        self._vertices.remove(vertice)
-
-    def existe_rotulo_aresta(self, r=''):
-        """
-        Verifica se um rótulo de aresta passada como parâmetro pertence ao grafo.
-        Args:
-            r: O rótulo da aresta a ser verificada
-        Returns:
-            Um valor booleano que indica se o rótulo da aresta existe no grafo.
-        """
-        return r in self._arestas
-
-    def get_aresta(self, r):
-        """
-        Retorna uma referência para a aresta que tem o rótulo passado como parâmetro
-        Args:
-            r: O rótulo da aresta solicitada
-        Returns:
-            Um objeto do tipo Aresta que é uma referência para a aresta requisitada ou False se a aresta não existe
-        """
-        if self.existe_rotulo_aresta(r):
-            return self._arestas[r]
-        return False
-
+    
     def aresta_valida(self, aresta: Aresta):
         """
         Verifica se uma aresta passada como parâmetro está dentro do padrão estabelecido.
@@ -265,19 +89,6 @@ class GrafoListaAdjacenciaNaoDirecionado(GrafoIF):
         """
         a = Aresta(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1)
         return self.adiciona_aresta(a)
-
-    def remove_aresta(self, r: str):
-        """
-        Remove uma aresta a partir de seu rótulo.
-        Args:
-            r: O rótulo da aresta a ser removida.
-        Raises:
-            ArestaInvalidaError se a aresta passada como parâmetro não puder ser removida.
-        """
-        if self.existe_rotulo_aresta(r):
-            self._arestas.pop(r)
-        else:
-            raise ArestaInvalidaError('A aresta {} não existe no grafo'.format(r))
 
     def __eq__(self, other):
         """

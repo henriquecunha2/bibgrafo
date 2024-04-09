@@ -9,7 +9,7 @@ from copy import deepcopy
 class GrafoListaAdjacenciaDirecionado(GrafoIF):
 
     """
-    Esta classe representa um grafo com implementação interna em lista de adjacência
+    Esta classe representa um grafo com implementação interna em lista de adjacência direcionada.
 
     Attributes:
         _vertices (list): Uma lista dos vértices (ou nodos) do grafo.
