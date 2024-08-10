@@ -1,3 +1,4 @@
+import os
 import json
 from bibgrafo.grafo import *
 from bibgrafo.grafo_errors import GrafoJSONError
@@ -34,8 +35,12 @@ class GrafoJSON:
                     'peso': grafo.arestas[aresta].peso
                 }
 
-        grafo_json = json.dumps(grafo_dict, indent=4)
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
         with open(path, 'w') as json_file:
+            grafo_json = json.dumps(grafo_dict, indent=4)
             json_file.write(grafo_json)
 
         return grafo_dict
