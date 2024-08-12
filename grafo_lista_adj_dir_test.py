@@ -81,9 +81,9 @@ class TestGrafo(unittest.TestCase):
             self.assertTrue(self.g_p.adiciona_aresta('b1', '', 'C'))
         with self.assertRaises(VerticeInvalidoError):
             self.assertTrue(self.g_p.adiciona_aresta('b1', 'A', 'C'))
-        with self.assertRaises(NotImplementedError):
+        with self.assertRaises(TypeError):
             self.g_p.adiciona_aresta('')
-        with self.assertRaises(NotImplementedError):
+        with self.assertRaises(TypeError):
             self.g_p.adiciona_aresta('aa-bb')
         with self.assertRaises(VerticeInvalidoError):
             self.g_p.adiciona_aresta('x', 'J', 'V')
