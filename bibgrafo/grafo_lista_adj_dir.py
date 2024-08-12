@@ -2,14 +2,14 @@ from bibgrafo.grafo import GrafoIF
 from bibgrafo.aresta import ArestaDirecionada
 from bibgrafo.vertice import Vertice
 from bibgrafo.grafo_errors import *
-from multipledispatch import dispatch
+from functools import singledispatchmethod
 from copy import deepcopy
 
 
 class GrafoListaAdjacenciaDirecionado(GrafoIF):
 
     """
-    Esta classe representa um grafo com implementação interna em lista de adjacência
+    Esta classe representa um grafo com implementação interna em lista de adjacência direcionada.
 
     Attributes:
         _vertices (list): Uma lista dos vértices (ou nodos) do grafo.
@@ -127,7 +127,7 @@ class GrafoListaAdjacenciaDirecionado(GrafoIF):
             if self._vertices[i].rotulo == rotulo:
                 return self._vertices[i]
 
-    @dispatch(str)
+    @singledispatchmethod
     def adiciona_vertice(self, rotulo: str):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
@@ -141,8 +141,8 @@ class GrafoListaAdjacenciaDirecionado(GrafoIF):
         else:
             raise VerticeInvalidoError('O rótulo de vértice ' + rotulo + ' já existe no grafo')
 
-    @dispatch(Vertice)
-    def adiciona_vertice(self, v: Vertice):
+    @adiciona_vertice.register
+    def _(self, v: Vertice):
         """
         Adiciona um vértice no Grafo caso o vértice seja válido e não exista outro vértice com o mesmo nome
         Args:
@@ -209,7 +209,7 @@ class GrafoListaAdjacenciaDirecionado(GrafoIF):
             return True
         return False
 
-    @dispatch(ArestaDirecionada, namespace={})
+    @singledispatchmethod
     def adiciona_aresta(self, a: ArestaDirecionada):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
@@ -230,8 +230,8 @@ class GrafoListaAdjacenciaDirecionado(GrafoIF):
             raise ArestaInvalidaError('A aresta ' + str(a) + ' é inválida')
         return True
 
-    @dispatch(str, str, str, int)
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str, peso: int = 1):
+    @adiciona_aresta.register
+    def _(self, rotulo: str, v1: str, v2: str, peso: int = 1):
         """
         Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome
         Args:
@@ -245,23 +245,6 @@ class GrafoListaAdjacenciaDirecionado(GrafoIF):
             ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada
         """
         a = ArestaDirecionada(rotulo, self.get_vertice(v1), self.get_vertice(v2), peso)
-        return self.adiciona_aresta(a)
-
-    @dispatch(str, str, str)
-    def adiciona_aresta(self, rotulo: str, v1: str, v2: str):
-        """
-        Adiciona uma aresta no Grafo caso a aresta seja válida e não exista outra aresta com o mesmo nome.
-        O peso atribuído à aresta será 1.
-        Args:
-            rotulo: O rótulo da aresta a ser adicionada.
-            v1: O primeiro vértice da aresta.
-            v2: O segundo vértice da aresta.
-        Returns:
-            True se a aresta foi adicionada com sucesso.
-        Raises:
-            ArestaInvalidaError se a aresta passada como parâmetro não puder ser adicionada.
-        """
-        a = ArestaDirecionada(rotulo, self.get_vertice(v1), self.get_vertice(v2), 1)
         return self.adiciona_aresta(a)
 
     def remove_aresta(self, r: str):
