@@ -25,21 +25,7 @@ class TestGrafo(unittest.TestCase):
         self.g_p4 = GrafoJSON.json_to_grafo('test_json/grafo_pb4.json', MeuGrafo())
 
         # Grafo da Paraíba sem arestas paralelas
-        self.g_p_sem_paralelas = MeuGrafo()
-        self.g_p_sem_paralelas.adiciona_vertice("J")
-        self.g_p_sem_paralelas.adiciona_vertice("C")
-        self.g_p_sem_paralelas.adiciona_vertice("E")
-        self.g_p_sem_paralelas.adiciona_vertice("P")
-        self.g_p_sem_paralelas.adiciona_vertice("M")
-        self.g_p_sem_paralelas.adiciona_vertice("T")
-        self.g_p_sem_paralelas.adiciona_vertice("Z")
-        self.g_p_sem_paralelas.adiciona_aresta('a1', 'J', 'C')
-        self.g_p_sem_paralelas.adiciona_aresta('a2', 'C', 'E')
-        self.g_p_sem_paralelas.adiciona_aresta('a3', 'P', 'C')
-        self.g_p_sem_paralelas.adiciona_aresta('a4', 'T', 'C')
-        self.g_p_sem_paralelas.adiciona_aresta('a5', 'M', 'C')
-        self.g_p_sem_paralelas.adiciona_aresta('a6', 'M', 'T')
-        self.g_p_sem_paralelas.adiciona_aresta('a7', 'T', 'Z')
+        self.g_p5 = GrafoJSON.json_to_grafo('test_json/grafo_pb5.json', MeuGrafo())
 
         # Grafos completos
         self.g_c = GrafoBuilder().tipo(MeuGrafo()) \
@@ -105,7 +91,7 @@ class TestGrafo(unittest.TestCase):
     def test_eq(self):
         self.assertEqual(self.g_p, self.g_p2)
         self.assertNotEqual(self.g_p, self.g_p3)
-        self.assertNotEqual(self.g_p, self.g_p_sem_paralelas)
+        self.assertNotEqual(self.g_p, self.g_p5)
         self.assertNotEqual(self.g_p, self.g_p4)
 
     def test_vertices_nao_adjacentes(self):
@@ -122,7 +108,7 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse(self.g_p2.ha_laco())
         self.assertFalse(self.g_p3.ha_laco())
         self.assertFalse(self.g_p4.ha_laco())
-        self.assertFalse(self.g_p_sem_paralelas.ha_laco())
+        self.assertFalse(self.g_p5.ha_laco())
         self.assertFalse(self.g_d.ha_laco())
         self.assertFalse(self.g_c.ha_laco())
         self.assertFalse(self.g_c2.ha_laco())
@@ -163,7 +149,7 @@ class TestGrafo(unittest.TestCase):
 
     def test_ha_paralelas(self):
         self.assertTrue(self.g_p.ha_paralelas())
-        self.assertFalse(self.g_p_sem_paralelas.ha_paralelas())
+        self.assertFalse(self.g_p5.ha_paralelas())
         self.assertFalse(self.g_c.ha_paralelas())
         self.assertFalse(self.g_c2.ha_paralelas())
         self.assertFalse(self.g_c3.ha_paralelas())
@@ -181,7 +167,7 @@ class TestGrafo(unittest.TestCase):
 
     def test_eh_completo(self):
         self.assertFalse(self.g_p.eh_completo())
-        self.assertFalse((self.g_p_sem_paralelas.eh_completo()))
+        self.assertFalse((self.g_p5.eh_completo()))
         self.assertTrue((self.g_c.eh_completo()))
         self.assertTrue((self.g_c2.eh_completo()))
         self.assertTrue((self.g_c3.eh_completo()))
