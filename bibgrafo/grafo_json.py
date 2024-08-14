@@ -35,9 +35,9 @@ class GrafoJSON:
                     'peso': grafo.arestas[aresta].peso
                 }
 
-        directory = os.path.dirname(path)
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        # directory = os.path.dirname(path)
+        # if not os.path.exists(directory):
+        #     os.makedirs(directory)
 
         with open(path, 'w') as json_file:
             grafo_json = json.dumps(grafo_dict, indent=4)
