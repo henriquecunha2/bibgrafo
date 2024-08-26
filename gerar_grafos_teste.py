@@ -1,3 +1,4 @@
+import os
 from bibgrafo.grafo_builder import GrafoBuilder
 from bibgrafo.grafo_json import GrafoJSON
 from bibgrafo.grafo_lista_adj_dir import *
@@ -8,6 +9,8 @@ from bibgrafo.aresta import ArestaDirecionada
     que contém os grafos a serem utilizados pelos testes unitários
     da biblioteca.
 '''
+
+os.makedirs('test_json')
 
 vertices = ['J', 'C', 'E', 'P', 'M', 'T', 'Z']
 vertices_pb = {v: Vertice(v) for v in vertices}

@@ -1,8 +1,9 @@
+from functools import singledispatchmethod
+from typing import Union, List
 from bibgrafo.grafo_lista_adj_nao_dir import GrafoListaAdjacenciaNaoDirecionado
 from bibgrafo.grafo_errors import *
 from bibgrafo.aresta import Aresta
 from bibgrafo.vertice import Vertice
-from functools import singledispatchmethod
 
 class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
 
@@ -142,100 +143,6 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
             return arvore_dfs
 
         return dfs_rec(raiz, arvore_dfs)
-    
-    @singledispatchmethod
-    def ha_ciclo(self, V='') -> list | bool:
-
-        def dfs_ciclo(V: str, raiz: str, dict_vertices: dict, dict_arestas: dict,
-            lista_vertices: list, lista_arestas: list) -> bool:
-            adj = list(self.arestas_sobre_vertice(V))
-            adj = sorted(adj)
-            vertices_adj = []
-            for i in adj:
-                a: Aresta = self._arestas[i]
-                if a.rotulo in lista_arestas: continue
-                proximo_vertice = a.v2 if a.v1.rotulo == V else a.v1
-                if proximo_vertice.rotulo == raiz:
-                    dict_arestas[V] = a.rotulo
-                    dict_vertices[V] = proximo_vertice.rotulo
-                elif proximo_vertice.rotulo not in lista_vertices:
-                    vertices_adj.append(proximo_vertice.rotulo)
-                    lista_vertices.append(proximo_vertice.rotulo)
-                    lista_arestas.append(a.rotulo)
-                    dict_arestas[V] = a.rotulo
-                    dict_vertices[V] = proximo_vertice.rotulo
-                    if dfs_ciclo(proximo_vertice.rotulo, raiz,
-                    dict_vertices, dict_arestas, lista_vertices, lista_arestas): return raiz
-                if proximo_vertice.rotulo == raiz: return proximo_vertice.rotulo
-            return False
-
-        vertice = self.get_vertice(V)
-        lista_arestas = {}
-        lista_vertices = {}
-        vertices_percorridos = []
-        arestas_percorridas = []
-        for v in self._vertices:
-            lista_vertices[v.rotulo] = ""
-            lista_arestas[v.rotulo] = ""
-        raiz = dfs_ciclo(vertice.rotulo, vertice.rotulo, lista_vertices,
-        lista_arestas, vertices_percorridos, arestas_percorridas)
-        if raiz in lista_vertices.values():
-            ciclo = [raiz]
-            ciclo.append(lista_arestas[raiz])
-            ciclo.append(lista_vertices[raiz])
-            prox_vertice = lista_vertices[raiz]
-            while not prox_vertice == raiz:
-                ciclo.append(lista_arestas[prox_vertice])
-                ciclo.append(lista_vertices[prox_vertice])
-                prox_vertice = lista_vertices[prox_vertice]
-            return ciclo
-        else: return False
-
-    @ha_ciclo.register
-    def _(self) -> list | bool:
-
-        def dfs_ciclo(V: str, dict_vertices: dict, dict_arestas: dict,
-            lista_vertices: list, lista_arestas: list) -> bool:
-            adj = list(self.arestas_sobre_vertice(V))
-            adj = sorted(adj)
-            for i in adj:
-                a: Aresta = self._arestas[i]
-                if a.rotulo in lista_arestas: continue
-                proximo_vertice = a.v2 if a.v1.rotulo == V else a.v1
-                if proximo_vertice.rotulo in lista_vertices:
-                    dict_arestas[V] = a.rotulo
-                    dict_vertices[V] = proximo_vertice.rotulo
-                    return proximo_vertice.rotulo
-                elif proximo_vertice.rotulo not in lista_vertices:
-                    lista_vertices.append(proximo_vertice.rotulo)
-                    lista_arestas.append(a.rotulo)
-                    dict_arestas[V] = a.rotulo
-                    dict_vertices[V] = proximo_vertice.rotulo
-                    return dfs_ciclo(proximo_vertice.rotulo,
-                    dict_vertices, dict_arestas, lista_vertices, lista_arestas)
-            return False
-
-        for vertice in self._vertices:
-            lista_arestas = {}
-            lista_vertices = {}
-            vertices_percorridos = []
-            arestas_percorridas = []
-            for v in self._vertices:
-                lista_vertices[v.rotulo] = ""
-                lista_arestas[v.rotulo] = ""
-            raiz = dfs_ciclo(vertice.rotulo, lista_vertices,
-            lista_arestas, vertices_percorridos, arestas_percorridas)
-            if raiz:
-                ciclo = [raiz]
-                ciclo.append(lista_arestas[raiz])
-                ciclo.append(lista_vertices[raiz])
-                prox_vertice = lista_vertices[raiz]
-                while not prox_vertice == raiz:
-                    ciclo.append(lista_arestas[prox_vertice])
-                    ciclo.append(lista_vertices[prox_vertice])
-                    prox_vertice = lista_vertices[prox_vertice]
-                return ciclo
-        else: return False
 
     def caminho(self, n: int) -> list:
 
