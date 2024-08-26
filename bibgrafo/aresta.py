@@ -86,14 +86,87 @@ class Aresta:
     def __eq__(self, other):
         """
         É chamado quando se tenta usar o operador de igualdade entre uma Aresta e outro objeto.
+        São comparados apenas os vértices de cada aresta.
         Args:
             other: O outro objeto que se deseja verificar a igualdade.
         Returns:
             True se os objetos forem iguais ou False, caso contrário.
+        Raises:
+            NotImplementedError: se `other` não for do tipo Aresta.
         """
+        if not isinstance(other, Aresta):
+            raise NotImplementedError("Não é possível comparar bibgrafo.Aresta com {}".format(other.__class__))
         return ((self._v1 == other.v1 and self._v2 == other.v2) or
-                (self._v1 == other.v2 and self._v2 == other.v1)) and \
-                self._rotulo == other.rotulo and self.peso == other.peso
+                (self._v1 == other.v2 and self._v2 == other.v1))
+    
+    def __ne__(self, other):
+        """
+        É chamado quando se tenta usar o operador de desigualdade entre uma Aresta e outro objeto.
+        São comparados apenas os vértices de cada aresta.
+        Args:
+            other: O outro objeto que se deseja verificar a desigualdade.
+        Returns:
+            True se os objetos forem diferentes ou False, caso contrário.
+        Raises:
+            NotImplementedError: se `other` não for do tipo Aresta.
+        """
+        return not (self == other)
+
+    def __gt__(self, other):
+        """
+        É chamado quando se tenta usar o operador de maior que (`>`) entre uma Aresta e outro objeto.
+        Nesta comparação, é avaliado apenas o peso das arestas.
+        Args:
+            other: O outro objeto que se deseja comparar.
+        Returns:
+            True se o peso de `self` for maior que o peso de `other` ou False, caso contrário.
+        Raises:
+            NotImplementedError: se `other` não for do tipo Aresta.
+        """
+        if not isinstance(other, Aresta):
+            raise NotImplementedError("Não é possível comparar bibgrafo.Aresta com {}".format(other.__class__))
+        return self.peso > other.peso
+
+    def __ge__(self, other):
+        """
+        É chamado quando se tenta usar o operador de maior ou igual (`>=`) entre uma Aresta e outro objeto.
+        Nesta comparação, é avaliado apenas o peso das arestas.
+        Args:
+            other: O outro objeto que se deseja comparar.
+        Returns:
+            True se o peso de `self` for maior ou igual que o peso de `other` ou False, caso contrário.
+        Raises:
+            NotImplementedError: se `other` não for do tipo Aresta.
+        """
+        if not isinstance(other, Aresta):
+            raise NotImplementedError("Não é possível comparar bibgrafo.Aresta com {}".format(other.__class__))
+        return self.peso >= other.peso
+
+    def __lt__(self, other):
+        """
+        É chamado quando se tenta usar o operador de menor (`<`) entre uma Aresta e outro objeto.
+        Nesta comparação, é avaliado apenas o peso das arestas.
+        Args:
+            other: O outro objeto que se deseja comparar.
+        Returns:
+            True se o peso de `self` for menor que o peso de `other` ou False, caso contrário.
+        Raises:
+            NotImplementedError: se `other` não for do tipo Aresta.
+        """
+        return not (self.peso > other.peso)
+
+    def __le__(self, other):
+        """
+        É chamado quando se tenta usar o operador de menor ou igual (`<`) entre uma Aresta e outro objeto.
+        Nesta comparação, é avaliado apenas o peso das arestas.
+        Args:
+            other: O outro objeto que se deseja comparar.
+        Returns:
+            True se o peso de `self` for menor ou igual que o peso de `other` ou False, caso contrário.
+        Raises:
+            NotImplementedError: se `other` não for do tipo Aresta.
+        """
+        return not (self.peso >= other.peso)
 
     def __str__(self):
         """
@@ -105,13 +178,14 @@ class Aresta:
 class ArestaDirecionada(Aresta):
     def __eq__(self, other):
         """
-        É chamado quando se tenta usar o operador de igualdade entre uma Aresta e outro objeto.
+        É chamado quando se tenta usar o operador de igualdade entre uma ArestaDirecionada e outro objeto.
+        São comparados apenas os vértices de cada aresta.
         Args:
             other: O outro objeto que se deseja verificar a igualdade.
         Returns:
             True se os objetos forem iguais ou False, caso contrário.
         """
-        return self._v1 == other.v1 and self._v2 == other.v2 and self._rotulo == other.rotulo and self._peso == other.peso
+        return self._v1 == other.v1 and self._v2 == other.v2
 
     def __str__(self):
         """
